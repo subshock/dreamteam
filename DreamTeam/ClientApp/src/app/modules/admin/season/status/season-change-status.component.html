@@ -1,0 +1,25 @@
+<form [formGroup]="changeForm" (ngSubmit)="change()">
+  <div class="modal-header">
+    <h4 class="modal-title">Change Season Status</h4>
+  </div>
+  <div class="modal-body">
+    <p>Pick a new status for the season.  Depending on the new status, this may not be able to be undone.</p>
+    <div *ngFor="let s of stateWorkflow[season.state]" class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" formControlName="newState" [value]="s">
+        <strong>{{ s | seasonState:'name'}}</strong>
+        <p>{{ s | seasonState:'desc' }}</p>
+      </label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="form-check flex-grow-1" *ngIf="changeForm.value.newState">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" formControlName="confirm" id="confirm">
+        Confirm change
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!changeForm.valid">Change Status</button>
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+  </div>
+</form>

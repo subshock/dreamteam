@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ISeasonView } from '../../admin.types';
 import { SeasonStateService } from '../../services/season-state.service';
 import { SeasonEditorComponent } from '../editor/season-editor.component';
+import { SeasonChangeStatusComponent } from '../status/season-change-status.component';
 
 @Component({
   templateUrl: './season-view-details.component.html',
@@ -23,9 +24,19 @@ export class SeasonViewDetailsComponent implements OnInit {
   }
 
   updateSeason(season: ISeasonView) {
-    this.modalRef = this.modalService.show(SeasonEditorComponent, { initialState: { seasonId: season.id, mode: 'update' }});
+    this.modalRef = this.modalService.show(SeasonEditorComponent, { initialState: { seasonId: season.id, mode: 'update' } });
     const sub = this.modalRef.onHide.subscribe(() => {
       if (this.modalRef.content.result !== false) {
+        this.state.refreshSeason();
+      }
+      sub.unsubscribe();
+    });
+  }
+
+  changeStatus(season: ISeasonView) {
+    this.modalRef = this.modalService.show(SeasonChangeStatusComponent, { initialState: { season: season } });
+    const sub = this.modalRef.onHide.subscribe(() => {
+      if (this.modalRef.content.result) {
         this.state.refreshSeason();
       }
       sub.unsubscribe();

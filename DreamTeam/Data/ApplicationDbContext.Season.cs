@@ -14,13 +14,13 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<SeasonSummaryViewModel>> GetSeasonsAsync()
         {
-            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Created, Updated, Name FROM Seasons ORDER BY Created DESC");
+            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, State, Created, Updated, Name FROM Seasons ORDER BY Created DESC");
         }
 
         public async Task<SeasonViewModel> GetSeasonAsync(Guid id)
         {
             var obj = await Connection.QueryFirstOrDefaultAsync<SeasonViewDbo>(@"
-                SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated, S.Cost,
+                SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated, S.Cost, S.State,
                     S.Runs, S.UnassistedWickets, S.AssistedWickets, S.Catches, S.Runouts, S.Stumpings,
                     (SELECT COUNT(*) FROM Players WHERE SeasonId=S.Id) AS Players,
                     (SELECT COUNT(*) FROM Teams WHERE SeasonId=S.Id) AS Teams,
@@ -80,24 +80,27 @@ namespace DreamTeam.Data
             return SaveChangesAsync();
         }
 
-        public Task UpdateSeasonStateAsync(Guid id, SeasonStateType newState)
+        public async Task<bool> UpdateSeasonStateAsync(Guid id, SeasonStateType newState)
         {
             var season = Seasons.FirstOrDefault(x => x.Id == id);
 
             if (season == null)
-                return Task.CompletedTask;
+                return false;
 
-            if (season.State != newState)
-            {
-                season.State = newState;
-                season.Updated = DateTime.UtcNow;
+            // Either the season state is invalid or the new state requested is
+            if (!Season.SeasonWorkflow.ContainsKey(season.State) || !Season.SeasonWorkflow.ContainsKey(newState))
+                return false;
 
-                Seasons.Update(season);
+            // Can't transition from the current state to the requested state
+            if (!Season.SeasonWorkflow[season.State].Contains(newState))
+                return false;
 
-                return SaveChangesAsync();
-            }
+            season.State = newState;
+            season.Updated = DateTime.UtcNow;
 
-            return Task.CompletedTask;
+            Seasons.Update(season);
+
+            return await SaveChangesAsync() > 0;
         }
 
         public Task DeleteSeasonAsync(Guid id)

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   IPlayerUpdate, IPlayerView, IRoundPlayer, IRoundPlayerUpdate, IRoundSummary, IRoundUpdate, IRoundView,
-  ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary
+  ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary, SeasonStateType
 } from '../admin.types';
 import { APP_BASE_HREF } from '@angular/common';
 
@@ -29,6 +29,10 @@ export class AdminApiService {
 
   updateSeason(id: string, season: ISeasonUpdate): Observable<any> {
     return this.httpClient.post(`${this.apiBase}/season/${encodeURIComponent(id)}`, season);
+  }
+
+  changeSeasonStatus(id: string, newState: SeasonStateType): Observable<{ result: boolean }> {
+    return this.httpClient.post<{ result: boolean }>(`${this.apiBase}/season/${encodeURIComponent(id)}/status`, newState);
   }
 
   getPlayers(seasonId: string): Observable<IPlayerView[]> {

@@ -66,12 +66,12 @@ namespace DreamTeam.Areas.Api.Admin
             return Ok();
         }
 
-        [HttpPost("{id:guid}/state")]
-        public async Task<IActionResult> ChangeSeasonState(Guid id, [FromBody] SeasonStateType state)
+        [HttpPost("{id:guid}/status")]
+        public async Task<IActionResult> ChangeSeasonStatus(Guid id, [FromBody] SeasonStateType state)
         {
-            await _db.UpdateSeasonStateAsync(id, state);
+            var result = await _db.UpdateSeasonStateAsync(id, state);
 
-            return Ok();
+            return Ok(new { Result = result });
         }
     }
 }

@@ -10,7 +10,7 @@ namespace DreamTeam.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public DateTime Created { get; set; }
+        public DateTimeOffset Created { get; set; }
         public Team Team { get; set; }
         public TransactionType Type { get; set; }
         public Player Player { get; set; }

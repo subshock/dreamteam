@@ -17,6 +17,7 @@ import { TeamListComponent } from './team/list/team-list.component';
 import { RoundListComponent } from './round/list/round-list.component';
 import { RoundEditorComponent } from './round/editor/round-editor.component';
 import { RoundViewComponent } from './round/view/round-view.component';
+import { SeasonChangeStatusComponent } from './season/status/season-change-status.component';
 
 @NgModule({
   imports: [
@@ -57,7 +58,8 @@ import { RoundViewComponent } from './round/view/round-view.component';
     TeamListComponent,
     RoundListComponent,
     RoundEditorComponent,
-    RoundViewComponent
+    RoundViewComponent,
+    SeasonChangeStatusComponent
   ],
   providers: [],
 })

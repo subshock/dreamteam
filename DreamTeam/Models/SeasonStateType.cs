@@ -7,10 +7,12 @@ namespace DreamTeam.Models
 {
     public enum SeasonStateType
     {
-        Setup = 0,
-        Registration = 1,
-        Running = 2,
-        TradePeriod = 3,
-        Finished = 10
+        None = 0,
+        Setup = 1,
+        Registration = 2,
+        Running = 3,
+        TradePeriod = 4,
+        Finished = 10,
+        Archived = 20
     }
 }

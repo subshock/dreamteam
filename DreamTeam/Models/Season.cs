@@ -21,5 +21,18 @@ namespace DreamTeam.Models
         public int Catches { get; set; }
         public int Runouts { get; set; }
         public int Stumpings { get; set; }
-    }
+
+
+        [NotMapped]
+        public static Dictionary<SeasonStateType, List<SeasonStateType>> SeasonWorkflow = new Dictionary<SeasonStateType, List<SeasonStateType>>
+        {
+            [SeasonStateType.Setup] = new List<SeasonStateType> { SeasonStateType.Registration, SeasonStateType.Finished },
+            [SeasonStateType.Registration] = new List<SeasonStateType> { SeasonStateType.Setup, SeasonStateType.Running },
+            [SeasonStateType.Running] = new List<SeasonStateType> { SeasonStateType.TradePeriod, SeasonStateType.Finished },
+            [SeasonStateType.TradePeriod] = new List<SeasonStateType> { SeasonStateType.Running },
+            [SeasonStateType.Finished] = new List<SeasonStateType> { SeasonStateType.Archived },
+            [SeasonStateType.Archived] = new List<SeasonStateType>()
+        };
+
+}
 }
