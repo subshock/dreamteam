@@ -8,7 +8,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
     public class TeamSummaryViewModel
     {
         public Guid Id { get; set; }
-        public DateTime Updated { get; set; }
+        public DateTimeOffset Updated { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
         public string UserName { get; set; }

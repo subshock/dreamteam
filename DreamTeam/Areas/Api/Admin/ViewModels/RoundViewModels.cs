@@ -20,8 +20,8 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
     {
         public Guid Id { get; set; }
         public int Name { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset? Updated { get; set; }
         public bool Completed { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }

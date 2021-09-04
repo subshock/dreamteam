@@ -10,8 +10,8 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
     public class SeasonSummaryViewModel
     {
         public Guid Id { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset? Updated { get; set; }
 
         public string Name { get; set; }
         public SeasonStateType State { get; set; }
@@ -20,8 +20,8 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
     public class SeasonViewModel
     {
         public Guid Id { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset? Updated { get; set; }
 
         public string Name { get; set; }
         public SeasonStateType State { get; set; }
