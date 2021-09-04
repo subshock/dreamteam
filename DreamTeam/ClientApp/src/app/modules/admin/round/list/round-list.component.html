@@ -1,0 +1,63 @@
+<div class="cmd-bar mb-3">
+  <button type="button" class="btn btn-success" (click)="addRound()">
+    <i class="fas fa-fw fa-plus"></i>
+    Add Round
+  </button>
+</div>
+
+<table class="table table-hover table-striped table-sm">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name</th>
+      <th>Start</th>
+      <th>End</th>
+      <th class="text-center">Complete</th>
+      <th class="text-center">Players</th>
+      <th class="text-right">
+        <button type="button" class="btn btn-sm btn-dark" (click)="refresh()">
+          <i class="fas fa-fw fa-sync"></i>
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="rounds$ | async as rounds">
+      <tr *ngFor="let r of rounds">
+        <td>{{ r.name }}</td>
+        <td>{{ r.startDate | date:'E, d MMM yyyy' }}</td>
+        <td>{{ r.endDate | date:'E, d MMM yyyy' }}</td>
+        <td class="text-center"><span class="badge" [class.badge-secondary]="!r.completed" [class.badge-success]="r.completed">
+          {{ r.completed ? 'YES' : 'NO' }}
+        </span></td>
+        <td class="text-center">{{ r.players | number:'1.0-0' }}</td>
+        <td class="text-right">
+          <div class="btn-group" dropdown>
+            <a type="button" class="btn btn-primary" [routerLink]="['./', r.id]">View</a>
+            <button type="button" class="btn btn-primary" dropdownToggle><i class="fas fa-fw fa-caret-down"></i></button>
+            <div role="menu" class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+              <button class="dropdown-item" (click)="updateRound(r)">Update</button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" (click)="deleteRoundStart(r, deleteRoundDlg)">Delete</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+
+<ng-template #deleteRoundDlg>
+  <div class="modal-header">
+    <h4 class="modal-title">Delete Round</h4>
+  </div>
+  <div class="modal-body">
+    <p>
+      Are you sure you want to delete the round '{{ deleteObj.name }}' ({{ deleteObj.startDate | date:'d MMM yyyy'}} - {{ deleteObj.endDate | date:'d MMM yyyy'}}) from this season?
+      All points assigned to players and teams will be removed as well.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="deleteRound(deleteObj)">Delete</button>
+    <button type="button" class="btn btn-secondary" (click)="modalRef?.hide()">Cancel</button>
+  </div>
+</ng-template>

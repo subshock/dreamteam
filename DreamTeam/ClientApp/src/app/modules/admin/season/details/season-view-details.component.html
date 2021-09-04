@@ -1,0 +1,56 @@
+<ng-container *ngIf="season$ | async as season">
+
+  <dl>
+    <dt>Name</dt>
+    <dd>{{ season.name }}</dd>
+  </dl>
+
+  <dl>
+    <dt>Starting Team Budget</dt>
+    <dd>{{ season.budget }}</dd>
+  </dl>
+
+  <dl>
+    <dt>Status</dt>
+    <dd>{{ season.state | seasonState }}</dd>
+  </dl>
+
+  <h4>Point Definitions</h4>
+
+  <div class="d-flex">
+    <dl class="p-2 flex-fill">
+      <dt>Run</dt>
+      <dd>{{ season.pointDefinition.runs }}</dd>
+    </dl>
+
+    <dl class="p-2 flex-fill">
+      <dt>Unassisted Wicket</dt>
+      <dd>{{ season.pointDefinition.unassistedWickets }}</dd>
+    </dl>
+
+    <dl class="p-2 flex-fill">
+      <dt>Assisted Wicket</dt>
+      <dd>{{ season.pointDefinition.assistedWickets }}</dd>
+    </dl>
+
+    <dl class="p-2 flex-fill">
+      <dt>Catch</dt>
+      <dd>{{ season.pointDefinition.catches }}</dd>
+    </dl>
+
+    <dl class="p-2 flex-fill">
+      <dt>Runout</dt>
+      <dd>{{ season.pointDefinition.runouts }}</dd>
+    </dl>
+
+    <dl class="p-2 flex-fill">
+      <dt>Stumping</dt>
+      <dd>{{ season.pointDefinition.stumpings }}</dd>
+    </dl>
+  </div>
+
+  <div class="cmd-bar mt-3 mb-3">
+    <button type="button" class="btn btn-primary" (click)="updateSeason(season)">Update</button>
+  </div>
+
+</ng-container>

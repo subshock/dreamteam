@@ -1,0 +1,40 @@
+<h3>Seasons</h3>
+<div class="cmd-bar mb-3">
+  <button type="button" class="btn btn-success" (click)="addSeason()">
+    <i class="fas fa-fw fa-plus"></i>
+    Add Season
+  </button>
+  <button type="button" class="btn btn-secondary">
+    <i class="fas fa-fw fa-sync"></i>
+    Refresh
+  </button>
+</div>
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Created</th>
+      <th>Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="seasons$ | async as seasons">
+      <tr *ngFor="let s of seasons">
+        <td>
+          <a [routerLink]="['./', s.id]">{{ s.name }}</a>
+        </td>
+        <td>
+          {{ s.state | seasonState }}
+        </td>
+        <td>
+          {{ s.created | date:'d MMM yyyy h:mm a'}}
+        </td>
+        <td>
+          {{ s.updated | date:'d MMM yyyy h:mm a'}}
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
