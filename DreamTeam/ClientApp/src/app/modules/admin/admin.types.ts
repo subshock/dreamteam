@@ -1,3 +1,15 @@
+export enum AdminNavItemId {
+  Admin = 1,
+  Seasons = 2,
+  SeasonView = 3
+}
+
+export interface IAdminNavItem {
+  id: AdminNavItemId;
+  name: string;
+  route: string[];
+}
+
 export enum SeasonStateType {
   Setup = 0,
   Registration = 1,

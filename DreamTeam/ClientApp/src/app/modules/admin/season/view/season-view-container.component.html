@@ -1,8 +1,4 @@
 <ng-container *ngIf="season$ | async as season">
-  <h3 class="mb-3">
-    <a [routerLink]="['.']">Season: <strong>{{ season.name }}</strong></a>
-  </h3>
-
   <ul class="nav nav-tabs" *ngIf="tabs$ | async as tabs">
     <li class="nav-item">
       <a class="nav-link"

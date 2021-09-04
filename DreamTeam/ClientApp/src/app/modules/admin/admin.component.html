@@ -1,2 +1,35 @@
-<h2>Admin</h2>
+<div class="navbar navbar-dark bg-dark navbar-expand-sm">
+  <ul *ngIf="navList$ | async as navList" class="navbar-nav flex-grow">
+    <ng-container *ngFor="let item of navList">
+      <ng-container *ngIf="item.id === AdminNavItemId.Admin">
+        <ng-container *ngTemplateOutlet="adminNavTpl"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="item.id !== AdminNavItemId.Admin">
+        <ng-container *ngTemplateOutlet="navItemTpl; context: { item: item }"></ng-container>
+      </ng-container>
+      <li class="nav-item navbar-text">
+        <i class="fa fa-fw fa-angle-right"></i>
+      </li>
+    </ng-container>
+  </ul>
+</div>
 <router-outlet></router-outlet>
+
+<ng-template #adminNavTpl>
+  <li class="nav-item nav-item-link">
+    <div class="btn-group" dropdown>
+      <a class="nav-link cursor-pointer" dropdownToggle>Admin</a>
+      <div class="dropdown-menu" *dropdownMenu role="menu">
+        <a class="dropdown-item" [routerLink]="['/admin']">Dashboard</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['/admin/season']">Seasons</a>
+      </div>
+    </div>
+  </li>
+</ng-template>
+
+<ng-template #navItemTpl let-item="item">
+  <li class="nav-item nav-item-link">
+    <a class="nav-link" [routerLink]="item.route">{{ item.name }}</a>
+  </li>
+</ng-template>

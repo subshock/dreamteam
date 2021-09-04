@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { ISeasonView } from '../../admin.types';
+import { tap } from 'rxjs/operators';
+import { AdminNavItemId, ISeasonView } from '../../admin.types';
+import { AdminStateService } from '../../services/admin-state.service';
 import { SeasonStateService } from '../../services/season-state.service';
 
 @Component({
@@ -16,12 +18,15 @@ export class SeasonViewContainerComponent implements OnInit, OnDestroy {
   season$: Observable<ISeasonView>;
   tabs$: Observable<{ [key: string]: boolean }>;
 
-  constructor(private route: ActivatedRoute, private state: SeasonStateService) { }
+  constructor(private route: ActivatedRoute, private state: SeasonStateService, private adminState: AdminStateService) { }
 
   ngOnInit() {
+    this.adminState.addNavItem({ id: AdminNavItemId.Seasons, name: 'Seasons', route: ['/admin/season'] });
     this.subscriptions = new Subscription();
 
-    this.season$ = this.state.season$;
+    this.season$ = this.state.season$.pipe(tap(season => {
+      this.adminState.addNavItem({ id: AdminNavItemId.SeasonView, name: season.name, route: ['/', 'admin', 'season', season.id] });
+    }));
     this.tabs$ = this.state.tabs$;
 
     this.subscriptions.add(this.route.paramMap.subscribe(p => {
@@ -30,6 +35,7 @@ export class SeasonViewContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.adminState.removeNavItem(AdminNavItemId.Seasons);
     this.subscriptions.unsubscribe();
   }
 }
