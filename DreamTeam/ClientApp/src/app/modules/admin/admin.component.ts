@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdminNavItemId, IAdminNavItem } from './admin.types';
 import { AdminStateService } from './services/admin-state.service';
@@ -6,6 +6,7 @@ import { AdminStateService } from './services/admin-state.service';
 @Component({
   templateUrl: 'admin.component.html',
   styleUrls: ['admin.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [AdminStateService]
 })
 
