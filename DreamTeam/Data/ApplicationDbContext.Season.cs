@@ -20,7 +20,7 @@ namespace DreamTeam.Data
         public async Task<SeasonViewModel> GetSeasonAsync(Guid id)
         {
             var obj = await Connection.QueryFirstOrDefaultAsync<SeasonViewDbo>(@"
-                SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated,
+                SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated, S.Cost,
                     S.Runs, S.UnassistedWickets, S.AssistedWickets, S.Catches, S.Runouts, S.Stumpings,
                     (SELECT COUNT(*) FROM Players WHERE SeasonId=S.Id) AS Players,
                     (SELECT COUNT(*) FROM Teams WHERE SeasonId=S.Id) AS Teams,
@@ -39,6 +39,7 @@ namespace DreamTeam.Data
                 Id = Guid.NewGuid(),
                 State = SeasonStateType.Setup,
                 Name = model.Name,
+                Cost = model.Cost,
                 Budget = model.Budget,
                 Created = DateTime.UtcNow,
                 Catches = model.PointDefinition.Catches,
@@ -66,6 +67,7 @@ namespace DreamTeam.Data
             season.Updated = DateTime.UtcNow;
             season.Name = model.Name;
             season.Budget = model.Budget;
+            season.Cost = model.Cost;
             season.Catches = model.PointDefinition.Catches;
             season.Runouts = model.PointDefinition.Runouts;
             season.Runs = model.PointDefinition.Runs;
@@ -116,6 +118,7 @@ namespace DreamTeam.Data
                     Id = Id,
                     Name = Name,
                     Budget = Budget,
+                    Cost = Cost,
                     Created = Created,
                     Updated = Updated,
                     Players = Players,

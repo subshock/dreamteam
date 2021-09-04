@@ -8,11 +8,12 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
     public class TeamSummaryViewModel
     {
         public Guid Id { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
+        public DateTime Updated { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
+        public string UserName { get; set; }
         public bool Valid { get; set; }
+        public bool Paid { get; set; }
         public int Balance { get; set; }
     }
 

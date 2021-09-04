@@ -17,6 +17,7 @@
       <th>Status</th>
       <th>Created</th>
       <th>Updated</th>
+      <th class="text-center">Cost</th>
     </tr>
   </thead>
   <tbody>
@@ -33,6 +34,9 @@
         </td>
         <td>
           {{ s.updated | date:'d MMM yyyy h:mm a'}}
+        </td>
+        <td class="text-center">
+          {{ s.cost | currency }}
         </td>
       </tr>
     </ng-container>

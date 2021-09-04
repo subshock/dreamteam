@@ -27,6 +27,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public SeasonStateType State { get; set; }
 
         public int Budget { get; set; }
+        public decimal Cost { get; set; }
 
         public PointViewModel PointDefinition { get; set; }
 
@@ -41,6 +42,8 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public string Name { get; set; }
         [Required]
         public int Budget { get; set; }
+        [Required]
+        public decimal Cost { get; set; }
         [Required]
         public PointViewModel PointDefinition { get; set; }
     }

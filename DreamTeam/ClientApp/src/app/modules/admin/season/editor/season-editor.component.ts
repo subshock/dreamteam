@@ -1,8 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AdminApiService } from '../../services/admin-api.service';
 import { ISeasonUpdate } from '../../admin.types';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -19,6 +18,7 @@ export class SeasonEditorComponent implements OnInit {
 
   private defaultSeason: ISeasonUpdate = {
     name: '',
+    cost: 20.00,
     budget: 80,
     pointDefinition: {
       runs: 1,
@@ -45,6 +45,7 @@ export class SeasonEditorComponent implements OnInit {
         tap(season => {
           this.seasonForm = new FormGroup({
             name: new FormControl(season.name, Validators.required),
+            cost: new FormControl(season.cost, Validators.required),
             budget: new FormControl(season.budget, Validators.required),
             pointDefinition: new FormGroup({
               runs: new FormControl(season.pointDefinition?.runs, Validators.required),
@@ -64,7 +65,7 @@ export class SeasonEditorComponent implements OnInit {
     this.modalRef.hide();
   }
 
-  save(model: ISeasonUpdate) {
+  save() {
     if (this.seasonForm.valid) {
       const season: ISeasonUpdate = <ISeasonUpdate>this.seasonForm.value;
 

@@ -21,6 +21,7 @@ export enum SeasonStateType {
 export interface ISeasonSummary {
   id: string;
   name: string;
+  cost: number;
   created: string;
   updated: string;
   state: SeasonStateType;
@@ -42,6 +43,7 @@ export interface ISeasonView {
   name: string;
   state: SeasonStateType;
   budget: number;
+  cost: number;
   players: number;
   teams: number;
   rounds: number;
@@ -50,6 +52,7 @@ export interface ISeasonView {
 
 export interface ISeasonUpdate {
   name: string;
+  cost: number;
   budget: number;
   pointDefinition: IPointDefinition;
 }
@@ -69,12 +72,13 @@ export interface IPlayerView {
 
 export interface ITeamSummary {
   id: string;
-  created: string;
   updated: string;
   name: string;
   owner: string;
+  userName: string;
   valid: boolean;
   balance: number;
+  paid: boolean;
 }
 
 export interface IRoundSummary {

@@ -2,11 +2,18 @@
   <div class="modal-header">
     <h3 class="modal-title">{{ mode === 'update' ? 'Update Season' : 'Add Season' }}</h3>
   </div>
-  <form [formGroup]="seasonForm" (ngSubmit)="save(model)">
+  <form [formGroup]="seasonForm" (ngSubmit)="save()">
     <div class="modal-body">
       <div class="form-group">
         <label for="name">Name</label>
         <input id="name" type="text" class="form-control" formControlName="name" />
+      </div>
+
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="cost">Cost per Team Entry</label>
+          <input id="cost" type="number" min="0" class="form-control" formControlName="cost" />
+        </div>
       </div>
 
       <div class="row">

@@ -2,11 +2,11 @@
   <thead class="thead-dark">
     <tr>
       <th>Name</th>
-      <th>Owner</th>
-      <th>Created</th>
+      <th>Owner / User</th>
       <th>Updated</th>
       <th>Ready</th>
       <th>Balance</th>
+      <th>Paid</th>
       <th class="text-right">
         <button type="button" class="btn btn-sm btn-dark" (click)="refresh()">
           <i class="fas fa-fw fa-sync"></i>
@@ -18,11 +18,13 @@
     <ng-container *ngIf="teams$ | async as teams">
       <tr *ngFor="let t of teams">
         <td>{{ t.name }}</td>
-        <td>{{ t.owner }}</td>
-        <td>{{ t.created | date:'d MMM yyyy h:mm a' }}</td>
+        <td>{{ t.owner }}
+          <div *ngIf="t.userName">{{t.userName}}</div>
+        </td>
         <td>{{ t.updated | date:'d MMM yyyy h:mm a' }}</td>
         <td><span class="label" [class.label-success]="t.valid" [class.label-secondary]="!t.valid">{{ t.valid ? 'Ready' : 'Not Ready' }}</span></td>
         <td>{{ t.balance | number:'1.0-0' }}</td>
+        <td><span class="badge" [class.badge-success]="t.paid" [class.badge-danger]="!t.paid">{{ t.paid ? 'Yes' : 'No' }}</span></td>
         <td class="text-right">
           <button type="button" class="btn btn-primary">View</button>
         </td>

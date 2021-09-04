@@ -11,9 +11,9 @@ namespace DreamTeam.Data
     {
         public Task<IEnumerable<TeamSummaryViewModel>> GetTeams(Guid seasonId)
         {
-            return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, T.Created, T.Updated, T.Name, COALESCE(U.Name, U.UserName, 'Unknown') AS Owner, T.Valid, T.Balance " +
+            return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, U.UserName, T.Valid, T.Balance, T.Paid " +
                 "FROM Teams AS T " +
-                "   INNER JOIN AspNetUsers AS U ON T.OwnerId=U.Id " +
+                "   LEFT OUTER JOIN AspNetUsers AS U ON T.UserId=U.Id " +
                 "WHERE SeasonId=@seasonId ORDER BY T.Name, COALESCE(U.Name, U.UserName)", new { seasonId });
         }
     }

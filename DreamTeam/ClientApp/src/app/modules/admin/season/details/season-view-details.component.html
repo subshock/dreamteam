@@ -11,8 +11,16 @@
   </dl>
 
   <dl>
+    <dt>Cost per Team Entry</dt>
+    <dd>{{ season.cost | currency }}</dd>
+  </dl>
+
+  <dl>
     <dt>Status</dt>
-    <dd>{{ season.state | seasonState }}</dd>
+    <dd>
+      <span class="badge badge-primary">{{ season.state | seasonState:'name' | uppercase }}</span>
+      {{ season.state | seasonState:'desc' }}
+    </dd>
   </dl>
 
   <h4>Point Definitions</h4>
@@ -51,6 +59,7 @@
 
   <div class="cmd-bar mt-3 mb-3">
     <button type="button" class="btn btn-primary" (click)="updateSeason(season)">Update</button>
+    <button type="button" class="btn btn-secondary">Change Status</button>
   </div>
 
 </ng-container>

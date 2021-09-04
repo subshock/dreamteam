@@ -14,9 +14,12 @@ namespace DreamTeam.Models
         public Season Season { get; set; }
 
         public string Name { get; set; }
+        public string Owner { get; set; }
 
-        public ApplicationUser Owner { get; set; }
+        public ApplicationUser User { get; set; }
         public bool Valid { get; set; }
         public int Balance { get; set; }
+        public bool Paid { get; set; }
+        public string PaymentId { get; set; }
     }
 }
