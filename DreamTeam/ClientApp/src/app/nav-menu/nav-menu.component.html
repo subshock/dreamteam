@@ -3,7 +3,7 @@
     class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
   >
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">DreamTeam</a>
+      <a class="navbar-brand" [routerLink]="['/']">Dragon DreamTeam</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -26,6 +26,9 @@
             [routerLinkActiveOptions]="{ exact: true }"
           >
             <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/rules']" title="Rules">Rules</a>
           </li>
         </ul>
         <app-login-menu></app-login-menu>

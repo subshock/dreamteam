@@ -25,7 +25,12 @@ export class SeasonViewContainerComponent implements OnInit, OnDestroy {
     this.subscriptions = new Subscription();
 
     this.season$ = this.state.season$.pipe(tap(season => {
-      this.adminState.addNavItem({ id: AdminNavItemId.SeasonView, name: season.name, route: ['/', 'admin', 'season', season.id] });
+      this.adminState.addNavItem({
+        id: AdminNavItemId.SeasonView,
+        name: season.name,
+        bold: true,
+        route: ['/', 'admin', 'season', season.id]
+      });
     }));
     this.tabs$ = this.state.tabs$;
 

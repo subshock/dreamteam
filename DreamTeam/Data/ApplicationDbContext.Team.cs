@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using DreamTeam.Areas.Api.Admin.ViewModels;
+using DreamTeam.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static DreamTeam.Areas.Api.User.TeamUserController;
 
 namespace DreamTeam.Data
 {
@@ -15,6 +17,40 @@ namespace DreamTeam.Data
                 "FROM Teams AS T " +
                 "   LEFT OUTER JOIN AspNetUsers AS U ON T.UserId=U.Id " +
                 "WHERE SeasonId=@seasonId ORDER BY T.Name, COALESCE(U.Name, U.UserName)", new { seasonId });
+        }
+
+        public Task<IEnumerable<TeamSummaryViewModel>> GetTeamsForUser(string userId)
+        {
+            return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid " +
+                "FROM Teams AS T " +
+                "WHERE UserId=@userId ORDER BY T.Name", new { userId });
+        }
+
+        public async Task RegisterTeams(RegisterTeamsModel model, string userId)
+        {
+            var season = await GetSeasonAsync(model.SeasonId);
+            var token = Guid.NewGuid();
+
+            foreach (var team in model.Teams)
+            {
+                var obj = new Team
+                {
+                    Id = Guid.NewGuid(),
+                    Created = DateTime.UtcNow,
+                    Name = team.Name,
+                    Owner = team.Owner,
+                    UserId = userId,
+                    SeasonId = model.SeasonId,
+                    Balance = season.Budget,
+                    Paid = false,
+                    RegistrationToken = token.ToString(),
+                    Valid = false
+                };
+
+                Teams.Add(obj);
+            }
+
+            await SaveChangesAsync();
         }
     }
 }

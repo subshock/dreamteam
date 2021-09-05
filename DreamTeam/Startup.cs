@@ -38,7 +38,11 @@ namespace DreamTeam
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+            })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -134,16 +138,22 @@ namespace DreamTeam
                 await roleMgr.CreateAsync(new IdentityRole("Administrator"));
             }
 
+            if (!await roleMgr.RoleExistsAsync("SysAdmin"))
+            {
+                await roleMgr.CreateAsync(new IdentityRole("SysAdmin"));
+            }
+
             var user = await userMgr.FindByEmailAsync("mlmcdonnell@gmail.com");
 
             if (user != null)
             {
                 var roles = await userMgr.GetRolesAsync(user);
 
-                if (roles.Count == 0)
-                {
+                if (!await userMgr.IsInRoleAsync(user, "Administrator"))
                     await userMgr.AddToRoleAsync(user, "Administrator");
-                }
+
+                if (!await userMgr.IsInRoleAsync(user, "SysAdmin"))
+                    await userMgr.AddToRoleAsync(user, "SysAdmin");
             }
         }
     }

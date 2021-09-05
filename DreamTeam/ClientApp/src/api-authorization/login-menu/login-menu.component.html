@@ -1,10 +1,13 @@
-<ul class="navbar-nav" *ngIf="isAuthenticated | async; else notAuthenticated">
-  <li *ngIf="isAdmin | async" class="nav-item">
+<ul class="navbar-nav align-items-center" *ngIf="isAuthenticated | async; else notAuthenticated">
+  <li class="nav-item" [routerLinkActive]="['link-active']">
+    <a class="nav-link text-dark" [routerLink]="['/my/teams']" title="My Teams">My Teams</a>
+  </li>
+  <li *ngIf="isAdmin | async" class="nav-item" [routerLinkActive]="['link-active']">
     <a class="nav-link text-dark" [routerLink]="['/admin']" title="Admin">Admin</a>
   </li>
   <li class="nav-item">
     <div class="btn-group" dropdown [isAnimated]="true">
-      <a class="nav-link text-dark" dropdownToggle>
+      <a class="nav-link text-dark cursor-pointer" dropdownToggle>
         <span class="fa-stack">
           <i class="fas fa-circle fa-stack-2x"></i>
           <i class="fas fa-user fa-stack-1x fa-inverse"></i>

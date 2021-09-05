@@ -1,0 +1,50 @@
+<ng-container *ngIf="model$ | async as model">
+  <h1>My Teams</h1>
+
+  <ng-container *ngIf="model.season.state !== SeasonStateType.Registration">
+    <div class="alert alert-info">
+      <h5>You cannot register any new teams at this time</h5>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="model.season.state === SeasonStateType.Registration">
+    <div class="alert alert-info" *ngIf="model.teams.length === 0">
+      <h5>You do not have any teams registered.</h5>
+    </div>
+
+    <div class="cmd-bar mb-3">
+      <a type="button" class="btn btn-lg btn-success" [routerLink]="['./register']">
+        <i class="fas fa-fw fa-plus"></i>
+        Register Team
+      </a>
+    </div>
+  </ng-container>
+
+  <div class="card-deck">
+    <div class="card" *ngFor="let t of model.teams">
+      <div class="card-body">
+        <h5 class="card-title">{{ t.name }}</h5>
+        <p class="card-text text-muted">{{ t.owner }}</p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Salary Cap: <strong>{{ model.season.budget - t.balance | number }} / {{ model.season.budget | number }}</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Total Points: <strong>0</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Position: <span class="badge badge-primary badge-pill">N/A</span>
+        </li>
+        <li class="list-group-item list-group-item-danger" *ngIf="!t.valid">
+          This team is incomplete and needs attention.
+        </li>
+      </ul>
+      <div class="card-footer d-flex justify-content-between">
+        <a type="button" class="btn btn-primary" [routerLink]="[t.id, 'manage']">Manage</a>
+        <span class="badge align-self-center" [class.badge-success]="t.paid"
+          [class.badge-danger]="!t.paid">{{ t.paid ? 'PAID' : 'NOT PAID' }}</span>
+      </div>
+    </div>
+  </div>
+</ng-container>

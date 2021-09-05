@@ -36,5 +36,6 @@ namespace DreamTeam.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Round> Rounds { get; set; }
         public DbSet<RoundPlayer> RoundPlayers { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }

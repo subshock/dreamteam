@@ -58,7 +58,8 @@ export class AuthorizeService {
 
   public isAdmin(): Observable<boolean> {
     return this.getUser().pipe(
-      map(u => u && u.role === ApplicationRoles.Administrator)
+      map(u => u && u.role &&
+        (u.role === ApplicationRoles.Administrator || (Array.isArray(u.role) && u.role.includes(ApplicationRoles.Administrator))))
     );
   }
 

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DreamTeam.Areas.Api.Admin.ViewModels
+namespace DreamTeam.Areas.Api
 {
     public class PointViewModel : IPointDefinition
     {

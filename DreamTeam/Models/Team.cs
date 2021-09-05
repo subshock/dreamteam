@@ -16,10 +16,15 @@ namespace DreamTeam.Models
         public string Name { get; set; }
         public string Owner { get; set; }
 
+        public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
+
         public bool Valid { get; set; }
         public int Balance { get; set; }
         public bool Paid { get; set; }
-        public string PaymentId { get; set; }
+
+        public string RegistrationToken { get; set; }
     }
 }

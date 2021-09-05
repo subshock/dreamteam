@@ -33,6 +33,6 @@
 
 <ng-template #navItemTpl let-item="item">
   <li class="nav-item nav-item-link">
-    <a class="nav-link" [routerLink]="item.route">{{ item.name }}</a>
+    <a class="nav-link" [routerLink]="item.route" [class.font-weight-bold]="!!item.bold">{{ item.name }}</a>
   </li>
 </ng-template>

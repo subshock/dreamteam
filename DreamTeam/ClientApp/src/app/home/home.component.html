@@ -1,33 +1,32 @@
-<h1>Hello, world!</h1>
-<p>Welcome to your new single-page application, built with:</p>
-<ul>
-  <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-  <li><a href='https://angular.io/'>Angular</a> and <a href='http://www.typescriptlang.org/'>TypeScript</a> for client-side code</li>
-  <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-</ul>
-<p>To help you get started, we've also set up:</p>
-<ul>
-  <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-  <li><strong>Angular CLI integration</strong>. In development mode, there's no need to run <code>ng serve</code>. It runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-  <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration automatically invokes <code>ng build</code> to produce minified, ahead-of-time compiled JavaScript files.</li>
-</ul>
-<p>The <code>ClientApp</code> subdirectory is a standard Angular CLI application. If you open a command prompt in that directory, you can run any <code>ng</code> command (e.g., <code>ng test</code>), or use <code>npm</code> to install extra packages into it.</p>
-<div class="btn-group" dropdown>
-  <button id="button-animated" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-          aria-controls="dropdown-animated">
-    Button dropdown <span class="caret"></span>
-  </button>
-  <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
-      role="menu" aria-labelledby="button-animated">
-    <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
-    <li role="menuitem">
-      <a class="dropdown-item" href="#">Another action</a>
-    </li>
-    <li role="menuitem">
-      <a class="dropdown-item" href="#">
-        Something else
-        here
-      </a>
-    </li>
-  </ul>
-</div>
+<ng-container *ngIf="season$ | async as season">
+  <div class="jumbotron">
+    <h2 class="display-6">How well do you know your Dragons? Forget supercoach, this is</h2>
+    <h1 class="display-3"><strong>DRAGON DREAM TEAM</strong></h1>
+    <ng-container [ngSwitch]="season.state">
+      <ng-container *ngSwitchCase="SeasonStateType.Setup">
+        <h2 class="dipslay-6 text-warning">Coming Soon!</h2>
+      </ng-container>
+      <ng-container *ngSwitchCase="SeasonStateType.Registration">
+        <p class="lead">
+          Here is your chance to prove how well you know your Dragons and win yourself some CASH at the same time.
+        </p>
+        <p class="lead">You choose a squad of 12 players from any of the 5 senior grades and if your squad is the Best
+          performed over the course of the season then you take home the loot!
+        </p>
+        <p>Player ratings are based on last seasons Club Champion standings</p>
+        <h2 class="display-5">Entry is just <strong>{{ season.cost | currency }}</strong></h2>
+        <div class="d-flex mt-3 justify-content-between">
+          <a class="btn btn-lg btn-primary" [routerLink]="['/rules']">Check out the Rules</a>
+          <ng-container *ngIf="isAuthenticated$ | async; else signInRegisterTpl">
+            <a class="btn btn-lg btn-primary" [routerLink]="['/my/teams']">Register your Teams</a>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-template #signInRegisterTpl>
+  <a class="btn btn-lg btn-success" [routerLink]="['/authentication/login']">Login</a>
+  <a class="btn btn-lg btn-success" [routerLink]="['/authentication/register']">Register</a>
+</ng-template>

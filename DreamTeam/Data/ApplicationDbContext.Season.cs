@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DreamTeam.Areas.Api;
 using DreamTeam.Areas.Api.Admin.ViewModels;
 using DreamTeam.Models;
 using System;
@@ -106,6 +107,13 @@ namespace DreamTeam.Data
         public Task DeleteSeasonAsync(Guid id)
         {
             return Connection.ExecuteAsync("DELETE FROM Seasons WHERE Id=@id", new { id });
+        }
+
+        public async Task<bool> CanAddTeamsToSeasonAsync(Guid id)
+        {
+            var seasonState = await Connection.ExecuteScalarAsync<SeasonStateType>("SELECT State FROM Seasons WHERE Id=@id", new { id });
+
+            return seasonState == SeasonStateType.Registration;
         }
 
         public class SeasonViewDbo : Season

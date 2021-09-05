@@ -7,6 +7,7 @@ export enum AdminNavItemId {
 export interface IAdminNavItem {
   id: AdminNavItemId;
   name: string;
+  bold?: boolean;
   route: string[];
 }
 

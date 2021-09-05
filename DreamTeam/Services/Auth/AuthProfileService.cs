@@ -2,6 +2,7 @@
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +11,22 @@ using System.Threading.Tasks;
 
 namespace DreamTeam.Services.Auth
 {
-    public class AuthProfileService : IProfileService
+    public class AuthProfileService : DefaultProfileService
     {
         protected readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthProfileService(UserManager<ApplicationUser> userManager)
+        public AuthProfileService(UserManager<ApplicationUser> userManager, ILogger<AuthProfileService> logger) : base(logger)
         {
             _userManager = userManager;
         }
 
-        public async Task GetProfileDataAsync(ProfileDataRequestContext context)
+        public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
+            await base.GetProfileDataAsync(context);
+
             var user = await _userManager.GetUserAsync(context.Subject);
 
-            context.IssuedClaims.Add(new Claim("name", user.UserName));
+            context.IssuedClaims.Add(new Claim("name", user.Name ?? user.UserName));
 
             if (user != null)
             {
@@ -34,11 +37,11 @@ namespace DreamTeam.Services.Auth
             }
         }
 
-        public async Task IsActiveAsync(IsActiveContext context)
-        {
-            var user = await _userManager.GetUserAsync(context.Subject);
+        //public async Task IsActiveAsync(IsActiveContext context)
+        //{
+        //    var user = await _userManager.GetUserAsync(context.Subject);
 
-            context.IsActive = user != null;
-        }
+        //    context.IsActive = user != null;
+        //}
     }
 }
