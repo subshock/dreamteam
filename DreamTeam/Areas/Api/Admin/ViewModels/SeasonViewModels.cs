@@ -34,6 +34,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public int Players { get; set; }
         public int Teams { get; set; }
         public int Rounds { get; set; }
+        public int TradePeriods { get; set; }
     }
 
     public class UpdateSeasonViewModel

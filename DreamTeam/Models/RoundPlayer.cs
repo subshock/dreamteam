@@ -22,5 +22,6 @@ namespace DreamTeam.Models
         public int Catches { get; set; }
         public int Runouts { get; set; }
         public int Stumpings { get; set; }
+        public int Points { get; set; }
     }
 }

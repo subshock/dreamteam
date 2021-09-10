@@ -50,6 +50,7 @@ export interface ISeasonView {
   players: number;
   teams: number;
   rounds: number;
+  tradePeriods: number;
   pointDefinition: IPointDefinition;
 }
 
@@ -120,4 +121,20 @@ export interface IRoundPlayer {
 export interface IRoundPlayerUpdate {
   playerId: string;
   points: IPointDefinition;
+}
+
+export interface ITradePeriod {
+  id: string;
+  seasonId: string;
+  startDate: string;
+  endDate: string;
+  tradeLimit: number;
+  created: string;
+  updated: string;
+}
+
+export interface ITradePeriodUpdate {
+  startDate: string | Date;
+  endDate: string | Date;
+  tradeLimit: number;
 }

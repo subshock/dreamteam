@@ -4,14 +4,16 @@ using DreamTeam.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DreamTeam.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210909121202_TeamPlayersAndTradePeriods")]
+    partial class TeamPlayersAndTradePeriods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -371,9 +373,6 @@ namespace DreamTeam.Data.Migrations
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("SeasonId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");
 
@@ -384,8 +383,6 @@ namespace DreamTeam.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SeasonId");
 
                     b.ToTable("TradePeriods");
                 });
@@ -744,17 +741,6 @@ namespace DreamTeam.Data.Migrations
                     b.Navigation("Team");
 
                     b.Navigation("TradePeriod");
-                });
-
-            modelBuilder.Entity("DreamTeam.Models.TradePeriod", b =>
-                {
-                    b.HasOne("DreamTeam.Models.Season", "Season")
-                        .WithMany()
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Season");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.Transaction", b =>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   IPlayerUpdate, IPlayerView, IRoundPlayer, IRoundPlayerUpdate, IRoundSummary, IRoundUpdate, IRoundView,
-  ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary, SeasonStateType
+  ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary, ITradePeriod, ITradePeriodUpdate, SeasonStateType
 } from '../admin.types';
 import { APP_BASE_HREF } from '@angular/common';
 
@@ -93,5 +93,23 @@ export class AdminApiService {
   deleteRoundPlayer(seasonId: string, roundId: string, playerId: string): Observable<any> {
     return this.httpClient.delete(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/rounds/${encodeURIComponent(roundId)}/players` +
       `/${encodeURIComponent(playerId)}`);
+  }
+
+  getTradePeriods(seasonId: string): Observable<ITradePeriod[]> {
+    return this.httpClient.get<ITradePeriod[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/tradeperiods`);
+  }
+
+  addTradePeriod(seasonId, tradePeriod: ITradePeriodUpdate): Observable<any> {
+    return this.httpClient.post<any>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/tradeperiods`, tradePeriod);
+  }
+
+  updateTradePeriod(seasonId: string, tradePeriodId: string, tradePeriod: ITradePeriodUpdate): Observable<any> {
+    return this.httpClient.post<any>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/tradeperiods` +
+      `/${encodeURIComponent(tradePeriodId)}`, tradePeriod);
+  }
+
+  deleteTradePeriod(seasonId: string, tradePeriodId: string) {
+    return this.httpClient.delete<any>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/tradeperiods` +
+      `/${encodeURIComponent(tradePeriodId)}`);
   }
 }

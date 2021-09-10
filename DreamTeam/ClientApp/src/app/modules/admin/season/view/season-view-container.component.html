@@ -13,17 +13,24 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" [routerLink]="['./teams']"
-        [class.disabled]="!tabs['teams']">
-        Teams
-        <span class="ml-1 badge badge-pill badge-info">{{ season.teams }}</span>
-      </a>
-    </li>
-    <li class="nav-item">
       <a class="nav-link" routerLinkActive="active" [routerLink]="['./rounds']"
         [class.disabled]="!tabs['rounds']">
         Rounds
         <span class="ml-1 badge badge-pill badge-info">{{ season.rounds }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./trade-periods']"
+        [class.disabled]="!tabs['trade-periods']">
+        Trade Periods
+        <span class="ml-1 badge badge-pill badge-info">{{ season.tradePeriods }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./teams']"
+        [class.disabled]="!tabs['teams']">
+        Teams
+        <span class="ml-1 badge badge-pill badge-info">{{ season.teams }}</span>
       </a>
     </li>
   </ul>

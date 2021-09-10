@@ -25,7 +25,8 @@ namespace DreamTeam.Data
                     S.Runs, S.UnassistedWickets, S.AssistedWickets, S.Catches, S.Runouts, S.Stumpings,
                     (SELECT COUNT(*) FROM Players WHERE SeasonId=S.Id) AS Players,
                     (SELECT COUNT(*) FROM Teams WHERE SeasonId=S.Id) AS Teams,
-                    (SELECT COUNT(*) FROM Rounds WHERE SeasonId=S.Id) AS Rounds
+                    (SELECT COUNT(*) FROM Rounds WHERE SeasonId=S.Id) AS Rounds,
+                    (SELECT COUNT(*) FROM TradePeriods WHERE SeasonId=S.Id) AS TradePeriods
                 FROM Seasons AS S
                 WHERE S.Id=@id
                 ", new { id });
@@ -121,6 +122,7 @@ namespace DreamTeam.Data
             public int Players { get; set; }
             public int Teams { get; set; }
             public int Rounds { get; set; }
+            public int TradePeriods { get; set; }
 
             public SeasonViewModel ToDto()
             {
@@ -136,6 +138,7 @@ namespace DreamTeam.Data
                     Teams = Teams,
                     Rounds = Rounds,
                     State = State,
+                    TradePeriods = TradePeriods,
                     PointDefinition = new PointViewModel
                     {
                         Runs = Runs,

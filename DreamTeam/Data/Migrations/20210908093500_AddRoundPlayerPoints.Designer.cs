@@ -4,14 +4,16 @@ using DreamTeam.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DreamTeam.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210908093500_AddRoundPlayerPoints")]
+    partial class AddRoundPlayerPoints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -316,78 +318,6 @@ namespace DreamTeam.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("DreamTeam.Models.TeamPlayer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Cost")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("PlayerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Removed")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TradePeriodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset?>("Updated")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("TradePeriodId");
-
-                    b.ToTable("TeamPlayers");
-                });
-
-            modelBuilder.Entity("DreamTeam.Models.TradePeriod", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("EndDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("SeasonId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("StartDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("TradeLimit")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset?>("Updated")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SeasonId");
-
-                    b.ToTable("TradePeriods");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.Transaction", b =>
@@ -719,42 +649,6 @@ namespace DreamTeam.Data.Migrations
                     b.Navigation("Season");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DreamTeam.Models.TeamPlayer", b =>
-                {
-                    b.HasOne("DreamTeam.Models.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DreamTeam.Models.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DreamTeam.Models.TradePeriod", "TradePeriod")
-                        .WithMany()
-                        .HasForeignKey("TradePeriodId");
-
-                    b.Navigation("Player");
-
-                    b.Navigation("Team");
-
-                    b.Navigation("TradePeriod");
-                });
-
-            modelBuilder.Entity("DreamTeam.Models.TradePeriod", b =>
-                {
-                    b.HasOne("DreamTeam.Models.Season", "Season")
-                        .WithMany()
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Season");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.Transaction", b =>
