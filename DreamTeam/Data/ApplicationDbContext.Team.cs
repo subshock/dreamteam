@@ -26,6 +26,13 @@ namespace DreamTeam.Data
                 "WHERE UserId=@userId ORDER BY T.Name", new { userId });
         }
 
+        public Task<TeamSummaryViewModel> GetUserTeam(string userId, Guid teamId)
+        {
+            return Connection.QueryFirstOrDefaultAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid " +
+                "FROM Teams AS T " +
+                "WHERE T.Id = @teamId AND T.UserId = @userId; ", new { userId, teamId });
+        }
+
         public async Task RegisterTeams(RegisterTeamsModel model, string userId)
         {
             var season = await GetSeasonAsync(model.SeasonId);

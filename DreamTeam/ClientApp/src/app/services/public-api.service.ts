@@ -18,4 +18,8 @@ export class PublicApiService {
   getCurrentSeason(): Observable<IPublicSeasonInfo> {
     return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/current`);
   }
+
+  getSeasonPlayers(seasonId: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/players`);
+  }
 }

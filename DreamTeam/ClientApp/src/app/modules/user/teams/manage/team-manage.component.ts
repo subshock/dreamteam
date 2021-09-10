@@ -1,16 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { SeasonStateType } from 'src/app/modules/admin/admin.types';
-import { IPublicSeasonInfo } from 'src/app/types/public.types';
+import { UserApiService } from 'src/app/services/user-api.service';
+import { IPublicPlayer, IPublicSeasonInfo } from 'src/app/types/public.types';
 
-interface IPlayer {
-  name: string;
-  id: string;
-  cost: number;
-  points: number;
-}
-
-interface ITeamPlayer extends IPlayer {
+interface ITeamPlayer extends IPublicPlayer {
   captain?: boolean;
   vicecaptain?: boolean;
   added?: boolean;
@@ -38,7 +33,7 @@ interface ICurrentTeam {
 interface IModel {
   team: ITeam;
   season: IPublicSeasonInfo;
-  players: IPlayer[];
+  players: IPublicPlayer[];
   tradePeriod: ITradePeriod;
   current: ICurrentTeam;
 }
@@ -53,36 +48,31 @@ export class TeamManageComponent implements OnInit {
   model$: Observable<IModel>;
   SeasonStateType = SeasonStateType;
 
-  constructor(private _cd: ChangeDetectorRef) { }
+  constructor(private userApi: UserApiService) { }
 
   ngOnInit(): void {
-    this.model$ = of({
-      team: {
-        id: 'foo',
-        name: 'Poochies Punters',
-        balance: 80,
-        players: []
-      },
-      season: {
-        id: 'bar',
-        name: 'Dragon Dream Team 2021/22',
-        state: SeasonStateType.Registration,
-        cost: 0,
-        budget: 80,
-        runs: 1,
-        unassistedWickets: 15,
-        assistedWickets: 12,
-        catches: 10,
-        runouts: 10,
-        stumpings: 10
-      },
-      tradePeriod: null,
-      players: this.generatePlayers(40),
-      current: {
-        balance: 80,
-        team: [],
-      }
-    });
+    const seasonObs = this.userApi.publicApi.getCurrentSeason().pipe(shareReplay(1));
+    const playerObs = seasonObs.pipe(
+      switchMap(s => this.userApi.publicApi.getSeasonPlayers(s.id))
+    );
+
+    this.model$ = combineLatest([seasonObs, playerObs]).pipe(
+      map(([s, p]) => ({
+        season: s,
+        players: p,
+        team: {
+          id: 'foo',
+          name: 'Poochies Punters',
+          balance: 80,
+          players: []
+        },
+        tradePeriod: null,
+        current: {
+          balance: 80,
+          team: []
+        }
+      }))
+    );
   }
 
   generatePlayers(num: number) {
@@ -177,7 +167,7 @@ export class TeamManageComponent implements OnInit {
   }
 
   saveTeam(model: IModel) {
-
+    console.info('save', model.current);
   }
 
   revertTeam(model: IModel, includeExistingTrades: boolean = false) {

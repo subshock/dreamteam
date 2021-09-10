@@ -21,5 +21,17 @@ namespace DreamTeam.Areas.Api
         public int Runouts { get; set; }
         [Required]
         public int Stumpings { get; set; }
+
+        public static int operator * (PointViewModel a, PointViewModel b)
+        {
+            if (a == null || b == null) return 0;
+
+            return (a.Runs * b.Runs)
+                + (a.AssistedWickets * b.AssistedWickets)
+                + (a.UnassistedWickets * b.UnassistedWickets)
+                + (a.Catches * b.Catches)
+                + (a.Runouts * b.Runouts)
+                + (a.Stumpings * b.Stumpings);
+        }
     }
 }

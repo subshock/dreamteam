@@ -27,5 +27,11 @@ namespace DreamTeam.Areas.Api.Public
 
             return Ok(obj);
         }
+
+        [HttpGet("{seasonId:guid}/players")]
+        public async Task<IActionResult> GetSeasonPlayers(Guid seasonId)
+        {
+            return Ok(await _db.GetPlayersWithPointsAsync(seasonId));
+        }
     }
 }

@@ -25,6 +25,12 @@ namespace DreamTeam.Areas.Api.User
             return Ok(await _db.GetTeamsForUser(UserId));
         }
 
+        [HttpGet("{teamId:guid}")]
+        public async Task<IActionResult> GetTeam(Guid teamId)
+        {
+            return Ok(await _db.GetUserTeam(UserId, teamId));
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> RegisterTeams([FromBody] RegisterTeamsModel model)
         {

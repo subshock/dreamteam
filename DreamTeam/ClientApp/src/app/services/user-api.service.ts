@@ -25,4 +25,8 @@ export class UserApiService {
   getUserTeams(): Observable<any[]> {
     return this.httpClient.get<any[]>(`${this.apiBase}/teams`);
   }
+
+  getUserTeam(teamId: string): Observable<any[]> {
+    return this.httpClient.get<any>(`${this.apiBase}/teams/${encodeURIComponent(teamId)}`);
+  }
 }

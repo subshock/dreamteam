@@ -75,7 +75,7 @@ namespace DreamTeam.Data
         public Task<IEnumerable<RoundPlayerViewModel>> GetRoundPlayers(Guid seasonId, Guid roundId)
         {
             return Connection.QueryAsync<RoundPlayerDbo>("SELECT RP.Id, RP.PlayerId, P.Name, P.Multiplier, RP.Runs, RP.AssistedWickets, " +
-                "RP.UnassistedWickets, RP.Catches, RP.Runouts, RP.Stumpings AS [Points.Stumpings] " +
+                "RP.UnassistedWickets, RP.Catches, RP.Runouts, RP.Stumpings AS [Points.Stumpings], RP.Points AS Total " +
                 "FROM RoundPlayers AS RP " +
                 "   INNER JOIN Players AS P ON RP.PlayerId=P.Id " +
                 "   INNER JOIN Rounds AS R ON RP.RoundId=R.Id " +
@@ -84,7 +84,7 @@ namespace DreamTeam.Data
                 .ContinueWith(task => task.Result.Select(x => x.ToDto()));
         }
 
-        public Task AddPlayerToRound(Guid seasonId, Guid roundId, RoundPlayerUpdateViewModel model)
+        public async Task AddPlayerToRound(Guid seasonId, Guid roundId, RoundPlayerUpdateViewModel model)
         {
             var player = new RoundPlayer
             {
@@ -97,18 +97,19 @@ namespace DreamTeam.Data
                 Catches = model.Points.Catches,
                 Runouts = model.Points.Runouts,
                 Stumpings = model.Points.Stumpings,
-                Created = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Points = await CalculatePoints(seasonId, model.PlayerId, model.Points)
             };
 
             RoundPlayers.Add(player);
 
-            return SaveChangesAsync();
+            await SaveChangesAsync();
         }
 
-        public Task UpdatePlayerInRound(Guid seasonId, Guid roundId, Guid id, RoundPlayerUpdateViewModel model)
+        public async Task UpdatePlayerInRound(Guid seasonId, Guid roundId, Guid id, RoundPlayerUpdateViewModel model)
         {
-            return Connection.ExecuteAsync("UPDATE RoundPlayers SET Runs=@Runs, UnassistedWickets=@UnassistedWickets, AssistedWickets=@AssistedWickets, " +
-                "Catches=@Catches, Runouts=@Runouts, Stumpings=@Stumpings, Updated=@now " +
+            await Connection.ExecuteAsync("UPDATE RoundPlayers SET Runs=@Runs, UnassistedWickets=@UnassistedWickets, AssistedWickets=@AssistedWickets, " +
+                "Catches=@Catches, Runouts=@Runouts, Stumpings=@Stumpings, Points=@Points, Updated=@now " +
                 "WHERE RoundId=@roundId AND Id=@id AND PlayerId=@PlayerId",
                 new
                 {
@@ -121,8 +122,20 @@ namespace DreamTeam.Data
                     model.Points.Catches,
                     model.Points.Runouts,
                     model.Points.Stumpings,
-                    now = DateTime.UtcNow
+                    now = DateTime.UtcNow,
+                    Points = await CalculatePoints(seasonId, model.PlayerId, model.Points)
                 });
+        }
+
+        public async Task<int> CalculatePoints(Guid seasonId, Guid playerId, PointViewModel points)
+        {
+            var season = await GetSeasonAsync(seasonId);
+            var player = await GetPlayerAsync(seasonId, playerId);
+
+            if (season == null || player == null)
+                return 0;
+
+            return (season.PointDefinition * points) * (int)player.Multiplier;
         }
 
         public Task DeletePlayerFromRound(Guid seasonId, Guid roundId, Guid id)

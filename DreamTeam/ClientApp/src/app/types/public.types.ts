@@ -1,4 +1,4 @@
-import { SeasonStateType } from '../modules/admin/admin.types';
+import { IPointDefinition, SeasonStateType } from '../modules/admin/admin.types';
 
 export interface IPublicSeasonInfo {
   id: string;
@@ -22,4 +22,11 @@ export interface ITeamRegister {
 export interface ITeamRegisterResult {
   success: boolean;
   messages: string[];
+}
+
+export interface IPublicPlayer extends IPointDefinition {
+  name: string;
+  id: string;
+  cost: number;
+  points: number;
 }

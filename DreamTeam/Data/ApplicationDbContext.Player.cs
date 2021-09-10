@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DreamTeam.Areas.Api.Admin.ViewModels;
+using DreamTeam.Areas.Api.Public.ViewModels;
 using DreamTeam.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,20 @@ namespace DreamTeam.Data
         public Task<IEnumerable<PlayerViewModel>> GetPlayersAsync(Guid seasonId)
         {
             return Connection.QueryAsync<PlayerViewModel>("SELECT Id, Name, Cost, Multiplier FROM Players WHERE SeasonId=@seasonId ORDER BY Name ASC", new { seasonId });
+        }
+
+        public Task<IEnumerable<PublicPlayerViewModel>> GetPlayersWithPointsAsync(Guid seasonId)
+        {
+            return Connection.QueryAsync<PublicPlayerViewModel>("SELECT P.Id, P.Name, P.Cost, P.Multiplier, " +
+                "COALESCE(SUM(RP.Runs), 0) AS Runs, COALESCE(SUM(RP.UnassistedWickets), 0) AS UnassistedWickets, COALESCE(SUM(RP.AssistedWickets), 0) AS AssistedWickets, " +
+                "COALESCE(SUM(RP.Catches), 0) AS Catches, COALESCE(SUM(RP.Runouts), 0) AS Runouts, COALESCE(SUM(RP.Stumpings), 0) AS Stumpings, COALESCE(SUM(RP.Points), 0) AS Points " +
+                "FROM Players AS P " +
+                "INNER JOIN Seasons AS S ON P.SeasonId = S.Id " +
+                "LEFT OUTER JOIN Rounds AS R ON R.SeasonId = S.Id AND R.Completed = 1 " +
+                "LEFT OUTER JOIN RoundPlayers AS RP ON RP.RoundId = R.Id AND RP.PlayerId = P.Id " +
+                "WHERE S.Id = @seasonId " +
+                "GROUP BY P.Id, P.Name, P.Cost, P.Multiplier " +
+                "ORDER BY Cost DESC, Name ASC", new { seasonId });
         }
 
         public Task<PlayerViewModel> GetPlayerAsync(Guid seasonId, Guid id)
