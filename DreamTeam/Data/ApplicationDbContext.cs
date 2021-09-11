@@ -33,11 +33,12 @@ namespace DreamTeam.Data
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Round> Rounds { get; set; }
         public DbSet<RoundPlayer> RoundPlayers { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<TeamPlayer> TeamPlayers { get; set; }
         public DbSet<TradePeriod> TradePeriods { get; set; }
+        public DbSet<TeamRoundResult> TeamRoundResults { get; set; }
+        public DbSet<TeamRoundRank> TeamRoundRanks { get; set; }
     }
 }
