@@ -9,6 +9,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
     public class PlayerViewModel
     {
         public Guid Id { get; set; }
+        public Guid SeasonId { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
         public decimal Multiplier { get; set; }

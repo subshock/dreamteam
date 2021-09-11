@@ -23,6 +23,11 @@
   <div class="card-deck">
     <div class="card" *ngFor="let t of model.teams">
       <div class="card-body">
+        <div class="float-right ml-3 mb-3" *ngIf="model.season.state === SeasonStateType.Registration">
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="updateTeam(t)">
+            <i class="fas fa-fw fa-edit"></i>
+          </button>
+        </div>
         <h5 class="card-title">{{ t.name }}</h5>
         <p class="card-text text-muted">{{ t.owner }}</p>
       </div>

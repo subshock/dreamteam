@@ -17,8 +17,8 @@ namespace DreamTeam.Areas.Api.Public
             _db = db;
         }
 
-       [HttpGet("current")]
-       public async Task<IActionResult> GetCurrentSeason()
+        [HttpGet("current")]
+        public async Task<IActionResult> GetCurrentSeason()
         {
             var obj = await _db.PublicGetSeasonInfo();
 
@@ -32,6 +32,12 @@ namespace DreamTeam.Areas.Api.Public
         public async Task<IActionResult> GetSeasonPlayers(Guid seasonId)
         {
             return Ok(await _db.GetPlayersWithPointsAsync(seasonId));
+        }
+
+        [HttpGet("{seasonId}/tradeperiod/active")]
+        public async Task<IActionResult> IsActiveTradePeriod(Guid seasonId)
+        {
+            return Ok(new { TradePeriod = await _db.IsTradePeriodActive(seasonId) });
         }
     }
 }

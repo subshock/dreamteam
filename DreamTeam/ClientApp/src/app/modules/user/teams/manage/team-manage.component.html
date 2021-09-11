@@ -1,11 +1,22 @@
 <ng-container *ngIf="model$ | async as model">
   <h3>Manage: <strong>{{ model.team.name }}</strong></h3>
-  <div class="cmd-bar">
+  <p>Owner: <strong>{{ model.team.owner }}</strong></p>
+  <div class="cmd-bar mb-3">
     <a class="btn btn-secondary" [routerLink]="['../..']">
       <i class="fas fa-fw fa-chevron-left"></i>
       Back to Team List
     </a>
   </div>
+
+  <ng-container *ngIf="model.season.state === SeasonStateType.Registration">
+    <div class="alert alert-info">
+      <h5>This season is in registration mode</h5>
+      <p>
+        You are free to change your team as much as you like before registration ends and
+        your team will be locked.
+      </p>
+    </div>
+  </ng-container>
 
   <div class="row" *ngIf="getCurrentTeam(model) as currentTeam">
     <div class="col-md-6 col-my-team">
@@ -36,10 +47,12 @@
               <i *ngIf="p.added" class="fas fa-fw fa-plus-square text-success" title="Newly Added"></i>
             </td>
             <td class="col-captain">
-              <button type="button" class="btn btn-sm" (click)="setCaptain(model, p)" [class.btn-primary]="p.captain"
-                [class.btn-outline-secondary]="!p.captain">C</button>
+              <button type="button" class="btn btn-sm" (click)="setCaptain(model, p)"
+                [class.btn-primary]="p.type == TeamPlayerType.Captain"
+                [class.btn-outline-secondary]="p.type !== TeamPlayerType.Captain">C</button>
               <button type="button" class="btn btn-sm" (click)="setViceCaptain(model, p)"
-                [class.btn-primary]="p.vicecaptain" [class.btn-outline-secondary]="!p.vicecaptain">VC</button>
+                [class.btn-primary]="p.type === TeamPlayerType.ViceCaptain"
+                [class.btn-outline-secondary]="p.type !== TeamPlayerType.ViceCaptain">VC</button>
             </td>
             <td>{{ p.name }}</td>
             <td class="text-center">{{ p.cost }}</td>
@@ -65,8 +78,12 @@
           </tr>
         </tfoot>
       </table>
+      <div *ngIf="saveError" class="alert alert-danger">
+        <h5>There was a problem saving your team.</h5>
+        <p>{{ saveError }}</p>
+      </div>
       <div class="cmd-bar">
-        <button type="button" class="btn btn-success" (click)="saveTeam(model)" [disabled]="!isTeamValid(currentTeam, model)">Save Team</button>
+        <button type="button" class="btn btn-success" (click)="saveTeam(model)" [disabled]="saving || !isTeamValid(currentTeam, model)">Save Team</button>
         <button type="button" class="btn btn-secondary" (click)="revertTeam(model)">Revert Team</button>
       </div>
     </div>

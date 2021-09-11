@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { stringify } from 'querystring';
 import { Observable } from 'rxjs';
-import { IPublicSeasonInfo, ITeamRegister, ITeamRegisterResult } from '../types/public.types';
+import { ITradePeriod } from '../modules/admin/admin.types';
+import { IPublicSeasonInfo, ITeamAndTradePeriod, ITeamPlayerUpdate, ITeamPlayerUpdateResult, ITeamRegister, ITeamRegisterResult } from '../types/public.types';
 import { PublicApiService } from './public-api.service';
 
 @Injectable({
@@ -26,7 +27,19 @@ export class UserApiService {
     return this.httpClient.get<any[]>(`${this.apiBase}/teams`);
   }
 
-  getUserTeam(teamId: string): Observable<any[]> {
-    return this.httpClient.get<any>(`${this.apiBase}/teams/${encodeURIComponent(teamId)}`);
+  getUserTeam(teamId: string): Observable<ITeamAndTradePeriod> {
+    return this.httpClient.get<ITeamAndTradePeriod>(`${this.apiBase}/teams/${encodeURIComponent(teamId)}`);
+  }
+
+  updateTeam(teamId: string, details: ITeamRegister): Observable<any> {
+    return this.httpClient.post(`${this.apiBase}/teams/${encodeURIComponent(teamId)}/details`, details);
+  }
+
+  getCurrentTradePeriod(seasonId: string): Observable<ITradePeriod> {
+    return this.httpClient.get<ITradePeriod>(`${this.apiBase}/seasons/trade-period/current`);
+  }
+
+  updateTeamPlayers(teamId: string, model: ITeamPlayerUpdate): Observable<ITeamPlayerUpdateResult> {
+    return this.httpClient.post<ITeamPlayerUpdateResult>(`${this.apiBase}/teams/${encodeURIComponent(teamId)}/players`, model);
   }
 }

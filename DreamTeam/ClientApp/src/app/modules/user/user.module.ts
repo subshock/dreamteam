@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { UserContainerComponent } from './user-container.component';
 import { TeamManageComponent } from './teams/manage/team-manage.component';
+import { TeamEditorComponent } from './teams/editor/team-editor.component';
 
 
 
@@ -16,7 +17,8 @@ import { TeamManageComponent } from './teams/manage/team-manage.component';
     TeamsListComponent,
     TeamRegisterComponent,
     UserContainerComponent,
-    TeamManageComponent
+    TeamManageComponent,
+    TeamEditorComponent
   ],
   imports: [
     CommonModule,

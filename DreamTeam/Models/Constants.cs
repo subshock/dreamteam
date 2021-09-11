@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace DreamTeam.Models
 {
-    public enum TeamPlayerType
+    public static class Constants
     {
-        Normal = 0,
-        ViceCaptain = 5,
-        Captain = 10,
+        public static readonly int PlayersPerTeam = 12;
     }
 }

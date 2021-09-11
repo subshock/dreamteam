@@ -15,7 +15,15 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<PlayerViewModel>> GetPlayersAsync(Guid seasonId)
         {
-            return Connection.QueryAsync<PlayerViewModel>("SELECT Id, Name, Cost, Multiplier FROM Players WHERE SeasonId=@seasonId ORDER BY Name ASC", new { seasonId });
+            return Connection.QueryAsync<PlayerViewModel>("SELECT Id, SeasonId, Name, Cost, Multiplier FROM Players WHERE SeasonId=@seasonId ORDER BY Name ASC", new { seasonId });
+        }
+
+        public Task<IEnumerable<PlayerViewModel>> GetPlayersAsync(IEnumerable<Guid> playerIds)
+        {
+            if (playerIds == null || !playerIds.Any())
+                return Task.FromResult(Enumerable.Empty<PlayerViewModel>());
+
+            return Connection.QueryAsync<PlayerViewModel>("SELECT Id, SeasonId, Name, Cost, Multiplier FROM Players WHERE Id IN @playerIds", new { playerIds });
         }
 
         public Task<IEnumerable<PublicPlayerViewModel>> GetPlayersWithPointsAsync(Guid seasonId)

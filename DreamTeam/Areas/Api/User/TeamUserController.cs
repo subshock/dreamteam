@@ -1,4 +1,6 @@
-﻿using DreamTeam.Data;
+﻿using DreamTeam.Areas.Api.User.ViewModels;
+using DreamTeam.Data;
+using DreamTeam.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,10 +15,12 @@ namespace DreamTeam.Areas.Api.User
     public class TeamUserController : BaseUserController
     {
         private readonly ApplicationDbContext _db;
+        private readonly TeamManagementService _teamSvc;
 
-        public TeamUserController(ApplicationDbContext db)
+        public TeamUserController(ApplicationDbContext db, TeamManagementService teamSvc)
         {
             _db = db;
+            _teamSvc = teamSvc;
         }
 
         [HttpGet()]
@@ -28,7 +32,17 @@ namespace DreamTeam.Areas.Api.User
         [HttpGet("{teamId:guid}")]
         public async Task<IActionResult> GetTeam(Guid teamId)
         {
-            return Ok(await _db.GetUserTeam(UserId, teamId));
+            var tradePeriod = await _db.GetCurrentTradePeriodByTeam(teamId);
+            var team = await _db.GetUserTeam(UserId, teamId, tradePeriod?.Id);
+
+            if (team == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                team,
+                tradePeriod
+            });
         }
 
         [HttpPost("register")]
@@ -46,6 +60,33 @@ namespace DreamTeam.Areas.Api.User
             await _db.RegisterTeams(model, UserId);
 
             return Ok();
+        }
+
+        [HttpPost("{teamId:guid}/details")]
+        public async Task<IActionResult> UpdateTeamDetails(Guid teamId, [FromBody] RegisterTeamsModel.TeamViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var season = await _db.GetSeasonByTeam(teamId);
+
+            if (season.State != Models.SeasonStateType.Registration)
+                return Forbid();
+
+            await _db.UpdateTeamDetails(UserId, teamId, model);
+
+            return Ok();
+        }
+
+        [HttpPost("{id:guid}/players")]
+        public async Task<IActionResult> UpdateTeamPlayers(Guid id, [FromBody] UserTeamPlayersUpdateViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _teamSvc.UpdateTeam(UserId, id, model);
+
+            return Ok(result);
         }
 
         public class RegisterTeamsModel : IValidatableObject

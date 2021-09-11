@@ -34,6 +34,12 @@ namespace DreamTeam.Data
             return obj?.ToDto();
         }
 
+        public async Task<Season> GetSeasonByTeam(Guid teamId)
+        {
+            return await Connection.QueryFirstOrDefaultAsync<Season>("SELECT S.* FROM Seasons AS S INNER JOIN Teams AS T ON S.Id=T.SeasonId WHERE T.Id=@teamId", 
+                new { teamId });
+        }
+
         public async Task<Season> CreateSeasonAsync(UpdateSeasonViewModel model)
         {
             var season = new Season()

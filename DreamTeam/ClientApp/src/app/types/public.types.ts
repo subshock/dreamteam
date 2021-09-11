@@ -1,4 +1,4 @@
-import { IPointDefinition, SeasonStateType } from '../modules/admin/admin.types';
+import { IPointDefinition, ITradePeriod, SeasonStateType } from '../modules/admin/admin.types';
 
 export interface IPublicSeasonInfo {
   id: string;
@@ -29,4 +29,43 @@ export interface IPublicPlayer extends IPointDefinition {
   id: string;
   cost: number;
   points: number;
+}
+
+export enum TeamPlayerType {
+  Normal = 0,
+  ViceCaptain = 5,
+  Captain = 10
+}
+
+export interface ITeamPlayer extends IPublicPlayer {
+  type: TeamPlayerType;
+  added?: boolean;
+  removed?: boolean;
+}
+
+export interface ITeam {
+  id: string;
+  name: string;
+  owner: string;
+  updated: string;
+  valid: boolean;
+  paid: boolean;
+  balance: number;
+  players: ITeamPlayer[];
+}
+
+export interface ITeamAndTradePeriod {
+  team: ITeam;
+  tradePeriod: ITradePeriod;
+}
+
+export interface ITeamPlayerUpdate {
+  players: string[];
+  captainPlayerId: string;
+  viceCaptainPlayerId: string;
+}
+
+export interface ITeamPlayerUpdateResult {
+  success: boolean;
+  error?: string;
 }

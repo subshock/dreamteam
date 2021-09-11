@@ -60,5 +60,20 @@ namespace DreamTeam.Data
                 "FROM TradePeriods " +
                 "WHERE SeasonId=@seasonId AND StartDate>=@now AND EndDate<=@now", new { seasonId, now = DateTime.UtcNow });
         }
+
+        public Task<PublicTradePeriodViewModel> GetCurrentTradePeriodByTeam(Guid teamId)
+        {
+            return Connection.QueryFirstOrDefaultAsync<PublicTradePeriodViewModel>("SELECT TP.Id, TP.StartDate, TP.EndDate, TP.TradeLimit " +
+                "FROM TradePeriods TP " +
+                "   INNER JOIN Teams AS T ON TP.SeasonId=T.SeasonId " +
+                "WHERE T.Id=@teamId AND TP.StartDate>=@now AND TP.EndDate<=@now", new { teamId, now = DateTime.UtcNow });
+        }
+
+        public Task<bool> IsTradePeriodActive(Guid seasonId)
+        {
+            return Connection.ExecuteScalarAsync<int>("SELECT 1 FROM TradePeriods WHERE SeasonId=@seasonId AND @now >= StartDate AND @now < DATEADD(day, 1, EndDate)",
+                new { seasonId })
+                .ContinueWith(x => x.Result != 0);
+        }
     }
 }

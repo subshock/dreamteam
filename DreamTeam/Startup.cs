@@ -1,5 +1,6 @@
 using DreamTeam.Data;
 using DreamTeam.Models;
+using DreamTeam.Services;
 using DreamTeam.Services.Auth;
 using DreamTeam.Services.Mail;
 using Microsoft.AspNetCore.Authentication;
@@ -75,6 +76,8 @@ namespace DreamTeam
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddScoped<TeamManagementService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

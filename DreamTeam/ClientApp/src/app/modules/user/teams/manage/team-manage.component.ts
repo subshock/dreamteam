@@ -1,29 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { SeasonStateType } from 'src/app/modules/admin/admin.types';
+import { ITradePeriod, SeasonStateType } from 'src/app/modules/admin/admin.types';
 import { UserApiService } from 'src/app/services/user-api.service';
-import { IPublicPlayer, IPublicSeasonInfo } from 'src/app/types/public.types';
-
-interface ITeamPlayer extends IPublicPlayer {
-  captain?: boolean;
-  vicecaptain?: boolean;
-  added?: boolean;
-  removed?: boolean;
-}
-
-interface ITeam {
-  id: string;
-  name: string;
-  balance: number;
-  players: ITeamPlayer[];
-}
-
-interface ITradePeriod {
-  startDate: string;
-  endDate: string;
-  tradeLimit: number;
-}
+import { IPublicPlayer, IPublicSeasonInfo, ITeam, ITeamPlayer, TeamPlayerType } from 'src/app/types/public.types';
 
 interface ICurrentTeam {
   balance: number;
@@ -48,28 +29,31 @@ export class TeamManageComponent implements OnInit {
   model$: Observable<IModel>;
   SeasonStateType = SeasonStateType;
 
-  constructor(private userApi: UserApiService) { }
+  TeamPlayerType = TeamPlayerType;
+
+  saving = false;
+  saveError: string;
+
+  constructor(private userApi: UserApiService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     const seasonObs = this.userApi.publicApi.getCurrentSeason().pipe(shareReplay(1));
     const playerObs = seasonObs.pipe(
       switchMap(s => this.userApi.publicApi.getSeasonPlayers(s.id))
     );
+    const teamObs = this.route.paramMap.pipe(
+      switchMap(p => this.userApi.getUserTeam(p.get('id')))
+    );
 
-    this.model$ = combineLatest([seasonObs, playerObs]).pipe(
-      map(([s, p]) => ({
+    this.model$ = combineLatest([seasonObs, playerObs, teamObs]).pipe(
+      map(([s, p, t]) => ({
         season: s,
         players: p,
-        team: {
-          id: 'foo',
-          name: 'Poochies Punters',
-          balance: 80,
-          players: []
-        },
-        tradePeriod: null,
+        team: t.team,
+        tradePeriod: t.tradePeriod,
         current: {
-          balance: 80,
-          team: []
+          balance: t.team.balance,
+          team: t.team.players.map(x => ({...x}))
         }
       }))
     );
@@ -94,14 +78,14 @@ export class TeamManageComponent implements OnInit {
     // validate and make sure that
     // a) the player isn't already in the team
     // b) the players cost won't break the salar cap
-    if (model.current.team.length >= 12 ||
-      model.current.team.find(x => x.id === player.id) != null ||
+    if (this.getCurrentTeam(model).length >= 12 ||
+      model.current.team.find(x => x.id === player.id && !x.removed) != null ||
       model.current.balance - player.cost < 0) {
       return;
     }
 
-    // TODO: FIX THIS
-    const removedPlayer = model.current.team.find(x => x.id === player.id && !!x.removed);
+    // Check whether this player is already present in the team but removed
+    const removedPlayer = model.current.team.find(x => x.id === player.id);
     if (removedPlayer != null) {
       removedPlayer.removed = false;
     } else {
@@ -117,7 +101,7 @@ export class TeamManageComponent implements OnInit {
     if (idx < 0) { return; } // sanity check
 
     // if the player was added in this session, then just remove it
-    if (player.added) {
+    if (model.team.players.findIndex(x => x.id === player.id) < 0) {
       model.current.team.splice(idx, 1);
     } else {
       player.removed = true;
@@ -136,28 +120,30 @@ export class TeamManageComponent implements OnInit {
 
   setCaptain(model: IModel, player: any) {
     for (const p of model.current.team) {
-      p.captain = false;
+      if (p.id === player.id) {
+        p.type = TeamPlayerType.Captain;
+      } else if (p.type === TeamPlayerType.Captain) {
+        p.type = TeamPlayerType.Normal;
+      }
     }
-
-    player.captain = true;
-    player.vicecaptain = false;
   }
 
   setViceCaptain(model: IModel, player: any) {
     for (const p of model.current.team) {
-      p.vicecaptain = false;
+      if (p.id === player.id) {
+        p.type = TeamPlayerType.ViceCaptain;
+      } else if (p.type === TeamPlayerType.ViceCaptain) {
+        p.type = TeamPlayerType.Normal;
+      }
     }
-
-    player.vicecaptain = true;
-    player.captain = false;
   }
 
   isCaptainSet(team: any[]): boolean {
-    return team.findIndex(p => p.captain) >= 0;
+    return team.findIndex(p => p.type === TeamPlayerType.Captain) >= 0;
   }
 
   isViceCaptainSet(team: any[]): boolean {
-    return team.findIndex(p => p.vicecaptain) >= 0;
+    return team.findIndex(p => p.type === TeamPlayerType.ViceCaptain) >= 0;
   }
 
   isTeamValid(currentTeam: any[], model: IModel) {
@@ -167,14 +153,31 @@ export class TeamManageComponent implements OnInit {
   }
 
   saveTeam(model: IModel) {
-    console.info('save', model.current);
+    const currentTeam = this.getCurrentTeam(model);
+    if (!this.isTeamValid(currentTeam, model)) { return; }
+
+    const updateModel = {
+      players: currentTeam.map(x => x.id),
+      captainPlayerId: currentTeam.find(x => x.type === TeamPlayerType.Captain).id,
+      viceCaptainPlayerId: currentTeam.find(x => x.type === TeamPlayerType.ViceCaptain).id
+    };
+
+    this.saveError = null;
+    this.saving = true;
+
+    const sub = this.userApi.updateTeamPlayers(model.team.id, updateModel).subscribe(result => {
+      sub.unsubscribe();
+      this.saving = false;
+      if (result.success) {
+        this.router.navigate(['../..'], { relativeTo: this.route });
+      } else {
+        this.saveError = result.error;
+      }
+    });
   }
 
-  revertTeam(model: IModel, includeExistingTrades: boolean = false) {
-    model.current.team = model.team.players
-      .filter(p => includeExistingTrades ? !p.added : true)
-      .map(p => ({ ...p, removed: includeExistingTrades ? false : p.removed }));
-
+  revertTeam(model: IModel) {
+    model.current.team = model.team.players.map(x => ({...x}));
     model.current.balance = model.team.balance;
   }
 }
