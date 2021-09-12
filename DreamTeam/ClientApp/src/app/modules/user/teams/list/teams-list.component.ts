@@ -5,11 +5,11 @@ import { map, switchMap } from 'rxjs/operators';
 import { SeasonStateType } from 'src/app/modules/admin/admin.types';
 import { PublicApiService } from 'src/app/services/public-api.service';
 import { UserApiService } from 'src/app/services/user-api.service';
-import { IPublicSeasonInfo } from 'src/app/types/public.types';
+import { IPublicSeasonInfo, IUserTeamSummary } from 'src/app/types/public.types';
 import { TeamEditorComponent } from '../editor/team-editor.component';
 
 interface IModel {
-  teams: any[];
+  teams: IUserTeamSummary[];
   season: IPublicSeasonInfo;
 }
 

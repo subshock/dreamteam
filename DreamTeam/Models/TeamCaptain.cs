@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 
 namespace DreamTeam.Models
 {
-    public class TeamPlayer : BaseEntity
+    public class TeamCaptain : BaseEntity
     {
         public Guid TeamId { get; set; }
         [ForeignKey("TeamId")]
         public Team Team { get; set; }
 
-        public Guid PlayerId { get; set; }
-        [ForeignKey("PlayerId")]
-        public Player Player { get; set; }
-
-        public int Cost { get; set; }
-
         public Guid? TradePeriodId { get; set; }
         [ForeignKey("TradePeriodId")]
         public TradePeriod TradePeriod { get; set; }
+
+        public Guid CaptainId { get; set; }
+        [ForeignKey("CaptainId")]
+        public Player Captain { get; set; }
+
+        public Guid ViceCaptainId { get; set; }
+        [ForeignKey("ViceCaptainId")]
+        public Player ViceCaptain { get; set; }
 
         public bool Removed { get; set; }
     }

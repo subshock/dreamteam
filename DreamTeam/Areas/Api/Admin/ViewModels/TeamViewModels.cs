@@ -15,6 +15,8 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public bool Valid { get; set; }
         public bool Paid { get; set; }
         public int Balance { get; set; }
+        public int? Points { get; set; }
+        public int? SeasonRank { get; set; }
     }
 
     public class TeamUpdateViewModel

@@ -22,6 +22,8 @@ namespace DreamTeam.Areas.Api
         [Required]
         public int Stumpings { get; set; }
 
+        public PointViewModel() { }
+
         public static int operator * (PointViewModel a, PointViewModel b)
         {
             if (a == null || b == null) return 0;
@@ -33,5 +35,6 @@ namespace DreamTeam.Areas.Api
                 + (a.Runouts * b.Runouts)
                 + (a.Stumpings * b.Stumpings);
         }
+
     }
 }

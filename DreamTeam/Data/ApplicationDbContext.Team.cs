@@ -22,9 +22,13 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<TeamSummaryViewModel>> GetTeamsForUser(string userId)
         {
-            return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid " +
+            return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid, P.Points, K.SeasonRank " +
                 "FROM Teams AS T " +
-                "WHERE UserId=@userId ORDER BY T.Name", new { userId });
+                "    OUTER APPLY(SELECT SUM(TRR.Points) AS Points FROM Rounds AS R INNER JOIN TeamRoundResults AS TRR ON TRR.RoundId = R.Id WHERE R.Completed = 1 AND TRR.TeamId = T.Id) AS P " +
+                "    OUTER APPLY(SELECT TOP(1) TRK.SeasonRank FROM Rounds AS R INNER JOIN TeamRoundRanks AS TRK ON TRK.RoundId = R.Id WHERE R.Completed = 1 AND TRK.TeamId = T.Id ORDER BY R.StartDate DESC) AS K " +
+                "WHERE UserId = @userId " +
+                "GROUP BY T.Id, T.Created, T.Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid, P.Points, K.SeasonRank " +
+                "ORDER BY T.Name", new { userId });
         }
 
         public async Task<UserTeamViewModel> GetUserTeam(string userId, Guid teamId, Guid? tradePeriodId)
@@ -32,12 +36,15 @@ namespace DreamTeam.Data
             var sql = "SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid " +
                 "FROM Teams AS T " +
                 "WHERE T.Id = @teamId AND T.UserId = @userId; " +
-                "SELECT UTP.PlayerId AS Id, P.Name, UTP.Cost, UTP.[Type], CAST(CASE WHEN UTP.TradePeriodId=@tradePeriodId THEN 1 ELSE 0 END as bit) AS Added, UTP.Removed, " +
-                "	COALESCE((SELECT SUM(RP.Points) FROM Rounds AS R INNER JOIN RoundPlayers AS RP ON R.Id = RP.RoundId WHERE R.Completed = 1 AND R.Id = UTP.PlayerId), 0) AS Points " +
+                "SELECT UTP.PlayerId AS Id, P.Name, UTP.Cost, CAST(CASE WHEN UTP.TradePeriodId=@tradePeriodId THEN 1 ELSE 0 END as bit) AS Added, UTP.Removed, " +
+                "	COALESCE((SELECT SUM(RP.Points) FROM Rounds AS R INNER JOIN RoundPlayers AS RP ON R.Id = RP.RoundId WHERE R.Completed = 1 AND RP.PlayerId = UTP.PlayerId), 0) AS Points, " +
+                "   CASE WHEN C.IsCaptain=1 THEN 10 WHEN VC.IsVice=1 THEN 5 ELSE 0 END AS [Type] " +
                 "FROM TeamPlayers AS UTP " +
-                "    INNER JOIN Players AS P ON UTP.PlayerId = P.Id " +
+                "   INNER JOIN Players AS P ON UTP.PlayerId = P.Id " +
+                "   OUTER APPLY (SELECT TOP(1) 1 AS IsCaptain FROM TeamCaptains AS C WHERE C.TeamId=@teamId AND C.CaptainId=P.Id AND Removed=0 ORDER BY Created DESC) AS C " +
+                "   OUTER APPLY (SELECT TOP(1) 1 AS IsVice FROM TeamCaptains AS VC WHERE VC.TeamId=@teamId AND VC.ViceCaptainId=P.Id AND Removed=0 ORDER BY Created DESC) AS VC " +
                 "WHERE UTP.TeamId = @teamId AND (UTP.Removed=0 OR @tradePeriodId=UTP.TradePeriodId) " +
-                "ORDER BY UTP.Type DESC, P.Name";
+                "ORDER BY CASE WHEN C.IsCaptain=1 THEN 10 WHEN VC.IsVice=1 THEN 5 ELSE 0 END DESC, P.Name";
 
             using (var rdr = await Connection.QueryMultipleAsync(sql, new { userId, teamId, tradePeriodId }))
             {
@@ -101,27 +108,32 @@ namespace DreamTeam.Data
             {
                 var now = DateTime.UtcNow;
 
+                // Remove any (vice)captains assigned during this trade period or all if within registration
+                await Connection.ExecuteAsync("DELETE FROM TeamCaptains WHERE TeamId=@teamId AND (@tradePeriodId Is Null OR (TradePeriodId=@tradePeriodId AND Removed=0))",
+                    new { teamId, tradePeriodId }, tran);
+                // Cancel the Remove flag from (vice)captains that were set within this trade period
+                await Connection.ExecuteAsync("UPDATE TeamCaptains SET Removed=0, TradePeriodId=NULL, Updated=@now WHERE TeamId=@teamId AND Removed=1 AND TradePeriodId=@tradePeriodId",
+                    new { teamId, tradePeriodId, now }, tran);
                 // Remove any players assigned to the team that match the trade period or all players if there is no trade period (ie: during registration phase)
                 await Connection.ExecuteAsync("DELETE FROM TeamPlayers WHERE TeamId=@teamId AND (@tradePeriodId Is Null OR (TradePeriodId=@tradePeriodId AND Removed=0))",
                     new { teamId, tradePeriodId }, tran);
-                // Remove the Removed flag from players that were set within this trade period
+                // Cancel the Removed flag from players that were set within this trade period
                 await Connection.ExecuteAsync("UPDATE TeamPlayers SET Removed=0, TradePeriodId=NULL, Updated=@now WHERE TeamId=@teamId AND Removed=1 AND TradePeriodId=@tradePeriodId",
                     new { teamId, tradePeriodId, now }, tran);
                 // Set the Removed flag on all players in the removedPlayers list
                 await Connection.ExecuteAsync("UPDATE TeamPlayers SET Removed=1, TradePeriodId=@tradePeriodId, Updated=@now WHERE TeamId=@teamId AND PlayerId IN @removedPlayers",
                     new { teamId, tradePeriodId, removedPlayers, now }, tran);
                 // Add all new players to the team for this trade period
-                await Connection.ExecuteAsync("INSERT INTO TeamPlayers (Id, TeamId, PlayerId, Cost, Type, TradePeriodId, Removed, Created) " +
-                    "SELECT NEWID(), @teamId, P.Id, P.Cost, 0, @tradePeriodId, 0, @now " +
+                await Connection.ExecuteAsync("INSERT INTO TeamPlayers (Id, TeamId, PlayerId, Cost, TradePeriodId, Removed, Created) " +
+                    "SELECT NEWID(), @teamId, P.Id, P.Cost, @tradePeriodId, 0, @now " +
                     "FROM Players AS P " +
                     "WHERE P.Id IN @addedPlayers",
                     new { teamId, tradePeriodId, addedPlayers, now }, tran);
 
                 // Assign captains and vice captains
-                await Connection.ExecuteAsync("UPDATE TeamPlayers SET Type=@captain, Updated=@now WHERE TeamId=@teamId AND PlayerId=@captainId AND Removed=0",
-                    new { teamId, captainId, captain = TeamPlayerType.Captain, now }, tran);
-                await Connection.ExecuteAsync("UPDATE TeamPlayers SET Type=@viceCaptain, Updated=@now WHERE TeamId=@teamId AND PlayerId=@viceCaptainId AND Removed=0",
-                    new { teamId, viceCaptainId, viceCaptain = TeamPlayerType.ViceCaptain, now }, tran);
+                await Connection.ExecuteAsync("INSERT INTO TeamCaptains (Id, Created, TeamId, TradePeriodId, CaptainId, ViceCaptainId, Removed) " +
+                    "VALUES (NEWID(), @now, @teamId, @tradePeriodId, @captainId, @viceCaptainId, 0)",
+                    new { now, teamId, tradePeriodId, captainId, viceCaptainId }, tran);
 
                 // Set the balance for the team
                 await Connection.ExecuteAsync("DECLARE @budget int; " +

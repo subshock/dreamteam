@@ -8,5 +8,6 @@ namespace DreamTeam.Models
     public static class Constants
     {
         public static readonly int PlayersPerTeam = 12;
+        public static readonly int PlayersCountedInTeam = 11;
     }
 }

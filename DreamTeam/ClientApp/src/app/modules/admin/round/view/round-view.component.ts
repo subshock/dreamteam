@@ -7,6 +7,7 @@ import { isNumber } from 'src/app/shared/helpers';
 import { IPlayerUpdate, IPlayerView, IPointDefinition, IRoundPlayer, IRoundPlayerUpdate, IRoundView, ISeasonView } from '../../admin.types';
 import { AdminApiService } from '../../services/admin-api.service';
 import { SeasonStateService } from '../../services/season-state.service';
+import { RoundCompleteComponent } from '../complete/round-complete.component';
 
 interface IModel {
   season: ISeasonView;
@@ -141,7 +142,7 @@ export class RoundViewComponent implements OnInit, OnDestroy {
         sub.unsubscribe();
       });
 
-      this.modalRef.hide();
+    this.modalRef.hide();
   }
 
   cancelDeletePlayer() {
@@ -162,5 +163,20 @@ export class RoundViewComponent implements OnInit, OnDestroy {
   cancelUpdatePlayer() {
     this.editIndex = null;
     this.editPlayerSub.next(undefined);
+  }
+
+  completeRound(model: IModel) {
+    this.cancelAddPlayer();
+    this.cancelUpdatePlayer();
+
+    const modalRef = this.modalService.show(RoundCompleteComponent,
+      { initialState: { seasonId: model.season.id, roundId: model.round.id } });
+
+    const sub = modalRef.onHide.subscribe(() => {
+      sub.unsubscribe();
+      if (modalRef.content.result) {
+        this.refreshSub.next(false);
+      }
+    });
   }
 }

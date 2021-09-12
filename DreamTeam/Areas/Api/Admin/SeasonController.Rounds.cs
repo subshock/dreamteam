@@ -1,5 +1,7 @@
 ﻿using DreamTeam.Areas.Api.Admin.ViewModels;
+using DreamTeam.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,6 +90,16 @@ namespace DreamTeam.Areas.Api.Admin
             await _db.DeletePlayerFromRound(seasonId, roundId, playerId);
 
             return Ok();
+        }
+
+        [HttpPost("{seasonId:guid}/rounds/{roundId:guid}/complete")]
+        public async Task<IActionResult> CompleteRound([FromServices] TaskLogService taskLogSvc, Guid seasonId, Guid roundId)
+        {
+            var taskId = await taskLogSvc.StartTaskLog(RoundCompletedBackgroundTask.TaskTitle);
+
+            Hangfire.BackgroundJob.Enqueue<Services.RoundCompletedBackgroundTask>(x => x.Run(taskId, roundId));
+
+            return Ok(new { Token = taskId });
         }
     }
 }

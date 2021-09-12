@@ -19,6 +19,7 @@ import { RoundEditorComponent } from './round/editor/round-editor.component';
 import { RoundViewComponent } from './round/view/round-view.component';
 import { SeasonChangeStatusComponent } from './season/status/season-change-status.component';
 import { TradePeriodListComponent } from './tradeperiod/trade-period-list.component';
+import { RoundCompleteComponent } from './round/complete/round-complete.component';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import { TradePeriodListComponent } from './tradeperiod/trade-period-list.compon
     RoundEditorComponent,
     RoundViewComponent,
     SeasonChangeStatusComponent,
-    TradePeriodListComponent
+    TradePeriodListComponent,
+    RoundCompleteComponent
   ],
   providers: [],
 })

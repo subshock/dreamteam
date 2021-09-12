@@ -1,7 +1,9 @@
 ﻿using DreamTeam.Areas.Api.Admin.ViewModels;
 using DreamTeam.Data;
 using DreamTeam.Models;
+using DreamTeam.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

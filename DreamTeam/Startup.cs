@@ -3,6 +3,7 @@ using DreamTeam.Models;
 using DreamTeam.Services;
 using DreamTeam.Services.Auth;
 using DreamTeam.Services.Mail;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,22 @@ namespace DreamTeam
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"), new Hangfire.SqlServer.SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                })
+            );
+
+            services.AddHangfireServer();
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -68,7 +85,9 @@ namespace DreamTeam
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Administrator", policy => policy.RequireClaim(ClaimTypes.Role, "Administrator"));
+                options.AddPolicy("Administrator", policy => policy
+                    .RequireAuthenticatedUser()
+                    .RequireClaim(ClaimTypes.Role, "Administrator"));
             });
 
             // In production, the Angular files will be served from this directory
@@ -78,6 +97,8 @@ namespace DreamTeam
             });
 
             services.AddScoped<TeamManagementService>();
+            services.AddScoped<TaskLogService>();
+            services.AddScoped<RoundCompletedBackgroundTask>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,6 +130,7 @@ namespace DreamTeam
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHangfireDashboard();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

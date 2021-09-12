@@ -22,6 +22,12 @@ namespace DreamTeam.Data
                 "ORDER BY R.Name", new { seasonId });
         }
 
+        public Task<RoundViewModel> GetRound(Guid roundId)
+        {
+            return Connection.QueryFirstOrDefaultAsync<RoundViewModel>("SELECT Id, Name, Created, Updated, Completed, StartDate, EndDate " +
+                "FROM Rounds WHERE Id=@roundId", new { roundId });
+        }
+
         public Task<RoundViewModel> GetRound(Guid seasonId, Guid roundId)
         {
             return Connection.QueryFirstOrDefaultAsync<RoundViewModel>("SELECT Id, Name, Created, Updated, Completed, StartDate, EndDate " +
@@ -141,6 +147,55 @@ namespace DreamTeam.Data
         public Task DeletePlayerFromRound(Guid seasonId, Guid roundId, Guid id)
         {
             return Connection.ExecuteAsync("DELETE FROM RoundPlayers WHERE RoundId=@roundId AND Id=@id", new { roundId, id });
+        }
+
+        public Task DeleteTeamRoundResults(Guid roundId)
+        {
+            return Connection.ExecuteAsync("DELETE FROM TeamRoundRanks WHERE RoundId=@roundId; DELETE FROM TeamRoundResults WHERE RoundId=@roundId", new { roundId });
+        }
+
+        public Task<IEnumerable<TeamPlayer>> GetTeamPlayersForRound(Guid teamId, Guid roundId)
+        {
+            return Connection.QueryAsync<TeamPlayer>("SELECT TP.* " +
+                "FROM TeamPlayers AS TP " +
+                "    CROSS APPLY(SELECT StartDate, EndDate FROM Rounds WHERE Id = @roundId) AS R " +
+                "WHERE TP.TeamId = @teamId AND TP.Created < R.StartDate AND(TP.Removed = 0 OR TP.Updated > R.EndDate); ", 
+                new { teamId, roundId });
+        }
+
+        public Task<TeamCaptain> GetTeamCaptainsForRound(Guid teamId, Guid roundId)
+        {
+            return Connection.QueryFirstOrDefaultAsync<TeamCaptain>("SELECT TOP(1) TC.* " +
+                "FROM TeamCaptains AS TC " +
+                "    CROSS APPLY(SELECT StartDate, EndDate FROM Rounds WHERE Id = @roundId) AS R " +
+                "WHERE TC.TeamId = @teamId AND TC.Created < R.StartDate AND(TC.Removed = 0 OR TC.Updated > R.EndDate) " +
+                "ORDER BY TC.Created DESC",
+                new { teamId, roundId });
+        }
+
+        public async Task CompleteRound(Guid roundId)
+        {
+            var round = await Rounds.FindAsync(roundId);
+
+            if (round == null) return;
+
+            round.Completed = true;
+            Rounds.Update(round);
+
+            await SaveChangesAsync();
+        }
+
+        public Task CreateRankingsForRound(Guid roundId)
+        {
+            return Connection.ExecuteAsync("DECLARE @roundStart datetimeoffset; " +
+                "SELECT @roundStart = StartDate FROM Rounds WHERE Id = @roundId; " +
+                "DELETE FROM TeamRoundRanks WHERE RoundId = @roundId; " +
+                "INSERT INTO TeamRoundRanks(Id, TeamId, RoundId, RoundRank, SeasonRank, Created) " +
+                "SELECT NEWID(), TR.TeamId, TR.RoundId, RR.Rank, SR.Rank, @now " +
+                "FROM TeamRoundResults AS TR " +
+                "    LEFT OUTER JOIN(SELECT TeamId, RANK() OVER (ORDER BY Points DESC) AS Rank FROM TeamRoundResults WHERE RoundId = @roundId) AS RR ON TR.TeamId = RR.TeamId " +
+                "    LEFT OUTER JOIN(SELECT IT.TeamId, RANK() OVER(ORDER BY SUM(IT.Points) DESC) AS Rank FROM TeamRoundResults AS IT INNER JOIN Rounds AS IR ON IR.Id = IT.RoundId WHERE IR.StartDate <= @roundStart GROUP BY IT.TeamId) AS SR ON TR.TeamId = SR.TeamId " +
+                "WHERE TR.RoundId = @roundId", new { roundId, now = DateTime.UtcNow });
         }
 
         public class RoundPlayerDbo : PointViewModel

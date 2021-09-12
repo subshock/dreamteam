@@ -95,6 +95,11 @@ export class AdminApiService {
       `/${encodeURIComponent(playerId)}`);
   }
 
+  completeRound(seasonId: string, roundId: string): Observable<any> {
+    return this.httpClient.post(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/rounds/${encodeURIComponent(roundId)}/complete`,
+      null);
+  }
+
   getTradePeriods(seasonId: string): Observable<ITradePeriod[]> {
     return this.httpClient.get<ITradePeriod[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/tradeperiods`);
   }

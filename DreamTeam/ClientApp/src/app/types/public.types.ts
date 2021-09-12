@@ -69,3 +69,15 @@ export interface ITeamPlayerUpdateResult {
   success: boolean;
   error?: string;
 }
+
+export interface IUserTeamSummary {
+  id: string;
+  name: string;
+  owner: string;
+  updated: string;
+  balance: number;
+  paid: boolean;
+  valid: boolean;
+  points: number | null;
+  seasonRank: number | null;
+}

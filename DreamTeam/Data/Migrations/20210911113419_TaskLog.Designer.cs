@@ -4,14 +4,16 @@ using DreamTeam.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DreamTeam.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210911113419_TaskLog")]
+    partial class TaskLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -350,46 +352,6 @@ namespace DreamTeam.Data.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("DreamTeam.Models.TeamCaptain", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CaptainId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("Removed")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TradePeriodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset?>("Updated")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("ViceCaptainId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaptainId");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("TradePeriodId");
-
-                    b.HasIndex("ViceCaptainId");
-
-                    b.ToTable("TeamCaptains");
-                });
-
             modelBuilder.Entity("DreamTeam.Models.TeamPlayer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -413,6 +375,9 @@ namespace DreamTeam.Data.Migrations
 
                     b.Property<Guid?>("TradePeriodId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("Updated")
                         .HasColumnType("datetimeoffset");
@@ -834,39 +799,6 @@ namespace DreamTeam.Data.Migrations
                     b.Navigation("Season");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DreamTeam.Models.TeamCaptain", b =>
-                {
-                    b.HasOne("DreamTeam.Models.Player", "Captain")
-                        .WithMany()
-                        .HasForeignKey("CaptainId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DreamTeam.Models.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DreamTeam.Models.TradePeriod", "TradePeriod")
-                        .WithMany()
-                        .HasForeignKey("TradePeriodId");
-
-                    b.HasOne("DreamTeam.Models.Player", "ViceCaptain")
-                        .WithMany()
-                        .HasForeignKey("ViceCaptainId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Captain");
-
-                    b.Navigation("Team");
-
-                    b.Navigation("TradePeriod");
-
-                    b.Navigation("ViceCaptain");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.TeamPlayer", b =>

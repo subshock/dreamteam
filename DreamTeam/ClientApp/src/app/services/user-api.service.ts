@@ -1,10 +1,12 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { stringify } from 'querystring';
 import { Observable } from 'rxjs';
 import { ITradePeriod } from '../modules/admin/admin.types';
-import { IPublicSeasonInfo, ITeamAndTradePeriod, ITeamPlayerUpdate, ITeamPlayerUpdateResult, ITeamRegister, ITeamRegisterResult } from '../types/public.types';
+import {
+  ITeamAndTradePeriod, ITeamPlayerUpdate, ITeamPlayerUpdateResult, ITeamRegister,
+  ITeamRegisterResult, IUserTeamSummary
+} from '../types/public.types';
 import { PublicApiService } from './public-api.service';
 
 @Injectable({
@@ -23,8 +25,8 @@ export class UserApiService {
     return this.httpClient.post<ITeamRegisterResult>(`${this.apiBase}/teams/register`, params);
   }
 
-  getUserTeams(): Observable<any[]> {
-    return this.httpClient.get<any[]>(`${this.apiBase}/teams`);
+  getUserTeams(): Observable<IUserTeamSummary[]> {
+    return this.httpClient.get<IUserTeamSummary[]>(`${this.apiBase}/teams`);
   }
 
   getUserTeam(teamId: string): Observable<ITeamAndTradePeriod> {
