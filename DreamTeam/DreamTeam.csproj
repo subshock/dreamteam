@@ -14,8 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CodeBits.ShortGuid" Version="0.2.1" />
-    <PackageReference Include="CodeBits.ShortGuid.JsonConverter" Version="0.2.1" />
     <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.25" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.25" />
