@@ -12,6 +12,7 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 import { RulesComponent } from './rules/rules.component';
+import { TeamLeaderboardReportComponent } from './modules/reports/team/leaderboard/team-leaderboard-report.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { RulesComponent } from './rules/rules.component';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    RulesComponent
+    RulesComponent,
+    TeamLeaderboardReportComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

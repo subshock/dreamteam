@@ -4,6 +4,8 @@ using DreamTeam.Services;
 using DreamTeam.Services.Auth;
 using DreamTeam.Services.Mail;
 using Hangfire;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +19,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -64,9 +68,15 @@ namespace DreamTeam
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
-                .AddProfileService<AuthProfileService>();
+                .AddProfileService<AuthProfileService>()
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = b => b.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                });
 
             services.AddAuthentication()
                 .AddGoogle(options =>
@@ -104,6 +114,8 @@ namespace DreamTeam
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+            CreateRoles(serviceProvider).Wait();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -149,8 +161,6 @@ namespace DreamTeam
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
-
-            CreateRoles(serviceProvider).Wait();
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)

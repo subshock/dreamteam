@@ -22,4 +22,22 @@ export class PublicApiService {
   getSeasonPlayers(seasonId: string): Observable<any[]> {
     return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/players`);
   }
+
+  getCompletedRounds(seasonId: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/rounds`);
+  }
+
+  getTeamLeaderboardReport(seasonId: string, roundId: string | null, limit: number | null) {
+    const suffix = roundId == null ? '' : `/${encodeURIComponent(roundId)}`;
+    const opts = limit != null ? { params: { limit: limit }} : null;
+    return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/reports/teams/leaderboard${suffix}`,
+      opts);
+  }
+
+  getPlayerLeaderboardReport(seasonId: string, roundId: string | null, limit: number | null) {
+    const suffix = roundId == null ? '' : `/${encodeURIComponent(roundId)}`;
+    const opts = limit != null ? { params: { limit: limit }} : null;
+    return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/reports/players/leaderboard${suffix}`,
+      opts);
+  }
 }
