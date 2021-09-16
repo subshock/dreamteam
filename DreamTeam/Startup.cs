@@ -1,3 +1,4 @@
+using Azure.Identity;
 using DreamTeam.Data;
 using DreamTeam.Models;
 using DreamTeam.Services;
@@ -6,6 +7,7 @@ using DreamTeam.Services.Mail;
 using Hangfire;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.KeyManagement.AzureKeyVault;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,9 +30,12 @@ namespace DreamTeam
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -69,14 +74,15 @@ namespace DreamTeam
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddIdentityServer()
+            var identityServerBuilder = services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
-                .AddProfileService<AuthProfileService>()
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = b => b.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                });
+                .AddProfileService<AuthProfileService>();
+
+            if (!_env.IsDevelopment())
+            {
+                identityServerBuilder.AddSigningCredentialFromAzureKeyVault(
+                    Configuration["AzureKeyVault:Url"], Configuration["AzureKeyVault:CertificateName"], 24, new DefaultAzureCredential());
+            }
 
             services.AddAuthentication()
                 .AddGoogle(options =>
