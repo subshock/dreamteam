@@ -75,14 +75,14 @@ namespace DreamTeam
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var identityServerBuilder = services.AddIdentityServer()
+                .AddSigningCredentialFromAzureKeyVault(Configuration["AzureKeyVault:Url"], Configuration["AzureKeyVault:CertificateName"], 24, new DefaultAzureCredential())
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<AuthProfileService>();
 
-            if (!_env.IsDevelopment())
-            {
-                identityServerBuilder.AddSigningCredentialFromAzureKeyVault(
-                    Configuration["AzureKeyVault:Url"], Configuration["AzureKeyVault:CertificateName"], 24, new DefaultAzureCredential());
-            }
+            //if (!_env.IsDevelopment())
+            //{
+            //    identityServerBuilder;
+            //}
 
             services.AddAuthentication()
                 .AddGoogle(options =>
