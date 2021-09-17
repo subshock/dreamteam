@@ -64,11 +64,10 @@ export class TeamRegisterComponent implements OnInit {
 
   save(season: IPublicSeasonInfo) {
     if (this.registerForm.valid) {
-      const sub = this.userApi.registerTeams(season.id, this.teams.value).subscribe(() => {
+      const sub = this.userApi.registerTeams(season.id, this.teams.value, null).subscribe(() => {
         this.router.navigate(['..'], { relativeTo: this.route });
         sub.unsubscribe();
       });
     }
-    // console.info('save', season, this.registerForm.valid, this.registerForm.value, this.teams);
   }
 }

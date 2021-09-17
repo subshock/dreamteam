@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { PublicApiService } from 'src/app/services/public-api.service';
@@ -18,7 +19,7 @@ export class TeamLeaderboardReportComponent implements OnInit {
 
   model$: Observable<IModel>;
 
-  constructor(private publicApi: PublicApiService) { }
+  constructor(private publicApi: PublicApiService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.model$ = this.publicApi.getCurrentSeason().pipe(

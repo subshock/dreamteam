@@ -20,8 +20,9 @@ export class UserApiService {
     this.apiBase = baseHref + 'api/user';
   }
 
-  registerTeams(seasonId: string, teams: ITeamRegister[]): Observable<ITeamRegisterResult> {
-    const params = { seasonId: seasonId, teams: teams };
+  registerTeams(seasonId: string, teams: ITeamRegister[], paymentToken: string, verificationToken?: string):
+    Observable<ITeamRegisterResult> {
+    const params = { seasonId: seasonId, teams: teams, paymentToken: paymentToken, verificationToken: verificationToken };
     return this.httpClient.post<ITeamRegisterResult>(`${this.apiBase}/teams/register`, params);
   }
 

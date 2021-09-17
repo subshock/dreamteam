@@ -21,6 +21,7 @@ export interface ITeamRegister {
 
 export interface ITeamRegisterResult {
   success: boolean;
+  payment: boolean;
   messages: string[];
 }
 

@@ -30,3 +30,19 @@
   <a class="btn btn-lg btn-success" [routerLink]="['/authentication/login']">Login</a>
   <a class="btn btn-lg btn-success" [routerLink]="['/authentication/register']">Register</a>
 </ng-template>
+
+
+<h4>Payment Test</h4>
+<ng-container *ngIf="payment$ | async as paymentData">
+  <p>Square API loaded</p>
+
+  <div *ngIf="!paymentData.paymentAvailable" class="alert alert-warning">
+    <strong>Online Payment is not available, please pay after registering.</strong>
+  </div>
+
+  <div #cardContainer></div>
+
+  <p>
+    <button type="button" class="btn btn-primary btn-lg" (click)="pay(paymentData)">Pay</button>
+  </p>
+</ng-container>

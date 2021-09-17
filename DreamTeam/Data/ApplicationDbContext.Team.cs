@@ -59,10 +59,11 @@ namespace DreamTeam.Data
             }
         }
 
-        public async Task RegisterTeams(RegisterTeamsModel model, string userId)
+        public async Task RegisterTeams(RegisterTeamsModel model, string userId, string token = null)
         {
             var season = await GetSeasonAsync(model.SeasonId);
-            var token = Guid.NewGuid();
+
+            if (token == null) token = Guid.NewGuid().ToString("N");
 
             foreach (var team in model.Teams)
             {
@@ -75,8 +76,8 @@ namespace DreamTeam.Data
                     UserId = userId,
                     SeasonId = model.SeasonId,
                     Balance = season.Budget,
-                    Paid = false,
-                    RegistrationToken = token.ToString(),
+                    Paid = !string.IsNullOrEmpty(token),
+                    RegistrationToken = token,
                     Valid = false
                 };
 

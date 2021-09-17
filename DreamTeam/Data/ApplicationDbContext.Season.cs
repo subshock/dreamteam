@@ -123,6 +123,11 @@ namespace DreamTeam.Data
             return seasonState == SeasonStateType.Registration;
         }
 
+        public bool CanAddTeamsToSeason(SeasonStateType seasonState)
+        {
+            return seasonState == SeasonStateType.Registration;
+        }
+
         public class SeasonViewDbo : Season
         {
             public int Players { get; set; }
