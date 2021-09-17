@@ -55,8 +55,10 @@
                 </tr>
               </tfoot>
             </table>
+            <h4>Secure Payment</h4>
+            <app-square-pay (error)="handlePaymentErrors($event)" #payment></app-square-pay>
             <p class="text-right">
-              <button type="submit" class="btn btn-primary btn-lg" [disabled]="!registerForm.valid">Register Teams</button>
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="!registerForm.valid || (save$ | async)?.saving">Register Teams</button>
             </p>
           </div>
         </div>

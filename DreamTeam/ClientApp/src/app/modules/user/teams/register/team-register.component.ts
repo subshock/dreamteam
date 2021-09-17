@@ -1,12 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { finalize, map, shareReplay, tap } from 'rxjs/operators';
 import { AuthorizeService, IUser } from 'src/api-authorization/authorize.service';
 import { SeasonStateType } from 'src/app/modules/admin/admin.types';
-import { PublicApiService } from 'src/app/services/public-api.service';
 import { UserApiService } from 'src/app/services/user-api.service';
+import { SquarePayComponent } from 'src/app/shared/components/square-pay/square-pay.component';
 import { IPublicSeasonInfo } from 'src/app/types/public.types';
 
 @Component({
@@ -14,12 +14,19 @@ import { IPublicSeasonInfo } from 'src/app/types/public.types';
   styleUrls: ['./team-register.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TeamRegisterComponent implements OnInit {
+export class TeamRegisterComponent implements OnInit, OnDestroy {
 
   SeasonStateType = SeasonStateType;
   season$: Observable<IPublicSeasonInfo>;
   registerForm: FormGroup;
   user: IUser;
+
+  private saveSub = new BehaviorSubject<boolean>(false);
+  save$ = this.saveSub.asObservable().pipe(map(x => ({ saving: x })));
+
+  @ViewChild('payment') payment: SquarePayComponent;
+
+  private subscriptions: Subscription;
 
   get teams() {
     return this.registerForm.get('teams') as FormArray;
@@ -29,6 +36,8 @@ export class TeamRegisterComponent implements OnInit {
     private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
+    this.subscriptions = new Subscription();
+
     const obs = combineLatest([this.userApi.publicApi.getCurrentSeason(), this.authService.getUser()]).pipe(
       tap(([s, u]) => {
         this.user = u;
@@ -41,6 +50,10 @@ export class TeamRegisterComponent implements OnInit {
     this.season$ = obs.pipe(map(([s]) => s));
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
   private createForm() {
     this.registerForm = new FormGroup({
       'teams': new FormArray([this.createTeamRegisterGroup()])
@@ -50,7 +63,7 @@ export class TeamRegisterComponent implements OnInit {
   private createTeamRegisterGroup(): FormGroup {
     return new FormGroup({
       'name': new FormControl('', Validators.required),
-      'owner': new FormControl(this.user.name, Validators.required)
+      'owner': new FormControl(this.user.name, Validators.required),
     });
   }
 
@@ -62,12 +75,29 @@ export class TeamRegisterComponent implements OnInit {
     this.teams.removeAt(i);
   }
 
-  save(season: IPublicSeasonInfo) {
+  async save(season: IPublicSeasonInfo) {
     if (this.registerForm.valid) {
-      const sub = this.userApi.registerTeams(season.id, this.teams.value, null).subscribe(() => {
-        this.router.navigate(['..'], { relativeTo: this.route });
-        sub.unsubscribe();
-      });
+      this.saveSub.next(true);
+      const paymentResult = await this.payment.createPayment();
+
+      if (paymentResult.status === 'OK') {
+        this.subscriptions.add(this.userApi.registerTeams(season.id, this.teams.value, paymentResult.token)
+          .pipe(finalize(() => this.saveSub.next(false)))
+          .subscribe(result => {
+            if (result.success) {
+              this.router.navigate(['..'], { relativeTo: this.route });
+            } else {
+              // TODO: handle errors
+            }
+          }));
+      } else {
+        this.saveSub.next(false);
+      }
     }
+  }
+
+  handlePaymentErrors(errors: any) {
+    // TODO: handle errors
+    console.info('errors', errors);
   }
 }

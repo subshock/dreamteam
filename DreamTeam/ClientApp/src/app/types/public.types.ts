@@ -82,3 +82,8 @@ export interface IUserTeamSummary {
   points: number | null;
   seasonRank: number | null;
 }
+
+export interface IPaymentSettings {
+  applicationId: string;
+  locationId: string;
+}

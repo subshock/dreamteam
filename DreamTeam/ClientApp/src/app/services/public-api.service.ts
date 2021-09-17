@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPublicSeasonInfo } from '../types/public.types';
+import { IPaymentSettings, IPublicSeasonInfo } from '../types/public.types';
 
 @Injectable({
   providedIn: 'root'
@@ -39,5 +39,9 @@ export class PublicApiService {
     const opts = limit != null ? { params: { limit: limit }} : null;
     return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/reports/players/leaderboard${suffix}`,
       opts);
+  }
+
+  getPaymentSettings(): Observable<IPaymentSettings> {
+    return this.httpClient.get<IPaymentSettings>(`${this.apiBase}/settings/payment`);
   }
 }

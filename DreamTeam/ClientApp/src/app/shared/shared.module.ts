@@ -7,11 +7,13 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { SeasonStatePipe } from './pipes/season-state.pipe';
 import { PlayerMultiplierPipe } from './pipes/player-multiplier.pipe';
+import { SquarePayComponent } from './components/square-pay/square-pay.component';
 
 @NgModule({
   declarations: [
     SeasonStatePipe,
-    PlayerMultiplierPipe
+    PlayerMultiplierPipe,
+    SquarePayComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { PlayerMultiplierPipe } from './pipes/player-multiplier.pipe';
     ModalModule,
     PopoverModule,
     SeasonStatePipe,
-    PlayerMultiplierPipe
+    PlayerMultiplierPipe,
+    SquarePayComponent
   ]
 })
 export class SharedModule { }

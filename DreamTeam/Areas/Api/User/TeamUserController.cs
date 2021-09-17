@@ -83,7 +83,7 @@ namespace DreamTeam.Areas.Api.User
 
             await _db.RegisterTeams(model, UserId, registrationToken);
 
-            return Ok();
+            return Ok(new { Success = true });
         }
 
         [HttpPost("{teamId:guid}/details")]
