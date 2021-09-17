@@ -73,15 +73,7 @@ namespace DreamTeam
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            var identityServerBuilder = services.AddIdentityServer();
-
-            if (!_env.IsDevelopment())
-            {
-                identityServerBuilder.AddSigningCredentialFromAzureKeyVault(
-                    Configuration["AzureKeyVault:Url"], Configuration["AzureKeyVault:CertificateName"], 24, new DefaultAzureCredential());
-            }
-
-            identityServerBuilder
+            var identityServerBuilder = services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<AuthProfileService>();
 
