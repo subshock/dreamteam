@@ -73,16 +73,17 @@ namespace DreamTeam
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            var identityServerBuilder = services.AddIdentityServer()
-                .AddSigningCredentialFromAzureKeyVault(Configuration["AzureKeyVault:Url"], Configuration["AzureKeyVault:CertificateName"], 24, new DefaultAzureCredential())
+            var identityServerBuilder = services.AddIdentityServer();
+
+            if (!_env.IsDevelopment())
+            {
+                identityServerBuilder.AddSigningCredentialFromAzureKeyVault(
+                    Configuration["AzureKeyVault:Url"], Configuration["AzureKeyVault:CertificateName"], 24, new DefaultAzureCredential());
+            }
+
+            identityServerBuilder
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<AuthProfileService>();
-
-            //if (!_env.IsDevelopment())
-            //{
-            //    identityServerBuilder;
-            //}
 
             services.AddAuthentication()
                 .AddGoogle(options =>
@@ -115,6 +116,11 @@ namespace DreamTeam
             services.AddScoped<TeamManagementService>();
             services.AddScoped<TaskLogService>();
             services.AddScoped<RoundCompletedBackgroundTask>();
+            services.AddScoped<SquarePaymentService>();
+
+            services.Configure<SquarePaymentApiOptions>(Configuration.GetSection("Square"));
+            services.AddSingleton<SquareClientFactory>();
+            services.AddScoped(provider => provider.GetRequiredService<SquareClientFactory>().BuildClient());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
