@@ -9,7 +9,7 @@ namespace DreamTeam.Models
     public class Season : BaseEntity, IPointDefinition
     {
         public string Name { get; set; }
-        public SeasonStateType State { get; set; }
+        public SeasonStateType Status { get; set; }
         public int Budget { get; set; }
 
         [Column(TypeName = "money")]
@@ -28,8 +28,7 @@ namespace DreamTeam.Models
         {
             [SeasonStateType.Setup] = new List<SeasonStateType> { SeasonStateType.Registration, SeasonStateType.Finished },
             [SeasonStateType.Registration] = new List<SeasonStateType> { SeasonStateType.Setup, SeasonStateType.Running },
-            [SeasonStateType.Running] = new List<SeasonStateType> { SeasonStateType.TradePeriod, SeasonStateType.Finished },
-            [SeasonStateType.TradePeriod] = new List<SeasonStateType> { SeasonStateType.Running },
+            [SeasonStateType.Running] = new List<SeasonStateType> { SeasonStateType.Finished },
             [SeasonStateType.Finished] = new List<SeasonStateType> { SeasonStateType.Archived },
             [SeasonStateType.Archived] = new List<SeasonStateType>()
         };

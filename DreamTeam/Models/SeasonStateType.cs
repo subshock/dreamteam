@@ -11,7 +11,6 @@ namespace DreamTeam.Models
         Setup = 1,
         Registration = 2,
         Running = 3,
-        TradePeriod = 4,
         Finished = 10,
         Archived = 20
     }

@@ -2,6 +2,9 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
+  IPaymentDetail,
+  IPaymentSearch,
+  IPaymentSummary,
   IPlayerUpdate, IPlayerView, IRoundPlayer, IRoundPlayerUpdate, IRoundSummary, IRoundUpdate, IRoundView,
   ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary, ITradePeriod, ITradePeriodUpdate, SeasonStateType
 } from '../admin.types';
@@ -116,5 +119,21 @@ export class AdminApiService {
   deleteTradePeriod(seasonId: string, tradePeriodId: string) {
     return this.httpClient.delete<any>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/tradeperiods` +
       `/${encodeURIComponent(tradePeriodId)}`);
+  }
+
+  searchPayments(search: IPaymentSearch): Observable<IPaymentSummary[]> {
+    const opts = {
+      params: {
+        from: encodeURIComponent(search.from),
+        to: encodeURIComponent(search.to),
+        token: search.token,
+        status: String(search.status)
+      }
+    };
+    return this.httpClient.get<IPaymentSummary[]>(`${this.apiBase}/payment`, opts);
+  }
+
+  getPaymentDetails(id: string): Observable<IPaymentDetail> {
+    return this.httpClient.get<IPaymentDetail>(`${this.apiBase}/payment/${encodeURIComponent(id)}`);
   }
 }

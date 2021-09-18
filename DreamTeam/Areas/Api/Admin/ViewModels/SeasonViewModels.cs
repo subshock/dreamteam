@@ -14,7 +14,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public DateTimeOffset? Updated { get; set; }
 
         public string Name { get; set; }
-        public SeasonStateType State { get; set; }
+        public SeasonStateType Status { get; set; }
     }
 
     public class SeasonViewModel
@@ -24,7 +24,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public DateTimeOffset? Updated { get; set; }
 
         public string Name { get; set; }
-        public SeasonStateType State { get; set; }
+        public SeasonStateType Status { get; set; }
 
         public int Budget { get; set; }
         public decimal Cost { get; set; }

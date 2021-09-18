@@ -15,13 +15,13 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<SeasonSummaryViewModel>> GetSeasonsAsync()
         {
-            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, State, Created, Updated, Name FROM Seasons ORDER BY Created DESC");
+            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Status, Created, Updated, Name FROM Seasons ORDER BY Created DESC");
         }
 
         public async Task<SeasonViewModel> GetSeasonAsync(Guid id)
         {
             var obj = await Connection.QueryFirstOrDefaultAsync<SeasonViewDbo>(@"
-                SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated, S.Cost, S.State,
+                SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated, S.Cost, S.Status,
                     S.Runs, S.UnassistedWickets, S.AssistedWickets, S.Catches, S.Runouts, S.Stumpings,
                     (SELECT COUNT(*) FROM Players WHERE SeasonId=S.Id) AS Players,
                     (SELECT COUNT(*) FROM Teams WHERE SeasonId=S.Id) AS Teams,
@@ -45,7 +45,7 @@ namespace DreamTeam.Data
             var season = new Season()
             {
                 Id = Guid.NewGuid(),
-                State = SeasonStateType.Setup,
+                Status = SeasonStateType.Setup,
                 Name = model.Name,
                 Cost = model.Cost,
                 Budget = model.Budget,
@@ -88,22 +88,22 @@ namespace DreamTeam.Data
             return SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateSeasonStateAsync(Guid id, SeasonStateType newState)
+        public async Task<bool> UpdateSeasonStatusAsync(Guid id, SeasonStateType newStatus)
         {
             var season = Seasons.FirstOrDefault(x => x.Id == id);
 
             if (season == null)
                 return false;
 
-            // Either the season state is invalid or the new state requested is
-            if (!Season.SeasonWorkflow.ContainsKey(season.State) || !Season.SeasonWorkflow.ContainsKey(newState))
+            // Either the season status is invalid or the new status requested is
+            if (!Season.SeasonWorkflow.ContainsKey(season.Status) || !Season.SeasonWorkflow.ContainsKey(newStatus))
                 return false;
 
-            // Can't transition from the current state to the requested state
-            if (!Season.SeasonWorkflow[season.State].Contains(newState))
+            // Can't transition from the current status to the requested status
+            if (!Season.SeasonWorkflow[season.Status].Contains(newStatus))
                 return false;
 
-            season.State = newState;
+            season.Status = newStatus;
             season.Updated = DateTime.UtcNow;
 
             Seasons.Update(season);
@@ -118,9 +118,9 @@ namespace DreamTeam.Data
 
         public async Task<bool> CanAddTeamsToSeasonAsync(Guid id)
         {
-            var seasonState = await Connection.ExecuteScalarAsync<SeasonStateType>("SELECT State FROM Seasons WHERE Id=@id", new { id });
+            var seasonStatus = await Connection.ExecuteScalarAsync<SeasonStateType>("SELECT Status FROM Seasons WHERE Id=@id", new { id });
 
-            return seasonState == SeasonStateType.Registration;
+            return seasonStatus == SeasonStateType.Registration;
         }
 
         public bool CanAddTeamsToSeason(SeasonStateType seasonState)
@@ -148,7 +148,7 @@ namespace DreamTeam.Data
                     Players = Players,
                     Teams = Teams,
                     Rounds = Rounds,
-                    State = State,
+                    Status = Status,
                     TradePeriods = TradePeriods,
                     PointDefinition = new PointViewModel
                     {

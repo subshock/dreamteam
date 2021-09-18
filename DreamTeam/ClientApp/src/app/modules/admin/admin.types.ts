@@ -1,7 +1,8 @@
 export enum AdminNavItemId {
   Admin = 1,
   Seasons = 2,
-  SeasonView = 3
+  SeasonView = 3,
+  Payments = 4
 }
 
 export interface IAdminNavItem {
@@ -16,7 +17,6 @@ export enum SeasonStateType {
   Setup = 1,
   Registration = 2,
   Running = 3,
-  TradePeriod = 4,
   Finished = 10,
   Archived = 20
 }
@@ -137,4 +137,35 @@ export interface ITradePeriodUpdate {
   startDate: string | Date;
   endDate: string | Date;
   tradeLimit: number;
+}
+
+export enum PaymentSearchStatusType {
+  Any = 0,
+  Succeeded = 1,
+  Failed = 2
+}
+
+export interface IPaymentSearch {
+  from?: string;
+  to?: string;
+  token: string;
+  status: PaymentSearchStatusType;
+}
+
+export interface IPaymentSummary {
+  id: string;
+  tokenId: string;
+  created: string;
+  success: boolean;
+}
+
+export interface IPaymentDetail {
+  payment: {
+    id: string;
+    tokenId: string;
+    created: string;
+    success: boolean;
+    paymentDetails: any;
+  };
+  teams: ITeamSummary[];
 }

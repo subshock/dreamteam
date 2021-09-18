@@ -46,7 +46,7 @@ namespace DreamTeam.Services
             return Log(taskId, title, "Completed", TaskState.Completed, 100);
         }
 
-        private Task Log(Guid taskId, string title, string message, TaskState state, int? progress)
+        private Task Log(Guid taskId, string title, string message, TaskState status, int? progress)
         {
             var log = new TaskLog
             {
@@ -55,7 +55,7 @@ namespace DreamTeam.Services
                 Message = message,
                 Progress = progress,
                 Timestamp = DateTime.UtcNow,
-                State = state
+                Status = status
             };
 
             _db.TaskLogs.Add(log);

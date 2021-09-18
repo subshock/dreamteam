@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DreamTeam.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public int Name { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
-        public bool Completed { get; set; }
+        public RoundStateType Status { get; set; }
         public int Players { get; set; }
     }
 
@@ -22,7 +23,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public int Name { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }
-        public bool Completed { get; set; }
+        public RoundStateType Status { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
     }

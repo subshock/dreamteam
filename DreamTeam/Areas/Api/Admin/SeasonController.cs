@@ -71,7 +71,7 @@ namespace DreamTeam.Areas.Api.Admin
         [HttpPost("{id:guid}/status")]
         public async Task<IActionResult> ChangeSeasonStatus(Guid id, [FromBody] SeasonStateType state)
         {
-            var result = await _db.UpdateSeasonStateAsync(id, state);
+            var result = await _db.UpdateSeasonStatusAsync(id, state);
 
             return Ok(new { Result = result });
         }

@@ -35,7 +35,7 @@ namespace DreamTeam.Services
 
             var tradePeriod = await _db.GetCurrentTradePeriod(season.Id);
 
-            if (!(season.State == SeasonStateType.Registration || (season.State == SeasonStateType.Running && tradePeriod != null)))
+            if (!(season.Status == SeasonStateType.Registration || (season.Status == SeasonStateType.Running && tradePeriod != null)))
                 return new UserTeamUpdateResult { Success = false, Error = "Team cannot be changed" };
 
             var team = await _db.GetUserTeam(userId, teamId, tradePeriod?.Id);

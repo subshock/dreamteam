@@ -25,7 +25,7 @@ namespace DreamTeam.Models
 
         public Guid TaskId { get; set; }
 
-        public TaskState State { get; set; }
+        public TaskState Status { get; set; }
 
         public string Title { get; set; }
         public string Message { get; set; }

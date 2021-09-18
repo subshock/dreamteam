@@ -1,0 +1,46 @@
+<h2>Payment</h2>
+
+<ng-container *ngIf="model$ | async as model">
+  <div class="d-flex justify-content-between flex-fill">
+    <div class="flex-shrink">
+      <h5>Details</h5>
+      <dl>
+        <dt>Created</dt>
+        <dd>{{ model.payment.created | date:'d MMM yyyy h:mm a' }}</dd>
+      </dl>
+      <dl>
+        <dt>Token</dt>
+        <dd>{{ model.payment.tokenId }}</dd>
+      </dl>
+      <dl>
+        <dt>Status</dt>
+        <dd>
+          <span class="badge" [class.badge-success]="model.payment.success" [class.badge-danger]="!model.payment.success">
+            {{ model.payment.success ? 'COMPLETED' : 'FAILED' }}
+          </span>
+        </dd>
+      </dl>
+    </div>
+    <div *ngIf="model.teams?.length > 0" class="flex-fill ml-3 border-left pl-3">
+      <h5>Teams</h5>
+      <table class="table table-sm table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of model.teams">
+            <td>{{ t.name }}</td>
+            <td>{{ t.owner }}<br>{{t.userName }}</td>
+            <td>{{ t.updated | date:'d MMM yyyy h:mm a' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <h5>Raw Details</h5>
+  <pre class="bg-dark text-white p-2">{{ model.payment.paymentDetails | json }}</pre>
+</ng-container>

@@ -16,6 +16,6 @@ namespace DreamTeam.Models
         public int Name { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
-        public bool Completed { get; set; }
+        public RoundStateType Status { get; set; }
     }
 }

@@ -17,7 +17,8 @@ namespace DreamTeam.Data
             return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, U.UserName, T.Valid, T.Balance, T.Paid " +
                 "FROM Teams AS T " +
                 "   LEFT OUTER JOIN AspNetUsers AS U ON T.UserId=U.Id " +
-                "WHERE SeasonId=@seasonId ORDER BY T.Name, COALESCE(U.Name, U.UserName)", new { seasonId });
+                "WHERE SeasonId=@seasonId " +
+                "ORDER BY T.Created, T.Name, COALESCE(U.Name, U.UserName)", new { seasonId });
         }
 
         public Task<IEnumerable<TeamSummaryViewModel>> GetTeamsForUser(string userId)
@@ -146,6 +147,15 @@ namespace DreamTeam.Data
 
                 await tran.CommitAsync();
             }
+        }
+
+        public Task<IEnumerable<TeamSummaryViewModel>> GetTeamsByRegistrationToken(string token)
+        {
+            return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, U.UserName, T.Valid, T.Balance, T.Paid " +
+                "FROM Teams AS T " +
+                "   LEFT OUTER JOIN AspNetUsers AS U ON T.UserId=U.Id " +
+                "WHERE RegistrationToken=@token " +
+                "ORDER BY T.Name, COALESCE(U.Name, U.UserName)", new { token });
         }
     }
 }

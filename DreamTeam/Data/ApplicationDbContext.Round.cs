@@ -15,22 +15,22 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<RoundSummaryViewModel>> GetRounds(Guid seasonId)
         {
-            return Connection.QueryAsync<RoundSummaryViewModel>("SELECT R.Id, R.Name, R.StartDate, R.EndDate, R.Completed, COUNT(P.Id) AS Players " +
+            return Connection.QueryAsync<RoundSummaryViewModel>("SELECT R.Id, R.Name, R.StartDate, R.EndDate, R.Status, COUNT(P.Id) AS Players " +
                 "FROM Rounds AS R LEFT OUTER JOIN RoundPlayers AS P ON R.Id=P.RoundId " +
                 "WHERE R.SeasonId=@seasonId " +
-                "GROUP BY R.Id, R.Name, R.StartDate, R.EndDate, R.Completed " +
+                "GROUP BY R.Id, R.Name, R.StartDate, R.EndDate, R.Status " +
                 "ORDER BY R.Name", new { seasonId });
         }
 
         public Task<RoundViewModel> GetRound(Guid roundId)
         {
-            return Connection.QueryFirstOrDefaultAsync<RoundViewModel>("SELECT Id, Name, Created, Updated, Completed, StartDate, EndDate " +
+            return Connection.QueryFirstOrDefaultAsync<RoundViewModel>("SELECT Id, Name, Created, Updated, Status, StartDate, EndDate " +
                 "FROM Rounds WHERE Id=@roundId", new { roundId });
         }
 
         public Task<RoundViewModel> GetRound(Guid seasonId, Guid roundId)
         {
-            return Connection.QueryFirstOrDefaultAsync<RoundViewModel>("SELECT Id, Name, Created, Updated, Completed, StartDate, EndDate " +
+            return Connection.QueryFirstOrDefaultAsync<RoundViewModel>("SELECT Id, Name, Created, Updated, Status, StartDate, EndDate " +
                 "FROM Rounds WHERE SeasonId=@seasonId AND Id=@roundId", new { seasonId, roundId });
         }
 
@@ -41,7 +41,7 @@ namespace DreamTeam.Data
                 Id = Guid.NewGuid(),
                 SeasonId = seasonId,
                 Created = DateTime.UtcNow,
-                Completed = false,
+                Status = RoundStateType.Creating,
                 Name = model.Name,
                 StartDate = model.StartDate,
                 EndDate = model.EndDate
@@ -173,16 +173,19 @@ namespace DreamTeam.Data
                 new { teamId, roundId });
         }
 
-        public async Task CompleteRound(Guid roundId)
+        public async Task UpdateRoundStatus(Guid roundId, RoundStateType newStatus)
         {
             var round = await Rounds.FindAsync(roundId);
 
             if (round == null) return;
 
-            round.Completed = true;
-            Rounds.Update(round);
+            if (newStatus != round.Status)
+            {
+                round.Status = newStatus;
+                Rounds.Update(round);
 
-            await SaveChangesAsync();
+                await SaveChangesAsync();
+            }
         }
 
         public Task CreateRankingsForRound(Guid roundId)

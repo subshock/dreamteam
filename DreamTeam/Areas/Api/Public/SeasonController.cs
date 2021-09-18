@@ -1,4 +1,5 @@
 ﻿using DreamTeam.Data;
+using DreamTeam.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -44,7 +45,7 @@ namespace DreamTeam.Areas.Api.Public
         [HttpGet("{seasonId}/rounds")]
         public async Task<IActionResult> GetCompletedRounds(Guid seasonId)
         {
-            return Ok(await _db.Rounds.Where(x => x.SeasonId == seasonId && x.Completed).OrderBy(x => x.Name).ToListAsync());
+            return Ok(await _db.Rounds.Where(x => x.SeasonId == seasonId && x.Status == RoundStateType.Completed).OrderBy(x => x.Name).ToListAsync());
         }
 
         [HttpGet("{seasonId}/reports/teams/leaderboard")]

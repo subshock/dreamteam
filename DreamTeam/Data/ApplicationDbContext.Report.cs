@@ -18,7 +18,7 @@ namespace DreamTeam.Data
                 "FROM Rounds AS R " +
                 "    INNER JOIN TeamRoundResults AS TRR ON R.Id = TRR.RoundId " +
                 "    INNER JOIN Teams AS T ON TRR.TeamId = T.Id " +
-                "WHERE R.SeasonId = @seasonId AND R.Completed = 1 AND(@roundId Is Null OR R.Id = @roundId) " +
+                "WHERE R.SeasonId = @seasonId AND R.Status = 1 AND(@roundId Is Null OR R.Id = @roundId) " +
                 "GROUP BY T.Id, T.Name, T.Owner " +
                 "ORDER BY[Rank]", new { seasonId, roundId });
         }
@@ -31,7 +31,7 @@ namespace DreamTeam.Data
                 "FROM Rounds AS R " +
                 "    INNER JOIN RoundPlayers AS RP ON RP.RoundId = R.Id " +
                 "    INNER JOIN Players AS P ON RP.PlayerId = P.Id " +
-                "WHERE R.SeasonId = @seasonId AND R.Completed = 1 AND(@roundId Is Null OR R.Id = @roundId) " +
+                "WHERE R.SeasonId = @seasonId AND R.Status = 1 AND(@roundId Is Null OR R.Id = @roundId) " +
                 "GROUP BY P.Id, P.Name " +
                 "ORDER BY[Rank]", new { seasonId, roundId });
         }

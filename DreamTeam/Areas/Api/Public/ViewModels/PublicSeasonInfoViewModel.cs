@@ -10,7 +10,7 @@ namespace DreamTeam.Areas.Api.Public.ViewModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public SeasonStateType State { get; set; }
+        public SeasonStateType Status { get; set; }
         public decimal Cost { get; set; }
         public int Budget { get; set; }
     }

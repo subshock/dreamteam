@@ -22,8 +22,7 @@ export class SeasonChangeStatusComponent implements OnInit {
   stateWorkflow = {
     [SeasonStateType.Setup]: [SeasonStateType.Registration, SeasonStateType.Finished],
     [SeasonStateType.Registration]: [SeasonStateType.Setup, SeasonStateType.Running],
-    [SeasonStateType.Running]: [SeasonStateType.TradePeriod, SeasonStateType.Finished],
-    [SeasonStateType.TradePeriod]: [SeasonStateType.Running],
+    [SeasonStateType.Running]: [SeasonStateType.Finished],
     [SeasonStateType.Finished]: [SeasonStateType.Archived]
   };
 

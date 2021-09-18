@@ -97,7 +97,7 @@ namespace DreamTeam.Services
                 await _log.LogMessage(taskId, TaskTitle, "Calculating ranks.");
                 await _db.CreateRankingsForRound(roundId);
 
-                await _db.CompleteRound(roundId);
+                await _db.UpdateRoundStatus(roundId, RoundStateType.Completed);
             }
             catch (Exception ex)
             {

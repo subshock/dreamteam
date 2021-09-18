@@ -1,9 +1,11 @@
 using Azure.Identity;
+using Dapper;
 using DreamTeam.Data;
 using DreamTeam.Models;
 using DreamTeam.Services;
 using DreamTeam.Services.Auth;
 using DreamTeam.Services.Mail;
+using DreamTeam.Services.TypeHandlers;
 using Hangfire;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -113,6 +115,8 @@ namespace DreamTeam
             services.Configure<SquarePaymentApiOptions>(Configuration.GetSection("Square"));
             services.AddSingleton<SquareClientFactory>();
             services.AddScoped(provider => provider.GetRequiredService<SquareClientFactory>().BuildClient());
+
+            SqlMapper.AddTypeHandler(new JsonDocumentTypeHandler());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

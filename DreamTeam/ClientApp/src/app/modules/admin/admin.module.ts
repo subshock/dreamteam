@@ -20,6 +20,9 @@ import { RoundViewComponent } from './round/view/round-view.component';
 import { SeasonChangeStatusComponent } from './season/status/season-change-status.component';
 import { TradePeriodListComponent } from './tradeperiod/trade-period-list.component';
 import { RoundCompleteComponent } from './round/complete/round-complete.component';
+import { PaymentListComponent } from './payment/list/payment-list.component';
+import { PaymentViewComponent } from './payment/view/payment-view.component';
+import { PaymentContainerComponent } from './payment/payment-container.component';
 
 @NgModule({
   imports: [
@@ -40,6 +43,12 @@ import { RoundCompleteComponent } from './round/complete/round-complete.componen
               { path: 'rounds', component: RoundListComponent },
               { path: 'rounds/:id', component: RoundViewComponent },
               { path: 'trade-periods', component: TradePeriodListComponent }
+            ]
+          },
+          {
+            path: 'payment', component: PaymentContainerComponent, children: [
+              { path: '', pathMatch: 'full', component: PaymentListComponent },
+              { path: ':id', component: PaymentViewComponent }
             ]
           }
         ]
@@ -64,7 +73,10 @@ import { RoundCompleteComponent } from './round/complete/round-complete.componen
     RoundViewComponent,
     SeasonChangeStatusComponent,
     TradePeriodListComponent,
-    RoundCompleteComponent
+    RoundCompleteComponent,
+    PaymentListComponent,
+    PaymentViewComponent,
+    PaymentContainerComponent
   ],
   providers: [],
 })
