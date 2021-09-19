@@ -17,7 +17,7 @@ export class RulesComponent implements OnInit {
   constructor(private publicApi: PublicApiService) { }
 
   ngOnInit(): void {
-    this.season$ = this.publicApi.getCurrentSeason().pipe(filter(x => x.state > SeasonStateType.Setup));
+    this.season$ = this.publicApi.getCurrentSeason().pipe(filter(x => x.status > SeasonStateType.Setup));
   }
 
 }

@@ -25,8 +25,8 @@ namespace DreamTeam.Data
         {
             return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid, P.Points, K.SeasonRank " +
                 "FROM Teams AS T " +
-                "    OUTER APPLY(SELECT SUM(TRR.Points) AS Points FROM Rounds AS R INNER JOIN TeamRoundResults AS TRR ON TRR.RoundId = R.Id WHERE R.Completed = 1 AND TRR.TeamId = T.Id) AS P " +
-                "    OUTER APPLY(SELECT TOP(1) TRK.SeasonRank FROM Rounds AS R INNER JOIN TeamRoundRanks AS TRK ON TRK.RoundId = R.Id WHERE R.Completed = 1 AND TRK.TeamId = T.Id ORDER BY R.StartDate DESC) AS K " +
+                "    OUTER APPLY(SELECT SUM(TRR.Points) AS Points FROM Rounds AS R INNER JOIN TeamRoundResults AS TRR ON TRR.RoundId = R.Id WHERE R.Status = 1 AND TRR.TeamId = T.Id) AS P " +
+                "    OUTER APPLY(SELECT TOP(1) TRK.SeasonRank FROM Rounds AS R INNER JOIN TeamRoundRanks AS TRK ON TRK.RoundId = R.Id WHERE R.Status = 1 AND TRK.TeamId = T.Id ORDER BY R.StartDate DESC) AS K " +
                 "WHERE UserId = @userId " +
                 "GROUP BY T.Id, T.Created, T.Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid, P.Points, K.SeasonRank " +
                 "ORDER BY T.Name", new { userId });
@@ -38,7 +38,7 @@ namespace DreamTeam.Data
                 "FROM Teams AS T " +
                 "WHERE T.Id = @teamId AND T.UserId = @userId; " +
                 "SELECT UTP.PlayerId AS Id, P.Name, UTP.Cost, CAST(CASE WHEN UTP.TradePeriodId=@tradePeriodId THEN 1 ELSE 0 END as bit) AS Added, UTP.Removed, " +
-                "	COALESCE((SELECT SUM(RP.Points) FROM Rounds AS R INNER JOIN RoundPlayers AS RP ON R.Id = RP.RoundId WHERE R.Completed = 1 AND RP.PlayerId = UTP.PlayerId), 0) AS Points, " +
+                "	COALESCE((SELECT SUM(RP.Points) FROM Rounds AS R INNER JOIN RoundPlayers AS RP ON R.Id = RP.RoundId WHERE R.Status = 1 AND RP.PlayerId = UTP.PlayerId), 0) AS Points, " +
                 "   CASE WHEN C.IsCaptain=1 THEN 10 WHEN VC.IsVice=1 THEN 5 ELSE 0 END AS [Type] " +
                 "FROM TeamPlayers AS UTP " +
                 "   INNER JOIN Players AS P ON UTP.PlayerId = P.Id " +

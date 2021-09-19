@@ -11,7 +11,7 @@
       <th>Name</th>
       <th>Start</th>
       <th>End</th>
-      <th class="text-center">Complete</th>
+      <th class="text-center">Status</th>
       <th class="text-center">Players</th>
       <th class="text-right">
         <button type="button" class="btn btn-sm btn-dark" (click)="refresh()">
@@ -26,17 +26,14 @@
         <td>{{ r.name }}</td>
         <td>{{ r.startDate | date:'E, d MMM yyyy' }}</td>
         <td>{{ r.endDate | date:'E, d MMM yyyy' }}</td>
-        <td class="text-center"><span class="badge" [class.badge-secondary]="!r.completed"
-            [class.badge-success]="r.completed">
-            {{ r.completed ? 'YES' : 'NO' }}
-          </span></td>
+        <td class="text-center">{{ r.status | roundState }}</td>
         <td class="text-center">{{ r.players | number:'1.0-0' }}</td>
         <td class="text-right">
           <div class="btn-group" dropdown>
             <a type="button" class="btn btn-primary" [routerLink]="['./', r.id]">View</a>
-            <button *ngIf="!r.completed" type="button" class="btn btn-primary" dropdownToggle><i
+            <button *ngIf="r.canEdit" type="button" class="btn btn-primary" dropdownToggle><i
                 class="fas fa-fw fa-caret-down"></i></button>
-            <ng-container *ngIf="!r.completed">
+            <ng-container *ngIf="r.canEdit">
               <div role="menu" class="dropdown-menu dropdown-menu-right" *dropdownMenu>
                 <button class="dropdown-item" (click)="updateRound(r)">Update</button>
                 <div class="dropdown-divider"></div>

@@ -1,13 +1,13 @@
 <ng-container *ngIf="model$ | async as model">
   <h1>My Teams</h1>
 
-  <ng-container *ngIf="model.season.state !== SeasonStateType.Registration">
+  <ng-container *ngIf="model.season.status !== SeasonStateType.Registration">
     <div class="alert alert-info">
       <h5>You cannot register any new teams at this time</h5>
     </div>
   </ng-container>
 
-  <ng-container *ngIf="model.season.state === SeasonStateType.Registration">
+  <ng-container *ngIf="model.season.status === SeasonStateType.Registration">
     <div class="alert alert-info" *ngIf="model.teams.length === 0">
       <h5>You do not have any teams registered.</h5>
     </div>
@@ -23,7 +23,7 @@
   <div class="card-deck">
     <div class="card" *ngFor="let t of model.teams">
       <div class="card-body">
-        <div class="float-right ml-3 mb-3" *ngIf="model.season.state === SeasonStateType.Registration">
+        <div class="float-right ml-3 mb-3" *ngIf="model.season.status === SeasonStateType.Registration">
           <button type="button" class="btn btn-sm btn-outline-primary" (click)="updateTeam(t)">
             <i class="fas fa-fw fa-edit"></i>
           </button>

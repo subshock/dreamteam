@@ -5,7 +5,7 @@ export interface IPublicSeasonInfo {
   name: string;
   cost: number;
   budget: number;
-  state: SeasonStateType;
+  status: SeasonStateType;
   runs: number;
   unassistedWickets: number;
   assistedWickets: number;
@@ -29,6 +29,7 @@ export interface IPublicPlayer extends IPointDefinition {
   name: string;
   id: string;
   cost: number;
+  multiplier: number;
   points: number;
 }
 

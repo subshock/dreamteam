@@ -30,7 +30,7 @@
       </ng-container>
     </ng-container>
   </tbody>
-  <tfoot>
+  <tfoot class="form">
     <tr>
       <td colspan="4">
         <h5 class="mt-3">Add Player</h5>
@@ -60,7 +60,7 @@
 </table>
 
 <ng-template #editPlayerTpl>
-  <tr class="table-primary">
+  <tr class="table-primary form">
     <td>
       <input type="text" class="form-control" required [(ngModel)]="editPlayer.name">
     </td>

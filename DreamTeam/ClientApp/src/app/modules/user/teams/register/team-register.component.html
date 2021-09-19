@@ -1,6 +1,6 @@
 <ng-container *ngIf="season$ | async as season">
   <h1>Register Team</h1>
-  <ng-container [ngSwitch]="season.state">
+  <ng-container [ngSwitch]="season.status">
 
     <ng-container *ngSwitchCase="SeasonStateType.Registration">
 

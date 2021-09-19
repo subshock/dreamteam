@@ -97,7 +97,9 @@ namespace DreamTeam.Areas.Api.Admin
         {
             var taskId = await taskLogSvc.StartTaskLog(RoundCompletedBackgroundTask.TaskTitle);
 
-            Hangfire.BackgroundJob.Enqueue<Services.RoundCompletedBackgroundTask>(x => x.Run(taskId, roundId));
+            await _db.UpdateRoundStatus(roundId, Models.RoundStateType.ReadyToCalculate);
+
+            Hangfire.BackgroundJob.Enqueue<RoundCompletedBackgroundTask>(x => x.Run(taskId, roundId));
 
             return Ok(new { Token = taskId });
         }

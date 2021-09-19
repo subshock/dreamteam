@@ -9,6 +9,7 @@ namespace DreamTeam.Models
     {
         Creating = 0,
         Completed = 1,
-        Calculating = 2
+        ReadyToCalculate = 2,
+        Calculating = 3
     }
 }

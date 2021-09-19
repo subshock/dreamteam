@@ -27,7 +27,7 @@ export interface ISeasonSummary {
   cost: number;
   created: string;
   updated: string;
-  state: SeasonStateType;
+  status: SeasonStateType;
 }
 
 export interface IPointDefinition {
@@ -44,7 +44,7 @@ export interface ISeasonView {
   created: string;
   updated: string;
   name: string;
-  state: SeasonStateType;
+  status: SeasonStateType;
   budget: number;
   cost: number;
   players: number;
@@ -85,10 +85,17 @@ export interface ITeamSummary {
   paid: boolean;
 }
 
+export enum RoundStateType {
+  Creating = 0,
+  Completed = 1,
+  ReadyToCalculate = 2,
+  Calculating = 3
+}
+
 export interface IRoundSummary {
   id: string;
   name: number;
-  completed: boolean;
+  status: RoundStateType;
   startDate: string;
   endDate: string;
   players: number;
@@ -97,7 +104,7 @@ export interface IRoundSummary {
 export interface IRoundView {
   id: string;
   name: number;
-  completed: boolean;
+  status: RoundStateType;
   startDate: string;
   endDate: string;
   created: string;

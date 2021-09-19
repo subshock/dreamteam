@@ -8,12 +8,14 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { SeasonStatePipe } from './pipes/season-state.pipe';
 import { PlayerMultiplierPipe } from './pipes/player-multiplier.pipe';
 import { SquarePayComponent } from './components/square-pay/square-pay.component';
+import { RoundStatePipe } from './pipes/round-state.pipe';
 
 @NgModule({
   declarations: [
     SeasonStatePipe,
     PlayerMultiplierPipe,
-    SquarePayComponent
+    SquarePayComponent,
+    RoundStatePipe
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { SquarePayComponent } from './components/square-pay/square-pay.component
     PopoverModule,
     SeasonStatePipe,
     PlayerMultiplierPipe,
-    SquarePayComponent
+    SquarePayComponent,
+    RoundStatePipe
   ]
 })
 export class SharedModule { }

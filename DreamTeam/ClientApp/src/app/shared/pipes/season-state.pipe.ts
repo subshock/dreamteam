@@ -6,7 +6,6 @@ const stateMap = {
     [SeasonStateType.Setup]: 'Setup',
     [SeasonStateType.Registration]: 'Registration',
     [SeasonStateType.Running]: 'Running',
-    [SeasonStateType.TradePeriod]: 'Trade Period',
     [SeasonStateType.Finished]: 'Finished',
     [SeasonStateType.Archived]: 'Archived'
   },
@@ -14,7 +13,6 @@ const stateMap = {
     [SeasonStateType.Setup]: 'Initial setup of the competition before allowing users to register.',
     [SeasonStateType.Registration]: 'Users can register and start picking their teams.',
     [SeasonStateType.Running]: 'The competition is running, no trades can happen.',
-    [SeasonStateType.TradePeriod]: 'Trades can be initiated by the user within the trade period rules.',
     [SeasonStateType.Finished]: 'The competition is finished, no changes to it may be made. The current player and team '
       + 'standings are final',
     [SeasonStateType.Archived]: 'The season is archived and no longer considered active and appears as an old season'

@@ -49,11 +49,11 @@ export class TeamEditorComponent implements OnInit {
   ngOnInit(): void {
     this.model$ = this.userApi.publicApi.getCurrentSeason().pipe(
       tap(s => {
-        if (s.state !== SeasonStateType.Registration) {
+        if (s.status !== SeasonStateType.Registration) {
           this.cancel();
         }
       }),
-      filter(s => s.state === SeasonStateType.Registration),
+      filter(s => s.status === SeasonStateType.Registration),
       switchMap(() => this.userApi.getUserTeam(this.teamId)),
       tap(m => {
         this.teamForm = new FormGroup({

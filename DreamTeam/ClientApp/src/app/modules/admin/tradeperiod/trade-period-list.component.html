@@ -34,7 +34,7 @@
         </tr>
       </ng-container>
     </tbody>
-    <tfoot>
+    <tfoot class="form">
       <tr>
         <td colspan="9">
           <h5>Add Trade Period to Round</h5>
@@ -43,14 +43,15 @@
       <tr>
         <td colspan="2">
           <input type="text" class="form-control" readonly autocomplete="off" readonly bsDaterangepicker
-            [bsConfig]="bsDatepickerOpts" [(ngModel)]="newTradePeriod.period">
+            [bsConfig]="bsDatepickerOpts" [(ngModel)]="newTradePeriod.period" required>
         </td>
         <td>
           <input type="number" class="form-control" min="0" [(ngModel)]="newTradePeriod.tradeLimit" required>
         </td>
         <td class="text-right text-nowrap">
           <div class="btn-group">
-            <button type="button" class="btn btn-success" (click)="addTradePeriod(season.id)">Save</button>
+            <button type="button" class="btn btn-success" [disabled]="!isValidTradePeriod(newTradePeriod)"
+              (click)="addTradePeriod(season.id)">Save</button>
             <button type="button" class="btn btn-secondary" (click)="cancelAddTradePeriod()">Cancel</button>
           </div>
         </td>
@@ -59,9 +60,9 @@
   </table>
 
   <ng-template #updateTradePeriodTpl>
-    <tr *ngIf="editTradePeriod$ | async as editTradePeriod">
+    <tr *ngIf="editTradePeriod$ | async as editTradePeriod" class="form">
       <td colspan="2">
-        <input type="text" class="form-control" readonly autocomplete="off" readonly bsDaterangepicker
+        <input type="text" class="form-control" required readonly autocomplete="off" readonly bsDaterangepicker
           [bsConfig]="bsDatepickerOpts" [(ngModel)]="editTradePeriod.period">
       </td>
       <td>
@@ -69,7 +70,7 @@
       </td>
       <td class="text-right text-nowrap">
         <div class="btn-group">
-          <button type="button" class="btn btn-success"
+          <button type="button" class="btn btn-success" [disabled]="!isValidTradePeriod(editTradePeriod)"
             (click)="updateTradePeriod(season.id, editTradePeriod)">Save</button>
           <button type="button" class="btn btn-secondary" (click)="cancelUpdateTradePeriod()">Cancel</button>
         </div>

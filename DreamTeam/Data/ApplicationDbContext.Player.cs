@@ -33,7 +33,7 @@ namespace DreamTeam.Data
                 "COALESCE(SUM(RP.Catches), 0) AS Catches, COALESCE(SUM(RP.Runouts), 0) AS Runouts, COALESCE(SUM(RP.Stumpings), 0) AS Stumpings, COALESCE(SUM(RP.Points), 0) AS Points " +
                 "FROM Players AS P " +
                 "INNER JOIN Seasons AS S ON P.SeasonId = S.Id " +
-                "LEFT OUTER JOIN Rounds AS R ON R.SeasonId = S.Id AND R.Completed = 1 " +
+                "LEFT OUTER JOIN Rounds AS R ON R.SeasonId = S.Id AND R.Status = 1 " +
                 "LEFT OUTER JOIN RoundPlayers AS RP ON RP.RoundId = R.Id AND RP.PlayerId = P.Id " +
                 "WHERE S.Id = @seasonId " +
                 "GROUP BY P.Id, P.Name, P.Cost, P.Multiplier " +

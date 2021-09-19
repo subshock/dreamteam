@@ -8,7 +8,7 @@
     </a>
   </div>
 
-  <ng-container *ngIf="model.season.state === SeasonStateType.Registration">
+  <ng-container *ngIf="model.season.status === SeasonStateType.Registration">
     <div class="alert alert-info">
       <h5>This season is in registration mode</h5>
       <p>
@@ -100,6 +100,21 @@
             <th class="text-right">Points</th>
           </tr>
         </thead>
+        <tbody>
+          <tr>
+            <td colspan="4">
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Search..." [ngModel]="playerSearch"
+                  (ngModelChange)="updatePlayerSearch($event)">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-dark" type="button" (click)="updatePlayerSearch('')">
+                    <i class="fas fa-fw fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
         <tbody *ngIf="getAvailablePlayers(model) as availablePlayers">
           <tr *ngIf="availablePlayers.length === 0" class="table-warning">
             <td colspan="4" class="text-center">
@@ -113,7 +128,10 @@
                 <i class="fas fa-plus fa-fw"></i>
               </button>
             </td>
-            <td>{{ p.name }}</td>
+            <td>{{ p.name }}
+              <span *ngIf="p.multiplier > 1" class="badge badge-primary float-right"
+                title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number }}x</span>
+            </td>
             <td class="text-center">{{ p.cost }}</td>
             <td class="text-right">{{ p.points | number }}</td>
           </tr>

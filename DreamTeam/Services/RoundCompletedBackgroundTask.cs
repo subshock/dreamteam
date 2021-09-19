@@ -37,6 +37,8 @@ namespace DreamTeam.Services
                     return;
                 }
 
+                await _db.UpdateRoundStatus(round.Id, RoundStateType.Calculating);
+
                 var season = await _db.Seasons.FindAsync(round.SeasonId);
                 var teams = await _db.Teams.Where(x => x.SeasonId == season.Id && x.Valid).ToListAsync();
                 var roundPlayers = await _db.RoundPlayers.Where(x => x.RoundId == round.Id).ToListAsync();

@@ -27,7 +27,7 @@
     "jquery": "^3.5.1",
     "luxon": "^2.0.2",
     "ngx-bootstrap": "^7.0.0",
-    "oidc-client": "^1.11.3",
+    "oidc-client": "^1.11.5",
     "popper.js": "^1.16.0",
     "protractor": "~7.0.0",
     "rxjs": "^6.6.3",

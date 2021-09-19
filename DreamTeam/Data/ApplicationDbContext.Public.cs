@@ -13,7 +13,7 @@ namespace DreamTeam.Data
 
         public Task<PublicSeasonInfoViewModel> PublicGetSeasonInfo()
         {
-            return Connection.QueryFirstOrDefaultAsync<PublicSeasonInfoViewModel>("SELECT Id, Name, State, Cost, Budget, Runs, " +
+            return Connection.QueryFirstOrDefaultAsync<PublicSeasonInfoViewModel>("SELECT Id, Name, Status, Cost, Budget, Runs, " +
                 "UnassistedWickets, AssistedWickets, Catches, Runouts, Stumpings " +
                 "FROM Seasons");
         }

@@ -4,7 +4,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { isNumber } from 'src/app/shared/helpers';
-import { IPlayerUpdate, IPlayerView, IPointDefinition, IRoundPlayer, IRoundPlayerUpdate, IRoundView, ISeasonView } from '../../admin.types';
+import { IPlayerUpdate, IPlayerView, IPointDefinition, IRoundPlayer, IRoundPlayerUpdate, IRoundView, ISeasonView, RoundStateType } from '../../admin.types';
 import { AdminApiService } from '../../services/admin-api.service';
 import { SeasonStateService } from '../../services/season-state.service';
 import { RoundCompleteComponent } from '../complete/round-complete.component';
@@ -12,6 +12,7 @@ import { RoundCompleteComponent } from '../complete/round-complete.component';
 interface IModel {
   season: ISeasonView;
   round: IRoundView;
+  canEdit: boolean;
   allPlayers: IPlayerView[];
 }
 
@@ -28,6 +29,8 @@ export class RoundViewComponent implements OnInit, OnDestroy {
   season$: Observable<ISeasonView>;
   round$: Observable<IRoundView>;
   players$: Observable<IRoundPlayer[]>;
+
+  RoundStateType = RoundStateType;
 
   availablePlayers$: Observable<IPlayerView[]>;
   defaultNewPlayer: IRoundPlayerUpdate = {
@@ -59,7 +62,7 @@ export class RoundViewComponent implements OnInit, OnDestroy {
 
     this.model$ = combineLatest([this.state.season$, this.route.paramMap]).pipe(
       switchMap(([s, p]) => combineLatest([this.adminApi.getRound(s.id, p.get('id')), this.adminApi.getPlayers(s.id)]).pipe(
-        map(([r, ap]) => ({ season: s, round: r, allPlayers: ap }))
+        map(([r, ap]) => ({ season: s, round: r, allPlayers: ap, canEdit: r.status === RoundStateType.Creating }))
       )),
       shareReplay(1)
     );
@@ -93,7 +96,7 @@ export class RoundViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isValidPlayer(player: IRoundPlayerUpdate) {
+  isValidPlayer(player: IRoundPlayerUpdate) {
     return player != null && player.points != null
       && player.playerId != null
       && isNumber(player.points.runs) && player.points.runs >= 0
@@ -127,6 +130,7 @@ export class RoundViewComponent implements OnInit, OnDestroy {
   updatePlayerStart(p: IRoundPlayer, index: number) {
     this.editIndex = index;
     this.editPlayerSub.next({ ...p, points: { ...p.points } });
+    setTimeout(() => this.cd.detectChanges());
   }
 
   deletePlayerStart(p: IRoundPlayer, template: TemplateRef<any>) {

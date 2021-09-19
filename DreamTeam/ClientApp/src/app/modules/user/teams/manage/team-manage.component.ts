@@ -34,6 +34,8 @@ export class TeamManageComponent implements OnInit {
   saving = false;
   saveError: string;
 
+  playerSearch: string = null;
+
   constructor(private userApi: UserApiService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
@@ -57,21 +59,6 @@ export class TeamManageComponent implements OnInit {
         }
       }))
     );
-  }
-
-  generatePlayers(num: number) {
-    const ret = [];
-
-    for (let i = 0; i !== num; i++) {
-      ret.push({
-        id: i,
-        name: `FirstName LastName ${i + 1}`,
-        cost: 5 - Math.ceil((i + 5) / num * 4) + 5,
-        points: Math.ceil(Math.random() * 1500)
-      });
-    }
-
-    return ret;
   }
 
   addPlayerToTeam(model: IModel, player: any) {
@@ -114,8 +101,10 @@ export class TeamManageComponent implements OnInit {
   }
 
   getAvailablePlayers(model: IModel) {
+    console.info('getAvailablePlayers');
     const currentTeam = this.getCurrentTeam(model);
-    return model.players.filter(x => !currentTeam.some(p => p.id === x.id) && model.current.balance >= x.cost);
+    return model.players.filter(x => !currentTeam.some(p => p.id === x.id) && model.current.balance >= x.cost
+      && (!this.playerSearch || x.name.toLowerCase().indexOf(this.playerSearch.toLowerCase()) >= 0));
   }
 
   setCaptain(model: IModel, player: any) {
@@ -179,5 +168,9 @@ export class TeamManageComponent implements OnInit {
   revertTeam(model: IModel) {
     model.current.team = model.team.players.map(x => ({...x}));
     model.current.balance = model.team.balance;
+  }
+
+  updatePlayerSearch(search: string) {
+    this.playerSearch = search;
   }
 }

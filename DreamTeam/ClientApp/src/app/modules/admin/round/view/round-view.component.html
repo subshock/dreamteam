@@ -14,7 +14,7 @@
       {{ model.round.endDate | date:'EEE d MMM yyyy'}}</span>
   </h5>
 
-  <div class="alert alert-info" *ngIf="!model.round.completed">
+  <div class="alert alert-info" *ngIf="model.canEdit">
     <button type="button" class="btn btn-info" (click)="completeRound(model)">Mark Round as Complete</button>
   </div>
 
@@ -54,7 +54,7 @@
           <td class="text-center">{{ p.points?.stumpings }}</td>
           <td class="text-center">{{ p.total }}</td>
           <td class="text-right text-nowrap">
-            <div class="btn-group" *ngIf="!model.round.completed">
+            <div class="btn-group" *ngIf="model.canEdit">
               <button type="button" class="btn btn-primary" (click)="updatePlayerStart(p, i)"
                 [disabled]="editIndex != null">Update</button>
               <button type="button" class="btn btn-danger" (click)="deletePlayerStart(p, deletePlayerDlg)"
@@ -64,7 +64,7 @@
         </tr>
       </ng-container>
     </tbody>
-    <tfoot *ngIf="!model.round.completed">
+    <tfoot *ngIf="model.canEdit" class="form">
       <tr>
         <td colspan="9">
           <h5>Add Player to Round</h5>
@@ -100,7 +100,7 @@
         </td>
         <td class="text-right text-nowrap">
           <div class="btn-group">
-            <button type="button" class="btn btn-success"
+            <button type="button" class="btn btn-success" [disabled]="!isValidPlayer(newPlayer)"
               (click)="addPlayer(model.season.id, model.round.id)">Save</button>
             <button type="button" class="btn btn-secondary" (click)="cancelAddPlayer()">Cancel</button>
           </div>
@@ -110,7 +110,7 @@
   </table>
 
   <ng-template #updatePlayerTpl>
-    <tr *ngIf="editPlayer$ | async as editPlayer">
+    <tr *ngIf="editPlayer$ | async as editPlayer" class="form">
       <td>{{ editPlayer.name }}</td>
       <td>
         <input type="number" class="form-control" min="0" [(ngModel)]="editPlayer.points.runs" required>
@@ -135,7 +135,7 @@
       </td>
       <td class="text-right text-nowrap">
         <div class="btn-group">
-          <button type="button" class="btn btn-success"
+          <button type="button" class="btn btn-success" [disabled]="!isValidPlayer(editPlayer)"
             (click)="updatePlayer(model.season.id, model.round.id, editPlayer)">Save</button>
           <button type="button" class="btn btn-secondary" (click)="cancelUpdatePlayer()">Cancel</button>
         </div>

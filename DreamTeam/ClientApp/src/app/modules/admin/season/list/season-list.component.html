@@ -27,7 +27,7 @@
           <a [routerLink]="['./', s.id]">{{ s.name }}</a>
         </td>
         <td>
-          {{ s.state | seasonState }}
+          {{ s.status | seasonState }}
         </td>
         <td>
           {{ s.created | date:'d MMM yyyy h:mm a'}}

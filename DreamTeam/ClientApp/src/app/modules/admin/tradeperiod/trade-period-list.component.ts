@@ -74,7 +74,7 @@ export class TradePeriodListComponent implements OnInit {
     }
   }
 
-  private isValidTradePeriod(tradePeriod: ITradePeriodForm) {
+  isValidTradePeriod(tradePeriod: ITradePeriodForm) {
     return tradePeriod != null
       && tradePeriod.period
       && tradePeriod.period.length === 2
