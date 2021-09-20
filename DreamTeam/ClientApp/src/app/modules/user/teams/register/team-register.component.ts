@@ -1,13 +1,14 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { finalize, map, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
+import { catchError, finalize, map, shareReplay, tap } from 'rxjs/operators';
 import { AuthorizeService, IUser } from 'src/api-authorization/authorize.service';
 import { SeasonStateType } from 'src/app/modules/admin/admin.types';
 import { UserApiService } from 'src/app/services/user-api.service';
 import { SquarePayComponent } from 'src/app/shared/components/square-pay/square-pay.component';
-import { IPublicSeasonInfo } from 'src/app/types/public.types';
+import { IPublicSeasonInfo, ITeamRegisterResult } from 'src/app/types/public.types';
 
 @Component({
   templateUrl: './team-register.component.html',
@@ -24,6 +25,9 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
   private saveSub = new BehaviorSubject<boolean>(false);
   save$ = this.saveSub.asObservable().pipe(map(x => ({ saving: x })));
 
+  private errorSub = new Subject<any>();
+  error$: Observable<string[]>;
+
   @ViewChild('payment') payment: SquarePayComponent;
 
   private subscriptions: Subscription;
@@ -37,6 +41,7 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions = new Subscription();
+    this.error$ = this.errorSub.pipe(map(x => this.convertErrorsToArray(x)));
 
     const obs = combineLatest([this.userApi.publicApi.getCurrentSeason(), this.authService.getUser()]).pipe(
       tap(([s, u]) => {
@@ -82,12 +87,16 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
 
       if (paymentResult.status === 'OK') {
         this.subscriptions.add(this.userApi.registerTeams(season.id, this.teams.value, paymentResult.token)
-          .pipe(finalize(() => this.saveSub.next(false)))
-          .subscribe(result => {
+          .pipe(
+            catchError((response: HttpErrorResponse) => {
+              return of({ success: false, error: response.error });
+            }),
+            finalize(() => this.saveSub.next(false)))
+          .subscribe((result: ITeamRegisterResult) => {
             if (result.success) {
-              this.router.navigate(['..'], { relativeTo: this.route });
+              this.router.navigate(['./done'], { relativeTo: this.route, state: { 'payment': result.messages } });
             } else {
-              // TODO: handle errors
+              this.errorSub.next(result.error);
             }
           }));
       } else {
@@ -97,7 +106,33 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
   }
 
   handlePaymentErrors(errors: any) {
-    // TODO: handle errors
-    console.info('errors', errors);
+    this.errorSub.next(errors);
+  }
+
+  private convertErrorsToArray(obj: any): string[] {
+    if (!obj) { return undefined; }
+
+    if (typeof(obj) === 'string') {
+      return [<string>obj];
+    }
+
+    if (Array.isArray(obj) && obj.length > 0) {
+      if (obj[0] && obj[0].field && obj[0].message && obj[0].type) {
+        // looks like a payment error
+        return obj.map(x => x.message);
+      }
+    } else {
+      const keys = Object.keys(obj);
+
+      if (keys.length > 0) {
+        if (obj[keys[0]].validationState === 1) {
+          // looks like a modelstate error
+          return keys.map(x => obj[x].errors.map(y => y.errorMessage)).reduce((prev, curr) => [...prev, ...curr], []);
+        }
+      }
+    }
+
+    console.error('unknown error format', obj);
+    return undefined;
   }
 }

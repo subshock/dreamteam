@@ -80,12 +80,18 @@ namespace DreamTeam
                 .AddProfileService<AuthProfileService>();
 
             services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    var googleAuthNSection = Configuration.GetSection("Authentication:Google");
-                    options.ClientId = googleAuthNSection["ClientId"];
-                    options.ClientSecret = googleAuthNSection["ClientSecret"];
-                })
+                //.AddGoogle(options =>
+                //{
+                //    var googleAuthNSection = Configuration.GetSection("Authentication:Google");
+                //    options.ClientId = googleAuthNSection["ClientId"];
+                //    options.ClientSecret = googleAuthNSection["ClientSecret"];
+                //})
+                //.AddFacebook(options =>
+                //{
+                //    var facebookAuthNSection = Configuration.GetSection("Authentication:Facebook");
+                //    options.AppId = facebookAuthNSection["AppId"];
+                //    options.AppSecret = facebookAuthNSection["AppSecret"];
+                //})
                 .AddIdentityServerJwt();
 
             services.AddTransient<IEmailSender, SendGridEmailSender>();

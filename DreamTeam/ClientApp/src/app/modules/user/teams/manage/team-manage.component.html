@@ -31,7 +31,6 @@
             <th>&nbsp;</th>
             <th>Player</th>
             <th class="text-center">Cost</th>
-            <th class="text-right">Points</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -54,9 +53,12 @@
                 [class.btn-primary]="p.type === TeamPlayerType.ViceCaptain"
                 [class.btn-outline-secondary]="p.type !== TeamPlayerType.ViceCaptain">VC</button>
             </td>
-            <td>{{ p.name }}</td>
+            <td>
+              {{ p.name }}
+              <span *ngIf="p.multiplier > 1" class="badge badge-primary float-right"
+                title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number }}x</span>
+            </td>
             <td class="text-center">{{ p.cost }}</td>
-            <td class="text-right">{{ p.points | number }}</td>
             <td class="text-right">
               <button type="button" class="btn btn-danger btn-sm" (click)="removePlayerFromTeam(model, p)">
                 <i class="fas fa-fw fa-times"></i>
@@ -69,7 +71,7 @@
             <th colspan="2">
               <strong>{{ currentTeam.length }}</strong> / 12
             </th>
-            <th colspan="4">
+            <th colspan="3">
               <div class="c-vc-needed">
                 <span *ngIf="!isCaptainSet(currentTeam)">Captain needed.</span>
                 <span *ngIf="!isViceCaptainSet(currentTeam)">Vice Captain needed.</span>

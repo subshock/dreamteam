@@ -14,7 +14,7 @@ namespace DreamTeam.Data
     public partial class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public ApplicationDbContext(
-            DbContextOptions<ApplicationDbContext> options,
+            DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }

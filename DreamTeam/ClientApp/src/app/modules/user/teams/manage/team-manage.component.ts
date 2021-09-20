@@ -101,7 +101,6 @@ export class TeamManageComponent implements OnInit {
   }
 
   getAvailablePlayers(model: IModel) {
-    console.info('getAvailablePlayers');
     const currentTeam = this.getCurrentTeam(model);
     return model.players.filter(x => !currentTeam.some(p => p.id === x.id) && model.current.balance >= x.cost
       && (!this.playerSearch || x.name.toLowerCase().indexOf(this.playerSearch.toLowerCase()) >= 0));

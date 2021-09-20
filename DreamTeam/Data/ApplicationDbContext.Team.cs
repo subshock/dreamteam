@@ -37,7 +37,7 @@ namespace DreamTeam.Data
             var sql = "SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid " +
                 "FROM Teams AS T " +
                 "WHERE T.Id = @teamId AND T.UserId = @userId; " +
-                "SELECT UTP.PlayerId AS Id, P.Name, UTP.Cost, CAST(CASE WHEN UTP.TradePeriodId=@tradePeriodId THEN 1 ELSE 0 END as bit) AS Added, UTP.Removed, " +
+                "SELECT UTP.PlayerId AS Id, P.Name, P.Multiplier, UTP.Cost, CAST(CASE WHEN UTP.TradePeriodId=@tradePeriodId THEN 1 ELSE 0 END as bit) AS Added, UTP.Removed, " +
                 "	COALESCE((SELECT SUM(RP.Points) FROM Rounds AS R INNER JOIN RoundPlayers AS RP ON R.Id = RP.RoundId WHERE R.Status = 1 AND RP.PlayerId = UTP.PlayerId), 0) AS Points, " +
                 "   CASE WHEN C.IsCaptain=1 THEN 10 WHEN VC.IsVice=1 THEN 5 ELSE 0 END AS [Type] " +
                 "FROM TeamPlayers AS UTP " +

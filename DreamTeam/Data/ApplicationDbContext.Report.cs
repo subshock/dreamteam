@@ -26,7 +26,7 @@ namespace DreamTeam.Data
         public Task<IEnumerable<PlayerLeaderboardReportViewModel>> GetPlayerLeaderboardReport(Guid seasonId, Guid? roundId)
         {
             return Connection.QueryAsync<PlayerLeaderboardReportViewModel>("SELECT RANK() OVER (ORDER BY SUM(RP.Points) DESC) AS [Rank], " +
-                "    P.Id, P.Name, SUM(RP.Runs) AS Runs, SUM(RP.UnassistedWickets) AS UnassistedWickets, SUM(RP.AssistedWickets) AS AssistedWickets, " +
+                "    P.Id, P.Name, P.Multiplier, SUM(RP.Runs) AS Runs, SUM(RP.UnassistedWickets) AS UnassistedWickets, SUM(RP.AssistedWickets) AS AssistedWickets, " +
                 "    SUM(RP.Catches) AS Catches, SUM(RP.Runouts) AS Runouts, SUM(RP.Stumpings) AS Stumpings, SUM(RP.Points) AS Points " +
                 "FROM Rounds AS R " +
                 "    INNER JOIN RoundPlayers AS RP ON RP.RoundId = R.Id " +

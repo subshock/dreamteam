@@ -53,37 +53,51 @@ namespace DreamTeam.Areas.Api.User
         public async Task<IActionResult> RegisterTeams([FromBody] RegisterTeamsModel model, [FromServices] UserManager<ApplicationUser> userManager)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return Ok(new { Success = false, Error = ModelState });
 
             var season = await _db.GetSeasonAsync(model.SeasonId);
 
             if (season == null || !_db.CanAddTeamsToSeason(season.Status))
             {
                 ModelState.AddModelError("season", "Registering teams is forbidden");
-                return BadRequest(ModelState);
+                return Ok(new { Success = false, Error = ModelState });
             }
 
             string registrationToken = null;
 
-            if (!string.IsNullOrWhiteSpace(model.PaymentToken))
+            var user = (await userManager.FindByIdAsync(UserId));
+
+            if (user == null)
+                return BadRequest("User does not exist");
+
+            var paymentResult = await _paymentSvc.Payment(season.Cost, model.Teams.Count, model.PaymentToken, model.VerificationToken, user.Email);
+
+            await _db.LogPayment(paymentResult);
+
+            if (!paymentResult.Succeeded)
             {
-                var user = (await userManager.FindByIdAsync(UserId)) ?? throw new InvalidOperationException("User does not exist");
-
-                var paymentResult = await _paymentSvc.Payment(season.Cost, model.Teams.Count, model.PaymentToken, model.VerificationToken, user.Email);
-
-                await _db.LogPayment(paymentResult);
-
-                if (!paymentResult.Succeeded)
-                {
-                    return Ok(new { Success = false });
-                }
-
-                registrationToken = paymentResult.Response.Payment.Id;
+                return Ok(new { Success = false, Error = paymentResult.Exception.Errors });
             }
+
+            registrationToken = paymentResult.Response.Payment.Id;
 
             await _db.RegisterTeams(model, UserId, registrationToken);
 
-            return Ok(new { Success = true });
+            return Ok(new
+            {
+                Success = true,
+                Payment = true,
+                Messages = new
+                {
+                    Total = paymentResult.Response.Payment.TotalMoney,
+                    Card = new
+                    {
+                        Brand = paymentResult.Response.Payment.CardDetails.Card.CardBrand,
+                        Last4 = paymentResult.Response.Payment.CardDetails.Card.Last4
+                    },
+                    paymentResult.Response.Payment.ReceiptUrl
+                }
+            });
         }
 
         [HttpPost("{teamId:guid}/details")]
@@ -118,6 +132,7 @@ namespace DreamTeam.Areas.Api.User
             [Required]
             public Guid SeasonId { get; set; }
 
+            [Required]
             public string PaymentToken { get; set; }
             public string VerificationToken { get; set; }
 

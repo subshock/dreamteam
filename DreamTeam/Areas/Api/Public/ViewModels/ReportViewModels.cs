@@ -19,6 +19,7 @@ namespace DreamTeam.Areas.Api.Public.ViewModels
         public int Rank { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public decimal Multiplier { get; set; }
         public int Points { get; set; }
     }
 }

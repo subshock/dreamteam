@@ -21,8 +21,9 @@ export interface ITeamRegister {
 
 export interface ITeamRegisterResult {
   success: boolean;
-  payment: boolean;
-  messages: string[];
+  payment?: boolean;
+  messages?: any;
+  error?: any;
 }
 
 export interface IPublicPlayer extends IPointDefinition {

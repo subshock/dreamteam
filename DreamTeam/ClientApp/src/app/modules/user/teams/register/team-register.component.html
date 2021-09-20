@@ -8,6 +8,13 @@
       <p>Enter the team name and owner for the team you want to register. Additional teams can be registered here as
         well.</p>
 
+      <div *ngIf="error$ | async as error" class="alert alert-danger">
+        <h5>There was an error</h5>
+        <ul>
+          <li *ngFor="let e of error">{{ e }}</li>
+        </ul>
+      </div>
+
       <form [formGroup]="registerForm" (ngSubmit)="save(season)" class="team-register-form">
         <div class="d-lg-flex justify-content-between">
           <div formArrayName="teams" class="flex-fill mr-3">
@@ -56,6 +63,7 @@
               </tfoot>
             </table>
             <h4>Secure Payment</h4>
+            <p>Credit card payments are powered by <a href="https://www.squareup.com" target="_blank">Square</a></p>
             <app-square-pay (error)="handlePaymentErrors($event)" #payment></app-square-pay>
             <p class="text-right">
               <button type="submit" class="btn btn-primary btn-lg" [disabled]="!registerForm.valid || (save$ | async)?.saving">Register Teams</button>

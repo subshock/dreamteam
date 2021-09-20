@@ -149,7 +149,7 @@ namespace DreamTeam.Areas.Identity.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("SandhurstCC DreamTeam"),
+                _urlEncoder.Encode("Dragon DreamTeam"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }

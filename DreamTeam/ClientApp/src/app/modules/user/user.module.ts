@@ -9,6 +9,7 @@ import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { UserContainerComponent } from './user-container.component';
 import { TeamManageComponent } from './teams/manage/team-manage.component';
 import { TeamEditorComponent } from './teams/editor/team-editor.component';
+import { TeamRegisterDoneComponent } from './teams/register/team-register-done.component';
 
 
 
@@ -18,7 +19,8 @@ import { TeamEditorComponent } from './teams/editor/team-editor.component';
     TeamRegisterComponent,
     UserContainerComponent,
     TeamManageComponent,
-    TeamEditorComponent
+    TeamEditorComponent,
+    TeamRegisterDoneComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { TeamEditorComponent } from './teams/editor/team-editor.component';
     RouterModule.forChild([
       { path: '', canActivate: [AuthorizeGuard], component: UserContainerComponent, children: [
         { path: 'teams', pathMatch: 'full', component: TeamsListComponent },
-        { path: 'teams/register', component: TeamRegisterComponent },
+        { path: 'teams/register', pathMatch: 'full', component: TeamRegisterComponent },
+        { path: 'teams/register/done', component: TeamRegisterDoneComponent },
         { path: 'teams/:id/manage', component: TeamManageComponent }
       ] },
       { path: '', pathMatch: 'full', redirectTo: 'teams' },

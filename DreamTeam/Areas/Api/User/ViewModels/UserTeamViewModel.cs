@@ -24,6 +24,7 @@ namespace DreamTeam.Areas.Api.User.ViewModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public decimal Multiplier { get; set; }
         public TeamPlayerType Type { get; set; }
         public bool Added { get; set; }
         public bool Removed { get; set; }
