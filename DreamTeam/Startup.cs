@@ -1,4 +1,3 @@
-using Azure.Identity;
 using Dapper;
 using DreamTeam.Data;
 using DreamTeam.Models;
@@ -7,15 +6,11 @@ using DreamTeam.Services.Auth;
 using DreamTeam.Services.Mail;
 using DreamTeam.Services.TypeHandlers;
 using Hangfire;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.KeyManagement.AzureKeyVault;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +18,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -48,6 +41,9 @@ namespace DreamTeam
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDataProtection()
+                .PersistKeysToDbContext<ApplicationDbContext>();
 
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -75,7 +71,12 @@ namespace DreamTeam
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            var identityServerBuilder = services.AddIdentityServer()
+            var identityServerBuilder = services.AddIdentityServer(options =>
+            {
+                var issuer = Configuration["Authentication:IssuerUri"];
+                if (_env.IsEnvironment("Production") && !string.IsNullOrEmpty(issuer))
+                    options.IssuerUri = issuer;
+            })
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<AuthProfileService>();
 

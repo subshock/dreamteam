@@ -1,6 +1,7 @@
 ﻿using DreamTeam.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DreamTeam.Data
 {
-    public partial class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
+    public partial class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IDataProtectionKeyContext
     {
         public ApplicationDbContext(
             DbContextOptions options,
@@ -42,5 +43,6 @@ namespace DreamTeam.Data
         public DbSet<TeamRoundResult> TeamRoundResults { get; set; }
         public DbSet<TeamRoundRank> TeamRoundRanks { get; set; }
         public DbSet<TaskLog> TaskLogs { get; set; }
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     }
 }
