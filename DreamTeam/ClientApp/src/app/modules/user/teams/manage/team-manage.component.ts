@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { ITradePeriod, SeasonStateType } from 'src/app/modules/admin/admin.types';
 import { UserApiService } from 'src/app/services/user-api.service';
@@ -17,6 +17,7 @@ interface IModel {
   players: IPublicPlayer[];
   tradePeriod: ITradePeriod;
   current: ICurrentTeam;
+  canEdit: boolean;
 }
 
 @Component({
@@ -32,7 +33,8 @@ export class TeamManageComponent implements OnInit {
   TeamPlayerType = TeamPlayerType;
 
   saving = false;
-  saveError: string;
+  saveErrorSub = new Subject<string>();
+  saveError$ = this.saveErrorSub.asObservable();
 
   playerSearch: string = null;
 
@@ -49,6 +51,7 @@ export class TeamManageComponent implements OnInit {
 
     this.model$ = combineLatest([seasonObs, playerObs, teamObs]).pipe(
       map(([s, p, t]) => ({
+        canEdit: s.status === SeasonStateType.Registration || !!t.tradePeriod,
         season: s,
         players: p,
         team: t.team,
@@ -107,6 +110,7 @@ export class TeamManageComponent implements OnInit {
   }
 
   setCaptain(model: IModel, player: any) {
+    if (!model.canEdit) { return; }
     for (const p of model.current.team) {
       if (p.id === player.id) {
         p.type = TeamPlayerType.Captain;
@@ -117,6 +121,7 @@ export class TeamManageComponent implements OnInit {
   }
 
   setViceCaptain(model: IModel, player: any) {
+    if (!model.canEdit) { return; }
     for (const p of model.current.team) {
       if (p.id === player.id) {
         p.type = TeamPlayerType.ViceCaptain;
@@ -150,7 +155,7 @@ export class TeamManageComponent implements OnInit {
       viceCaptainPlayerId: currentTeam.find(x => x.type === TeamPlayerType.ViceCaptain).id
     };
 
-    this.saveError = null;
+    this.saveErrorSub.next(undefined);
     this.saving = true;
 
     const sub = this.userApi.updateTeamPlayers(model.team.id, updateModel).subscribe(result => {
@@ -159,7 +164,7 @@ export class TeamManageComponent implements OnInit {
       if (result.success) {
         this.router.navigate(['../..'], { relativeTo: this.route });
       } else {
-        this.saveError = result.error;
+        this.saveErrorSub.next(result.error);
       }
     });
   }

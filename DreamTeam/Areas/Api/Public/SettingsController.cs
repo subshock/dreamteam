@@ -16,7 +16,8 @@ namespace DreamTeam.Areas.Api.Public
             return Ok(new
             {
                 ApplicationId = paymentOptions.Value.ApplicationId,
-                LocationId = paymentOptions.Value.LocationId
+                LocationId = paymentOptions.Value.LocationId,
+                WebSdkUrl = paymentOptions.Value.WebSdkUrl
             });
         }
     }

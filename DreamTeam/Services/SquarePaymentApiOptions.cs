@@ -12,5 +12,6 @@ namespace DreamTeam.Services
         public string ApplicationId { get; set; }
         public string AccessToken { get; set; }
         public string Currency { get; set; }
+        public string WebSdkUrl { get; set; }
     }
 }

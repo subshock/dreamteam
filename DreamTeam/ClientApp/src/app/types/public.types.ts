@@ -88,4 +88,5 @@ export interface IUserTeamSummary {
 export interface IPaymentSettings {
   applicationId: string;
   locationId: string;
+  webSdkUrl: string;
 }

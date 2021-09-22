@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, Eleme
 import { DynamicScriptLoaderService } from 'src/app/services/dynamic-script-loader.service';
 import { PaymentSettingsService } from 'src/app/services/payment-settings.service';
 import { Card, CardInputEvent, Payments, SqEvent } from '@square/web-payments-sdk-types';
-import { Subscription } from 'rxjs';
+import { from, of, Subscription } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 declare var window: any;
 
@@ -11,7 +12,7 @@ declare var window: any;
   template: '<div #tpl></div>',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SquarePayComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SquarePayComponent implements OnInit, OnDestroy {
 
   @Output() loaded = new EventEmitter<boolean>();
   @Output() paymentToken = new EventEmitter<string>();
@@ -30,27 +31,25 @@ export class SquarePayComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async ngOnInit() {
     this.subscriptions = new Subscription();
-    const dynScripts = await this.dynScriptService.load('square');
 
-    const loaded = dynScripts && dynScripts.length === 1 && !!dynScripts[0].loaded && !!window.Square;
-    this.loaded.emit(loaded);
+    this.subscriptions.add(this.paymentSvc.settings$.pipe(
+      switchMap(settings => from(this.dynScriptService.loadScript({ name: 'square', src: settings.webSdkUrl }))
+        .pipe(map(r => ({ settings: settings, scriptLoad: r })))),
+      filter(model => model.scriptLoad.loaded && !!window.Square)
+    ).subscribe(async model => {
 
-    if (loaded) {
-      this.subscriptions.add(this.paymentSvc.settings$.subscribe(async settings => {
-        try {
-          this.paymentsObj = await window.Square.payments(settings.applicationId, settings.locationId);
-          this.cardObj = await this.paymentsObj.card();
-          this.cardObj.addEventListener('errorClassAdded', (evt) => this.onErrorState(evt));
-          this.cardObj.addEventListener('errorClassRemoved', (evt) => this.onErrorState(evt));
-          await this.cardObj.attach(this.tpl.nativeElement);
-        } catch (err) {
-          this.error.emit(err);
-        }
-      }));
-    }
-  }
+      this.loaded.emit(model.scriptLoad.loaded);
 
-  ngAfterViewInit(): void {
+      try {
+        this.paymentsObj = await window.Square.payments(model.settings.applicationId, model.settings.locationId);
+        this.cardObj = await this.paymentsObj.card();
+        this.cardObj.addEventListener('errorClassAdded', (evt) => this.onErrorState(evt));
+        this.cardObj.addEventListener('errorClassRemoved', (evt) => this.onErrorState(evt));
+        await this.cardObj.attach(this.tpl.nativeElement);
+      } catch (err) {
+        this.error.emit(err);
+      }
+    }));
   }
 
   async ngOnDestroy() {

@@ -1,13 +1,21 @@
 import { Injectable } from '@angular/core';
 
-interface Scripts {
+export interface IScript {
   name: string;
   src: string;
 }
 
-export const ScriptStore: Scripts[] = [
-  { name: 'square', src: 'https://sandbox.web.squarecdn.com/v1/square.js' },
-];
+export interface IScriptLoadResult {
+  script: string;
+  loaded: boolean;
+  status: string;
+}
+
+interface Scripts extends IScript {
+  name: string;
+  src: string;
+  loaded: boolean;
+}
 
 declare var document: any;
 
@@ -16,48 +24,36 @@ declare var document: any;
 })
 export class DynamicScriptLoaderService {
 
-  private scripts: any = {};
+  private scripts: { [key: string]: Scripts } = {};
 
-  constructor() {
-    ScriptStore.forEach((script: any) => {
-      this.scripts[script.name] = {
-        loaded: false,
-        src: script.src
-      };
-    });
-  }
+  constructor() { }
 
-  load(...scripts: string[]) {
-    const promises: any[] = [];
-    scripts.forEach((script) => promises.push(this.loadScript(script)));
-    return Promise.all(promises);
-  }
-
-  loadScript(name: string) {
+  loadScript(script: IScript): Promise<IScriptLoadResult> {
     return new Promise((resolve, reject) => {
-      if (!this.scripts[name].loaded) {
+      if (!this.scripts[script.name]) {
+        this.scripts[script.name] = { ...script, loaded: false };
         // load script
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = this.scripts[name].src;
-        if (script.readyState) {  // IE
-            script.onreadystatechange = () => {
-                if (script.readyState === 'loaded' || script.readyState === 'complete') {
-                    script.onreadystatechange = null;
-                    this.scripts[name].loaded = true;
-                    resolve({script: name, loaded: true, status: 'Loaded'});
-                }
-            };
+        const scriptEl = document.createElement('script');
+        scriptEl.type = 'text/javascript';
+        scriptEl.src = this.scripts[script.name].src;
+        if (scriptEl.readyState) {  // IE
+          scriptEl.onreadystatechange = () => {
+            if (scriptEl.readyState === 'loaded' || scriptEl.readyState === 'complete') {
+              scriptEl.onreadystatechange = null;
+              this.scripts[script.name].loaded = true;
+              resolve({ script: script.name, loaded: true, status: 'Loaded' });
+            }
+          };
         } else {  // Others
-            script.onload = () => {
-                this.scripts[name].loaded = true;
-                resolve({script: name, loaded: true, status: 'Loaded'});
-            };
+          scriptEl.onload = () => {
+            this.scripts[script.name].loaded = true;
+            resolve({ script: script.name, loaded: true, status: 'Loaded' });
+          };
         }
-        script.onerror = (error: any) => resolve({script: name, loaded: false, status: 'Loaded'});
-        document.getElementsByTagName('head')[0].appendChild(script);
+        scriptEl.onerror = (error: any) => resolve({ script: script.name, loaded: false, status: 'Loaded' });
+        document.getElementsByTagName('head')[0].appendChild(scriptEl);
       } else {
-        resolve({ script: name, loaded: true, status: 'Already Loaded' });
+        resolve({ script: script.name, loaded: true, status: 'Already Loaded' });
       }
     });
   }
