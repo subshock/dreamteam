@@ -7,7 +7,7 @@ import { AdminApiService } from './admin-api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SeasonStateService {
+export class AdminSeasonStateService {
 
   private seasonIdSubject = new ReplaySubject<string>();
   private seasonId: string;

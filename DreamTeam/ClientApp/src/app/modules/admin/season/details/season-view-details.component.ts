@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
 import { ISeasonView } from '../../admin.types';
-import { SeasonStateService } from '../../services/season-state.service';
+import { AdminSeasonStateService } from '../../services/season-state.service';
 import { SeasonEditorComponent } from '../editor/season-editor.component';
 import { SeasonChangeStatusComponent } from '../status/season-change-status.component';
 
@@ -17,7 +17,7 @@ export class SeasonViewDetailsComponent implements OnInit {
 
   season$: Observable<ISeasonView>;
 
-  constructor(private state: SeasonStateService, private modalService: BsModalService) { }
+  constructor(private state: AdminSeasonStateService, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.season$ = this.state.season$;

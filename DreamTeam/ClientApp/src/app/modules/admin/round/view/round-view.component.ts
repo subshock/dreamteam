@@ -4,9 +4,11 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { isNumber } from 'src/app/shared/helpers';
-import { IPlayerUpdate, IPlayerView, IPointDefinition, IRoundPlayer, IRoundPlayerUpdate, IRoundView, ISeasonView, RoundStateType } from '../../admin.types';
+import {
+  IPlayerView, IPointDefinition, IRoundPlayer, IRoundPlayerUpdate, IRoundView, ISeasonView, RoundStateType
+} from '../../admin.types';
 import { AdminApiService } from '../../services/admin-api.service';
-import { SeasonStateService } from '../../services/season-state.service';
+import { AdminSeasonStateService } from '../../services/season-state.service';
 import { RoundCompleteComponent } from '../complete/round-complete.component';
 
 interface IModel {
@@ -52,7 +54,7 @@ export class RoundViewComponent implements OnInit, OnDestroy {
 
   modalRef: BsModalRef;
 
-  constructor(private state: SeasonStateService, private adminApi: AdminApiService, private route: ActivatedRoute,
+  constructor(private state: AdminSeasonStateService, private adminApi: AdminApiService, private route: ActivatedRoute,
     private cd: ChangeDetectorRef, private modalService: BsModalService) { }
 
   ngOnInit(): void {

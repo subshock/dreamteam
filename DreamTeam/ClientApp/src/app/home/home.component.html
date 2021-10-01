@@ -25,6 +25,76 @@
     </ng-container>
   </div>
 </ng-container>
+<ng-container *ngIf="leaderboard$ | async as leaderboard">
+  <div class="row leaderboards">
+    <div class="col-6">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th colspan="3">
+              <a [routerLink]="['season', leaderboard.season.id, 'teams']">
+                Team Leaderboard
+              </a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of leaderboard.teams">
+            <th class="text-center">{{ t.rank }}</th>
+            <td>
+              <a [routerLink]="['season', leaderboard.season.id, 'team', t.id]">
+                {{ t.name }}
+              </a>
+            </td>
+            <td class="text-right">{{ t.points | number }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3">
+              <a class="btn btn-primary" [routerLink]="['season', leaderboard.season.id, 'teams']">
+                More...
+              </a>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="col-6">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th colspan="3">
+              <a [routerLink]="['season', leaderboard.season.id, 'players']">
+                Player Leaderboard
+              </a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of leaderboard.players">
+            <th class="text-center">{{ p.rank }}</th>
+            <td>
+              <a [routerLink]="['season', leaderboard.season.id, 'player', p.id]">
+                {{ p.name }}
+              </a>
+            </td>
+            <td class="text-right">{{ p.points | number }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3">
+              <a class="btn btn-primary stretched-link" [routerLink]="['season', leaderboard.season.id, 'players']">
+                More...
+              </a>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</ng-container>
 
 <ng-template #signInRegisterTpl>
   <a class="btn btn-lg btn-success" [routerLink]="['/authentication/login']">Login</a>

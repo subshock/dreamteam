@@ -90,3 +90,19 @@ export interface IPaymentSettings {
   locationId: string;
   webSdkUrl: string;
 }
+
+export interface IPlayerLeaderboard extends IPointDefinition {
+  id: string;
+  name: string;
+  rank: number;
+  multiplier: number;
+  points: number;
+}
+
+export interface ITeamLeaderboard extends IPointDefinition {
+  id: string;
+  name: string;
+  owner: string;
+  rank: number;
+  points: number;
+}

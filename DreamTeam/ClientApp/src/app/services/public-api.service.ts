@@ -19,6 +19,10 @@ export class PublicApiService {
     return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/current`);
   }
 
+  getSeason(id: string): Observable<IPublicSeasonInfo> {
+    return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/${encodeURIComponent(id)}`);
+  }
+
   getSeasonPlayers(seasonId: string): Observable<any[]> {
     return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/players`);
   }
@@ -27,16 +31,20 @@ export class PublicApiService {
     return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/rounds`);
   }
 
+  getCompletedRound(seasonId: string, roundId: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/round/${encodeURIComponent(roundId)}`);
+  }
+
   getTeamLeaderboardReport(seasonId: string, roundId: string | null, limit: number | null) {
     const suffix = roundId == null ? '' : `/${encodeURIComponent(roundId)}`;
-    const opts = limit != null ? { params: { limit: limit }} : null;
+    const opts = limit != null ? { params: { limit: limit }} : {};
     return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/reports/teams/leaderboard${suffix}`,
       opts);
   }
 
   getPlayerLeaderboardReport(seasonId: string, roundId: string | null, limit: number | null) {
     const suffix = roundId == null ? '' : `/${encodeURIComponent(roundId)}`;
-    const opts = limit != null ? { params: { limit: limit }} : null;
+    const opts = limit != null ? { params: { limit: limit }} : {};
     return this.httpClient.get<any[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/reports/players/leaderboard${suffix}`,
       opts);
   }

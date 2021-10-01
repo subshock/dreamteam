@@ -32,7 +32,7 @@ namespace DreamTeam.Data
                 "    INNER JOIN RoundPlayers AS RP ON RP.RoundId = R.Id " +
                 "    INNER JOIN Players AS P ON RP.PlayerId = P.Id " +
                 "WHERE R.SeasonId = @seasonId AND R.Status = 1 AND(@roundId Is Null OR R.Id = @roundId) " +
-                "GROUP BY P.Id, P.Name " +
+                "GROUP BY P.Id, P.Name, P.Multiplier " +
                 "ORDER BY[Rank]", new { seasonId, roundId });
         }
     }

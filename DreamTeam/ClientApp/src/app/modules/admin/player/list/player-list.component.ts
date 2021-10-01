@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { IPlayerUpdate, IPlayerView } from '../../admin.types';
 import { AdminApiService } from '../../services/admin-api.service';
-import { SeasonStateService } from '../../services/season-state.service';
+import { AdminSeasonStateService } from '../../services/season-state.service';
 
 @Component({
   templateUrl: './player-list.component.html',
@@ -29,7 +29,7 @@ export class PlayerListComponent implements OnInit {
 
   modalRef?: BsModalRef;
 
-  constructor(private state: SeasonStateService, private adminApi: AdminApiService, private cd: ChangeDetectorRef,
+  constructor(private state: AdminSeasonStateService, private adminApi: AdminApiService, private cd: ChangeDetectorRef,
     private modalService: BsModalService) { }
 
   ngOnInit(): void {

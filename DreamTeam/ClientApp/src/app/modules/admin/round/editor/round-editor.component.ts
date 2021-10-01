@@ -3,12 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsDaterangepickerConfig } from 'ngx-bootstrap/datepicker';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { formatDateOnly } from 'src/app/shared/helpers';
 import { DaterangeValidator } from 'src/app/shared/validators/daterange.validator';
 import { IRoundUpdate } from '../../admin.types';
 import { AdminApiService } from '../../services/admin-api.service';
-import { SeasonStateService } from '../../services/season-state.service';
 
 @Component({
   templateUrl: './round-editor.component.html',

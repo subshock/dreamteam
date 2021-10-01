@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { IRoundSummary, RoundStateType } from '../../admin.types';
 import { AdminApiService } from '../../services/admin-api.service';
-import { SeasonStateService } from '../../services/season-state.service';
+import { AdminSeasonStateService } from '../../services/season-state.service';
 import { RoundEditorComponent } from '../editor/round-editor.component';
 
 export interface IRoundModel extends IRoundSummary {
@@ -26,7 +26,7 @@ export class RoundListComponent implements OnInit, OnDestroy {
   deleteObj: IRoundModel;
   modalRef?: BsModalRef;
 
-  constructor(private state: SeasonStateService, private adminApi: AdminApiService, private modalService: BsModalService) { }
+  constructor(private state: AdminSeasonStateService, private adminApi: AdminApiService, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.subscriptions = new Subscription();

@@ -39,7 +39,7 @@ export class TradePeriodListComponent implements OnInit {
 
   modalRef: BsModalRef;
 
-  constructor(private state: SeasonStateService, private adminApi: AdminApiService,
+  constructor(private state: AdminSeasonStateService, private adminApi: AdminApiService,
     private cd: ChangeDetectorRef, private modalService: BsModalService) { }
 
   ngOnInit(): void {

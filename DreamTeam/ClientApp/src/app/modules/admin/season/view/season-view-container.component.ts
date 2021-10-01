@@ -4,12 +4,12 @@ import { Observable, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AdminNavItemId, ISeasonView } from '../../admin.types';
 import { AdminStateService } from '../../services/admin-state.service';
-import { SeasonStateService } from '../../services/season-state.service';
+import { AdminSeasonStateService } from '../../services/season-state.service';
 
 @Component({
   templateUrl: 'season-view-container.component.html',
   styleUrls: ['season-view-container.component.less'],
-  providers: [SeasonStateService]
+  providers: [AdminSeasonStateService]
 })
 
 export class SeasonViewContainerComponent implements OnInit, OnDestroy {
@@ -18,7 +18,7 @@ export class SeasonViewContainerComponent implements OnInit, OnDestroy {
   season$: Observable<ISeasonView>;
   tabs$: Observable<{ [key: string]: boolean }>;
 
-  constructor(private route: ActivatedRoute, private state: SeasonStateService, private adminState: AdminStateService) { }
+  constructor(private route: ActivatedRoute, private state: AdminSeasonStateService, private adminState: AdminStateService) { }
 
   ngOnInit() {
     this.adminState.addNavItem({ id: AdminNavItemId.Seasons, name: 'Seasons', route: ['/admin/season'] });

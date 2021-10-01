@@ -30,6 +30,17 @@ namespace DreamTeam.Areas.Api.Public
             return Ok(obj);
         }
 
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetSeason(Guid id)
+        {
+            var obj = await _db.PublicGetSeasonInfo(id);
+
+            if (obj == null)
+                return NotFound();
+
+            return Ok(obj);
+        }
+
         [HttpGet("{seasonId:guid}/players")]
         public async Task<IActionResult> GetSeasonPlayers(Guid seasonId)
         {
@@ -48,8 +59,19 @@ namespace DreamTeam.Areas.Api.Public
             return Ok(await _db.Rounds.Where(x => x.SeasonId == seasonId && x.Status == RoundStateType.Completed).OrderBy(x => x.Name).ToListAsync());
         }
 
-        [HttpGet("{seasonId}/reports/teams/leaderboard")]
-        [HttpGet("{seasonId}/reports/teams/leaderboard/{roundId}")]
+        [HttpGet("{seasonId:guid}/rounds/{roundId:guid}")]
+        public async Task<IActionResult> GetCompletedRound(Guid seasonId, Guid roundId)
+        {
+            var round = await _db.Rounds.Where(x => x.SeasonId == seasonId && x.Id == roundId && x.Status == RoundStateType.Completed).FirstOrDefaultAsync();
+
+            if (round == null)
+                return NotFound();
+
+            return Ok(round);
+        }
+
+        [HttpGet("{seasonId:guid}/reports/teams/leaderboard")]
+        [HttpGet("{seasonId:guid}/reports/teams/leaderboard/{roundId:guid}")]
         public async Task<IActionResult> GetTeamLeaderboardReport(Guid seasonId, Guid? roundId, [FromQuery] int limit = 0)
         {
             var teams = await _db.GetTeamLeaderboardReport(seasonId, roundId);
@@ -60,8 +82,8 @@ namespace DreamTeam.Areas.Api.Public
             return Ok(teams);
         }
 
-        [HttpGet("{seasonId}/reports/players/leaderboard")]
-        [HttpGet("{seasonId}/reports/players/leadboard/{roundId}")]
+        [HttpGet("{seasonId:guid}/reports/players/leaderboard")]
+        [HttpGet("{seasonId:guid}/reports/players/leaderboard/{roundId:guid}")]
         public async Task<IActionResult> GetPlayerLeaderboardReport(Guid seasonId, Guid? roundId, [FromQuery] int limit = 0)
         {
             var players = await _db.GetPlayerLeaderboardReport(seasonId, roundId);

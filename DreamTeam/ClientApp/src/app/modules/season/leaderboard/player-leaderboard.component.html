@@ -1,0 +1,30 @@
+<ng-container *ngIf="leaderboard$ | async as players">
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th class="text-center">Rank</th>
+        <th>Player</th>
+        <th class="text-center">R</th>
+        <th class="text-center">UW</th>
+        <th class="text-center">AW</th>
+        <th class="text-center">C</th>
+        <th class="text-center">RO</th>
+        <th class="text-center">ST</th>
+        <th class="text-right">Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of players">
+        <td class="text-center">{{ p.rank }}</td>
+        <td>{{ p.name }}</td>
+        <td class="text-center">{{ p.runs | number }}</td>
+        <td class="text-center">{{ p.unassistedWickets | number }}</td>
+        <td class="text-center">{{ p.assistedWickets | number }}</td>
+        <td class="text-center">{{ p.catches | number }}</td>
+        <td class="text-center">{{ p.runouts | number }}</td>
+        <td class="text-center">{{ p.stumpings | number }}</td>
+        <td class="text-right">{{ p.points | number }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-container>

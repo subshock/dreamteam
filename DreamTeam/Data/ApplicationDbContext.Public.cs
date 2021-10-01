@@ -11,11 +11,11 @@ namespace DreamTeam.Data
     {
         #region Public data access
 
-        public Task<PublicSeasonInfoViewModel> PublicGetSeasonInfo()
+        public Task<PublicSeasonInfoViewModel> PublicGetSeasonInfo(Guid? id = null)
         {
             return Connection.QueryFirstOrDefaultAsync<PublicSeasonInfoViewModel>("SELECT Id, Name, Status, Cost, Budget, Runs, " +
                 "UnassistedWickets, AssistedWickets, Catches, Runouts, Stumpings " +
-                "FROM Seasons");
+                "FROM Seasons WHERE (@id Is Null OR Id=@id)", new { id });
         }
 
         #endregion
