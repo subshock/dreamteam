@@ -3,8 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AdminApiService } from '../../services/admin-api.service';
-import { ISeasonUpdate } from '../../admin.types';
+import { DefaultDatepickerConfig, ISeasonUpdate } from '../../admin.types';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { formatDateOnly } from 'src/app/shared/helpers';
 
 @Component({
   templateUrl: './season-editor.component.html',
@@ -15,6 +16,8 @@ export class SeasonEditorComponent implements OnInit {
 
   mode: 'add' | 'update';
   seasonId: string;
+
+  DefaultDatepickerConfig = DefaultDatepickerConfig;
 
   private defaultSeason: ISeasonUpdate = {
     name: '',
@@ -27,7 +30,8 @@ export class SeasonEditorComponent implements OnInit {
       catches: 10,
       runouts: 10,
       stumpings: 10
-    }
+    },
+    registrationEndDate: null
   };
 
   model$: Observable<ISeasonUpdate>;
@@ -54,7 +58,8 @@ export class SeasonEditorComponent implements OnInit {
               catches: new FormControl(season.pointDefinition?.catches, Validators.required),
               runouts: new FormControl(season.pointDefinition?.runouts, Validators.required),
               stumpings: new FormControl(season.pointDefinition?.stumpings, Validators.required)
-            })
+            }),
+            registrationEndDate: new FormControl(season.registrationEndDate ? new Date(season.registrationEndDate) : null)
           });
         })
       );
@@ -68,6 +73,8 @@ export class SeasonEditorComponent implements OnInit {
   save() {
     if (this.seasonForm.valid) {
       const season: ISeasonUpdate = <ISeasonUpdate>this.seasonForm.value;
+
+      season.registrationEndDate = formatDateOnly(season.registrationEndDate);
 
       const obs = this.mode === 'add' ? this.adminApi.addSeason(season) : this.adminApi.updateSeason(this.seasonId, season);
 

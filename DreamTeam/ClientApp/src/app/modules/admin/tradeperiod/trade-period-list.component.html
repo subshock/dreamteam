@@ -62,7 +62,7 @@
   <ng-template #updateTradePeriodTpl>
     <tr *ngIf="editTradePeriod$ | async as editTradePeriod" class="form">
       <td colspan="2">
-        <input type="text" class="form-control" required readonly autocomplete="off" readonly bsDaterangepicker
+        <input type="text" class="form-control" required autocomplete="off" readonly bsDaterangepicker
           [bsConfig]="bsDatepickerOpts" [(ngModel)]="editTradePeriod.period">
       </td>
       <td>

@@ -4,9 +4,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { formatDateOnly } from 'src/app/shared/helpers';
-import { ISeasonView, ITradePeriod, ITradePeriodUpdate } from '../admin.types';
+import { DefaultDaterangepickerConfig, ISeasonView, ITradePeriod, ITradePeriodUpdate } from '../admin.types';
 import { AdminApiService } from '../services/admin-api.service';
-import { SeasonStateService } from '../services/season-state.service';
+import { AdminSeasonStateService } from '../services/season-state.service';
 
 interface ITradePeriodForm {
   id?: string;
@@ -25,12 +25,7 @@ export class TradePeriodListComponent implements OnInit {
   tradePeriods$: Observable<ITradePeriod[]>;
   season$: Observable<ISeasonView>;
 
-  bsDatepickerOpts?: Partial<BsDaterangepickerConfig> = {
-    showWeekNumbers: false,
-    containerClass: 'theme-dark-blue',
-    rangeInputFormat: 'ddd D MMM YYYY',
-    rangeSeparator: ' - '
-  };
+  bsDatepickerOpts = DefaultDaterangepickerConfig;
 
   defaultNewTradePeriod: ITradePeriodForm = {
     period: [null, null],

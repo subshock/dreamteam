@@ -15,8 +15,8 @@
     <tr>
       <th>Name</th>
       <th>Status</th>
-      <th>Created</th>
-      <th>Updated</th>
+      <th>Last Updated</th>
+      <th>Registration Ends</th>
       <th class="text-center">Cost</th>
     </tr>
   </thead>
@@ -30,10 +30,10 @@
           {{ s.status | seasonState }}
         </td>
         <td>
-          {{ s.created | date:'d MMM yyyy h:mm a'}}
+          {{ (s.updated || s.created) | date:'d MMM yyyy h:mm a'}}
         </td>
         <td>
-          {{ s.updated | date:'d MMM yyyy h:mm a'}}
+          {{ s.registrationEndDate | date:'d MMM yyyy h:mm a'}}
         </td>
         <td class="text-center">
           {{ s.cost | currency }}

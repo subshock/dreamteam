@@ -16,6 +16,11 @@
   </dl>
 
   <dl>
+    <dt>Registration Ends</dt>
+    <dd>{{ season.registrationEndDate | date:'d MMM yyyy h:mm a' || 'None set' }}</dd>
+  </dl>
+
+  <dl>
     <dt>Status</dt>
     <dd>
       <span class="badge badge-primary">{{ season.status | seasonState:'name' | uppercase }}</span>

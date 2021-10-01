@@ -108,7 +108,7 @@ namespace DreamTeam.Areas.Api.User
 
             var season = await _db.GetSeasonByTeam(teamId);
 
-            if (season.Status != SeasonStateType.Registration)
+            if (season.Status != SeasonStateType.Registration || (season.RegistrationEndDate != null && season.RegistrationEndDate.Value < DateTime.Now))
                 return Forbid();
 
             await _db.UpdateTeamDetails(UserId, teamId, model);

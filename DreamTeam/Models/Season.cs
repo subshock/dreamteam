@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DreamTeam.Models
 {
@@ -21,6 +19,8 @@ namespace DreamTeam.Models
         public int Catches { get; set; }
         public int Runouts { get; set; }
         public int Stumpings { get; set; }
+
+        public DateTimeOffset? RegistrationEndDate { get; set; }
 
 
         [NotMapped]

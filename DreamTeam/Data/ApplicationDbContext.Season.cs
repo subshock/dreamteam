@@ -15,7 +15,7 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<SeasonSummaryViewModel>> GetSeasonsAsync()
         {
-            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Status, Created, Updated, Name FROM Seasons ORDER BY Created DESC");
+            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Status, Created, Updated, Name, RegistrationEndDate FROM Seasons ORDER BY Created DESC");
         }
 
         public async Task<SeasonViewModel> GetSeasonAsync(Guid id)
@@ -26,7 +26,8 @@ namespace DreamTeam.Data
                     (SELECT COUNT(*) FROM Players WHERE SeasonId=S.Id) AS Players,
                     (SELECT COUNT(*) FROM Teams WHERE SeasonId=S.Id) AS Teams,
                     (SELECT COUNT(*) FROM Rounds WHERE SeasonId=S.Id) AS Rounds,
-                    (SELECT COUNT(*) FROM TradePeriods WHERE SeasonId=S.Id) AS TradePeriods
+                    (SELECT COUNT(*) FROM TradePeriods WHERE SeasonId=S.Id) AS TradePeriods,
+                    S.RegistrationEndDate
                 FROM Seasons AS S
                 WHERE S.Id=@id
                 ", new { id });
@@ -56,6 +57,7 @@ namespace DreamTeam.Data
                 Stumpings = model.PointDefinition.Stumpings,
                 AssistedWickets = model.PointDefinition.AssistedWickets,
                 UnassistedWickets = model.PointDefinition.UnassistedWickets,
+                RegistrationEndDate = model.RegistrationEndDate
             };
 
             Seasons.Add(season);
@@ -82,6 +84,7 @@ namespace DreamTeam.Data
             season.Stumpings = model.PointDefinition.Stumpings;
             season.AssistedWickets = model.PointDefinition.AssistedWickets;
             season.UnassistedWickets = model.PointDefinition.UnassistedWickets;
+            season.RegistrationEndDate = model.RegistrationEndDate;
 
             Seasons.Update(season);
 
@@ -158,7 +161,8 @@ namespace DreamTeam.Data
                         Catches = Catches,
                         Runouts = Runouts,
                         Stumpings = Stumpings
-                    }
+                    },
+                    RegistrationEndDate = RegistrationEndDate
                 };
             }
         }

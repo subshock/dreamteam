@@ -56,17 +56,22 @@ namespace DreamTeam.Data
 
         public Task<PublicTradePeriodViewModel> GetCurrentTradePeriod(Guid seasonId)
         {
-            return Connection.QueryFirstOrDefaultAsync<PublicTradePeriodViewModel>("SELECT Id, StartDate, EndDate, TradeLimit " +
-                "FROM TradePeriods " +
-                "WHERE SeasonId=@seasonId AND StartDate>=@now AND EndDate<=@now", new { seasonId, now = DateTime.UtcNow });
+            return Connection.QueryFirstOrDefaultAsync<PublicTradePeriodViewModel>(
+                "SELECT Id, StartDate, EndDate, TradeLimit FROM TradePeriods WHERE SeasonId=@seasonId AND StartDate<=@now AND DATEADD(day, 1, EndDate)>@now " +
+                "UNION " +
+                "SELECT NULL, S.Created, S.RegistrationEndDate, 0 FROM Seasons AS S WHERE S.Id = @seasonId AND S.RegistrationEndDate Is Not Null AND S.RegistrationEndDate > @now", 
+                new { seasonId, now = DateTime.UtcNow });
         }
 
         public Task<PublicTradePeriodViewModel> GetCurrentTradePeriodByTeam(Guid teamId)
         {
             return Connection.QueryFirstOrDefaultAsync<PublicTradePeriodViewModel>("SELECT TP.Id, TP.StartDate, TP.EndDate, TP.TradeLimit " +
-                "FROM TradePeriods TP " +
-                "   INNER JOIN Teams AS T ON TP.SeasonId=T.SeasonId " +
-                "WHERE T.Id=@teamId AND TP.StartDate>=@now AND TP.EndDate<=@now", new { teamId, now = DateTime.UtcNow });
+                "FROM TradePeriods TP INNER JOIN Teams AS T ON TP.SeasonId = T.SeasonId " +
+                "WHERE T.Id = @teamId AND TP.StartDate <= @now AND DATEADD(day, 1, TP.EndDate) > @now " +
+                "UNION " +
+                "SELECT NULL, S.Updated, S.RegistrationEndDate, 0 " +
+                "FROM Seasons AS S INNER JOIN Teams AS T ON S.Id = T.SeasonId " +
+                "WHERE T.Id = @teamId AND S.RegistrationEndDate Is Not Null AND S.RegistrationEndDate > @now", new { teamId, now = DateTime.UtcNow });
         }
 
         public Task<bool> IsTradePeriodActive(Guid seasonId)

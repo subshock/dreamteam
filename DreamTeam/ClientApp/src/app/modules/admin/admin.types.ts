@@ -1,3 +1,5 @@
+import { BsDatepickerConfig, BsDaterangepickerConfig } from 'ngx-bootstrap/datepicker';
+
 export enum AdminNavItemId {
   Admin = 1,
   Seasons = 2,
@@ -28,6 +30,7 @@ export interface ISeasonSummary {
   created: string;
   updated: string;
   status: SeasonStateType;
+  registrationEndDate: string;
 }
 
 export interface IPointDefinition {
@@ -52,6 +55,7 @@ export interface ISeasonView {
   rounds: number;
   tradePeriods: number;
   pointDefinition: IPointDefinition;
+  registrationEndDate: string;
 }
 
 export interface ISeasonUpdate {
@@ -59,6 +63,7 @@ export interface ISeasonUpdate {
   cost: number;
   budget: number;
   pointDefinition: IPointDefinition;
+  registrationEndDate: string | Date;
 }
 
 export interface IPlayerUpdate {
@@ -176,3 +181,18 @@ export interface IPaymentDetail {
   };
   teams: ITeamSummary[];
 }
+
+export const DefaultDatepickerConfig: Partial<BsDatepickerConfig> = {
+  adaptivePosition: true,
+  showWeekNumbers: false,
+  containerClass: 'theme-dark-blue',
+  dateInputFormat: 'ddd D MMM YYYY'
+};
+
+export const DefaultDaterangepickerConfig: Partial<BsDaterangepickerConfig> = {
+  adaptivePosition: true,
+  showWeekNumbers: false,
+  containerClass: 'theme-dark-blue',
+  rangeInputFormat: 'ddd D MMM YYYY',
+  rangeSeparator: ' - '
+};
