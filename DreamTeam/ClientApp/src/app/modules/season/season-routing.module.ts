@@ -3,7 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { LeaderboardContainerComponent } from './leaderboard/leaderboard-container.component';
 import { PlayerLeaderboardComponent } from './leaderboard/player-leaderboard.component';
 import { TeamLeaderboardComponent } from './leaderboard/team-leaderboard.component';
+import { SeasonPlayerViewComponent } from './player/season-player-view.component';
 import { SeasonContainerComponent } from './season-container.component';
+import { SeasonTeamViewComponent } from './team/season-team-view.component';
 
 const routes: Routes = [
   {
@@ -21,7 +23,9 @@ const routes: Routes = [
           { path: '', component: PlayerLeaderboardComponent, pathMatch: 'full' },
           { path: ':id', component: PlayerLeaderboardComponent }
         ]
-      }
+      },
+      { path: 'player/:id', component: SeasonPlayerViewComponent },
+      { path: 'team/:id', component: SeasonTeamViewComponent }
     ]
   }
 ];

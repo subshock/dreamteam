@@ -93,5 +93,17 @@ namespace DreamTeam.Areas.Api.Public
 
             return Ok(players);
         }
+
+        [HttpGet("{seasonId:guid}/reports/player/{playerId:guid}")]
+        public async Task<IActionResult> GetPlayerReport(Guid seasonId, Guid playerId)
+        {
+            return Ok(await _db.GetPlayerReport(seasonId, playerId));
+        }
+
+        [HttpGet("{seasonId:guid}/reports/team/{teamId:guid}")]
+        public async Task<IActionResult> GetTeamReport(Guid seasonId, Guid teamId)
+        {
+            return Ok(await _db.GetTeamReport(seasonId, teamId));
+        }
     }
 }

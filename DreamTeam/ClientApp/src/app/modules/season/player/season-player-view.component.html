@@ -1,0 +1,86 @@
+<ng-container *ngIf="model$ | async as model">
+  <h2 class="d-flex flex-wrap justify-content-between">
+    <span class="mr-5">{{ model.player.name }}</span>
+    <strong class="text-muted">
+      {{ model.total.points | number }} points
+    </strong>
+  </h2>
+  <div class="d-flex flex-wrap justify-content-between border-top mt-3 pt-3 border-bottom mb-3 pb-3">
+    <dl>
+      <dt>Cost</dt>
+      <dd>{{ model.player.cost }}</dd>
+    </dl>
+    <dl *ngIf="model.player.multiplier > 1">
+      <dt>Multiplier</dt>
+      <dd>{{ model.player.multiplier | number }}x</dd>
+    </dl>
+    <dl>
+      <dt>Teams selected in</dt>
+      <dd>{{ model.player.teams | number }}</dd>
+    </dl>
+    <dl>
+      <dt>Selected as captain</dt>
+      <dd>{{ model.player.teamCaptain | number }}</dd>
+    </dl>
+    <dl>
+      <dt>Selected as vice-captain</dt>
+      <dd>{{ model.player.teamViceCaptain | number }}</dd>
+    </dl>
+  </div>
+
+  <div class="chart-container border-bottom mb-3 pb-3" *ngIf="chartParam$ | async as chartParams">
+    <h4>Chart and Comparison
+      <div class="btn-group btn-group-sm float-right">
+        <button type="button" class="btn btn-secondary" [class.active]="chartParams.type === 'cumulative'"
+          (click)="toggleChartType(chartParams)">
+          <i class="fa fa-fw" [class.fa-square]="chartParams.type !== 'cumulative'"
+            [class.fa-check-square]="chartParams.type === 'cumulative'"></i>
+          Cumulative
+        </button>
+      </div>
+    </h4>
+    <div echarts [options]="chart$ | async" [loading]="loadingChart" theme="dark"></div>
+  </div>
+
+  <h4>Round by Round</h4>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Round</th>
+          <th class="text-center" popover="Runs">R</th>
+          <th class="text-center" popover="Unassisted Wickets">UW</th>
+          <th class="text-center" popover="Assisted Wickets">AW</th>
+          <th class="text-center" popover="Catches">C</th>
+          <th class="text-center" popover="Runouts">RO</th>
+          <th class="text-center" popover="Stumpings">ST</th>
+          <th class="text-right">Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of model.rounds">
+          <td>{{ r.round }}</td>
+          <td class="text-center">{{ r.runs | number }}</td>
+          <td class="text-center">{{ r.unassistedWickets | number }}</td>
+          <td class="text-center">{{ r.assistedWickets | number }}</td>
+          <td class="text-center">{{ r.catches | number }}</td>
+          <td class="text-center">{{ r.runouts | number }}</td>
+          <td class="text-center">{{ r.stumpings | number }}</td>
+          <td class="text-right">{{ r.points | number }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Total</th>
+          <th class="text-center">{{ model.total.runs | number }}</th>
+          <th class="text-center">{{ model.total.unassistedWickets | number }}</th>
+          <th class="text-center">{{ model.total.assistedWickets | number }}</th>
+          <th class="text-center">{{ model.total.catches | number }}</th>
+          <th class="text-center">{{ model.total.runouts | number }}</th>
+          <th class="text-center">{{ model.total.stumpings | number }}</th>
+          <th class="text-right">{{ model.total.points | number }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</ng-container>

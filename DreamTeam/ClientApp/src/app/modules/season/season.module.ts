@@ -9,7 +9,26 @@ import { SeasonHeaderComponent } from './header/season-header.component';
 import { CommonModule } from '@angular/common';
 import { RoundPaginationComponent } from './round-pagination/round-pagination.component';
 import { LeaderboardContainerComponent } from './leaderboard/leaderboard-container.component';
+import { SeasonPlayerViewComponent } from './player/season-player-view.component';
+import { NgxEchartsModule } from 'ngx-echarts';
 
+import * as echarts from 'echarts/core';
+import {
+  LineChart
+} from 'echarts/charts';
+import {
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+} from 'echarts/components';
+import {
+  CanvasRenderer
+} from 'echarts/renderers';
+import { SeasonTeamViewComponent } from './team/season-team-view.component';
+
+echarts.use(
+  [TooltipComponent, LegendComponent, LineChart, CanvasRenderer, GridComponent]
+);
 
 @NgModule({
   declarations: [
@@ -18,9 +37,12 @@ import { LeaderboardContainerComponent } from './leaderboard/leaderboard-contain
     SeasonContainerComponent,
     SeasonHeaderComponent,
     RoundPaginationComponent,
-    LeaderboardContainerComponent
+    LeaderboardContainerComponent,
+    SeasonPlayerViewComponent,
+    SeasonTeamViewComponent
   ],
   imports: [
+    NgxEchartsModule.forRoot({ echarts }),
     CommonModule,
     SharedModule,
     SeasonRoutingModule

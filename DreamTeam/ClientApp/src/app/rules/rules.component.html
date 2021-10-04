@@ -1,5 +1,5 @@
 <div class="d-lg-flex">
-  <div class="mr-3">
+  <div class="mr-3 jumbotron">
     <h1>Rules</h1>
     <p class="lead">Follow the rules and nobody gets hurt.</p>
     <ul>
@@ -22,70 +22,76 @@
     </ul>
   </div>
 
-  <div *ngIf="season$ | async as season" class="mr-3">
-    <h1>{{ season.name }}</h1>
-
-    <dl>
-      <dt>Cost to Enter</dt>
-      <dd>{{ season.cost | currency }}</dd>
-    </dl>
-
-    <dl>
-      <dt>Salary Cap</dt>
-      <dd>{{ season.budget | number }}</dd>
-    </dl>
-
-    <h5>Points per</h5>
-
-    <dl>
-      <dt>Run</dt>
-      <dd>{{ season.runs | number }}</dd>
-    </dl>
-
-    <dl>
-      <dt>Unassisted Wicket</dt>
-      <dd>{{ season.unassistedWickets | number }}</dd>
-    </dl>
-
-    <dl>
-      <dt>Assisted Wicket</dt>
-      <dd>{{ season.assistedWickets | number }}</dd>
-    </dl>
-
-    <dl>
-      <dt>Catch</dt>
-      <dd>{{ season.catches | number }}</dd>
-    </dl>
-
-    <dl>
-      <dt>Runout</dt>
-      <dd>{{ season.runouts | number }}</dd>
-    </dl>
-
-    <dl>
-      <dt>Stumping</dt>
-      <dd>{{ season.stumpings | number }}</dd>
-    </dl>
-  </div>
-
   <div>
-    <h1>Prizes</h1>
-    <dl>
-      <dt>1st Prize</dt>
-      <dd>50% of pool</dd>
-    </dl>
-    <dl>
-      <dt>2nd Prize</dt>
-      <dd>25% of pool</dd>
-    </dl>
-    <dl>
-      <dt>3rd Prize</dt>
-      <dd>15% of pool</dd>
-    </dl>
-    <dl>
-      <dt>Best Team after Christmas</dt>
-      <dd>10% of pool</dd>
-    </dl>
-    <p>$5 from each entry will go to the cricket club.</p>
+    <div *ngIf="season$ | async as season" class="jumbotron mb-3">
+      <h1>{{ season.name }}</h1>
+
+      <div class="d-flex flex-wrap">
+        <dl>
+          <dt>Cost to Enter</dt>
+          <dd>{{ season.cost | currency }}</dd>
+        </dl>
+
+        <dl>
+          <dt>Salary Cap</dt>
+          <dd>{{ season.budget | number }}</dd>
+        </dl>
+      </div>
+
+      <h5>Points per</h5>
+
+      <div class="d-flex flex-wrap">
+        <dl>
+          <dt>Run</dt>
+          <dd>{{ season.runs | number }}</dd>
+        </dl>
+
+        <dl>
+          <dt>Unassisted Wicket</dt>
+          <dd>{{ season.unassistedWickets | number }}</dd>
+        </dl>
+
+        <dl>
+          <dt>Assisted Wicket</dt>
+          <dd>{{ season.assistedWickets | number }}</dd>
+        </dl>
+
+        <dl>
+          <dt>Catch</dt>
+          <dd>{{ season.catches | number }}</dd>
+        </dl>
+
+        <dl>
+          <dt>Runout</dt>
+          <dd>{{ season.runouts | number }}</dd>
+        </dl>
+
+        <dl>
+          <dt>Stumping</dt>
+          <dd>{{ season.stumpings | number }}</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="jumbotron">
+      <h1>Prizes</h1>
+      <dl>
+        <dt>1st Prize</dt>
+        <dd>50% of pool</dd>
+      </dl>
+      <dl>
+        <dt>2nd Prize</dt>
+        <dd>25% of pool</dd>
+      </dl>
+      <dl>
+        <dt>3rd Prize</dt>
+        <dd>15% of pool</dd>
+      </dl>
+      <dl>
+        <dt>Best Team after Christmas</dt>
+        <dd>10% of pool</dd>
+      </dl>
+      <p>$5 from each entry will go to the cricket club.</p>
+    </div>
   </div>
 </div>

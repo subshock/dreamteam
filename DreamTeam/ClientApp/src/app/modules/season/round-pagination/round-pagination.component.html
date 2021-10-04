@@ -1,5 +1,5 @@
 <ng-container *ngIf="model$ | async as model">
-  <ul class="pagination justify-content-center">
+  <ul class="pagination flex-wrap justify-content-center">
     <li *ngFor="let r of model.rounds" class="page-item" routerLinkActive="active">
       <a class="page-link" [routerLink]="['/', 'season', model.season.id, type, r.id]">{{ r.name }}</a>
     </li>
