@@ -91,6 +91,7 @@ namespace DreamTeam.Data
 
         public async Task<TeamReportViewModel> GetTeamReport(Guid seasonId, Guid teamId)
         {
+            var hideTeamPlayers = await CanManageTeamAsync(seasonId);
             var sql = "SELECT Id, Name, Owner FROM Teams  WHERE Id=@teamId AND SeasonId=@seasonId AND Valid=1; " +
                 "SELECT UTP.PlayerId AS Id, P.Name, P.Multiplier, UTP.Cost, " +
                 "    COALESCE((SELECT SUM(RP.Points) FROM Rounds AS R INNER JOIN RoundPlayers AS RP ON R.Id = RP.RoundId WHERE R.Status = 1 AND RP.PlayerId = UTP.PlayerId), 0) AS Points, " +
@@ -143,6 +144,9 @@ namespace DreamTeam.Data
                     Type = x.Key.Type,
                     Rounds = x.Select(r => new TeamReportViewModel.RoundSummary { Points = r.Points, RoundRank = r.RoundRank, SeasonRank = r.SeasonRank }).ToList()
                 }).ToList();
+
+                if (hideTeamPlayers)
+                    ret.Players = null;
 
                 return ret;
             }

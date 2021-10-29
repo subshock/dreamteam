@@ -157,5 +157,29 @@ namespace DreamTeam.Data
                 "WHERE RegistrationToken=@token " +
                 "ORDER BY T.Name, COALESCE(U.Name, U.UserName)", new { token });
         }
+
+        /// <summary>
+        /// Returns whether the user can manage their team by checking the season is in registration mode, before the season start date and whether
+        /// it is in a trade period
+        /// </summary>
+        /// <param name="seasonId">The season to check</param>
+        /// <returns>True if teams can be managed by users</returns>
+        public async Task<bool> CanManageTeamAsync(Guid seasonId)
+        {
+            var season = await GetSeasonAsync(seasonId);
+
+            if (season.Status == SeasonStateType.Registration && DateTime.Now < season.RegistrationEndDate)
+                return true;
+
+            if (season.Status == SeasonStateType.Running)
+            {
+                var tradePeriod = await GetCurrentTradePeriod(seasonId);
+
+                if (tradePeriod == null)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

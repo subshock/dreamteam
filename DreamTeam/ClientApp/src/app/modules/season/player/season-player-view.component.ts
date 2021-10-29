@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Inject, LOCALE_ID } from '@
 import { ActivatedRoute } from '@angular/router';
 import { EChartsOption } from 'echarts';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { PublicApiService } from 'src/app/services/public-api.service';
 import { IPlayerReport, IPlayerReportRound, IPlayerReportRoundSummary } from 'src/app/types/public.types';
 import { PublicSeasonStateService } from '../public-season-state.service';
@@ -32,7 +32,8 @@ export class SeasonPlayerViewComponent implements OnInit {
   ngOnInit(): void {
     this.model$ = combineLatest([this.state.season$, this.route.paramMap]).pipe(
       switchMap(([s, p]) => this.publicApi.getPlayerReport(s.id, p.get('id'))),
-      map(r => ({ ...r, total: this.calculateTotal(r.rounds) }))
+      map(r => ({ ...r, total: this.calculateTotal(r.rounds) })),
+      shareReplay(1)
     );
 
     this.chart$ = combineLatest([this.chartParamSub, this.model$]).pipe(

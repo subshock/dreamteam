@@ -162,8 +162,9 @@ export interface ITeamReportRound extends IPointDefinition {
 }
 
 export interface ITeamReportRoundSummary {
+  round: number;
   points: number;
-  roundRank: number;
+  roundRank?: number;
   seasonRank: number;
 }
 

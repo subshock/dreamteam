@@ -11,7 +11,12 @@
   </h4>
 
   <div class="border-top mt-3 pt-3">
-    <div class="row">
+    <ng-template #tplPlayersHidden>
+      <div class="alert alert-info">
+        You cannot see players for this team during a trade period.
+      </div>
+    </ng-template>
+    <div class="row" *ngIf="model.players; else tplPlayersHidden">
       <div class="col-6">
         <h4>Current Players</h4>
         <table class="table table-striped table-hover">
@@ -47,6 +52,36 @@
         </table>
       </div>
     </div>
+  </div>
+
+  <div class="chart-container border-top mt-3 pt-3" *ngIf="chartParam$ | async as chartParams">
+    <h4>Chart and Comparison
+      <div class="float-right">
+        <div class="btn-group btn-group-sm mr-1">
+          <button type="button" class="btn btn-secondary" [class.active]="chartParams.view === 'rank'"
+            (click)="setChartView(chartParams, 'rank')">
+            <i class="fa fa-fw" [class.fa-circle]="chartParams.view !== 'rank'"
+              [class.fa-check-circle]="chartParams.view === 'rank'"></i>
+              Rank
+          </button>
+          <button type="button" class="btn btn-secondary" [class.active]="chartParams.view === 'points'"
+            (click)="setChartView(chartParams, 'points')">
+            <i class="fa fa-fw" [class.fa-circle]="chartParams.view !== 'points'"
+              [class.fa-check-circle]="chartParams.view === 'points'"></i>
+              Points
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-secondary" [class.active]="chartParams.type === 'cumulative'"
+            (click)="toggleChartType(chartParams)" [disabled]="chartParams.view === 'rank'">
+            <i class="fa fa-fw" [class.fa-square]="chartParams.type !== 'cumulative'"
+              [class.fa-check-square]="chartParams.type === 'cumulative'"></i>
+            Cumulative
+          </button>
+        </div>
+      </div>
+    </h4>
+    <div echarts [options]="chart$ | async" [loading]="loadingChart" theme="dark"></div>
   </div>
 
   <div class="border-top mt-3 pt-3">
@@ -98,6 +133,4 @@
       </table>
     </div>
   </div>
-
-  <pre>{{ model | json }}</pre>
 </ng-container>
