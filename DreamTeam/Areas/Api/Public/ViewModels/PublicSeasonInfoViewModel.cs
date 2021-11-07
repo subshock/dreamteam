@@ -1,4 +1,5 @@
-﻿using DreamTeam.Models;
+﻿using DreamTeam.Areas.Api.Admin.ViewModels;
+using DreamTeam.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace DreamTeam.Areas.Api.Public.ViewModels
         public SeasonStateType Status { get; set; }
         public decimal Cost { get; set; }
         public int Budget { get; set; }
+
+        public PublicTradePeriodViewModel TradePeriod { get; set; }
     }
 }

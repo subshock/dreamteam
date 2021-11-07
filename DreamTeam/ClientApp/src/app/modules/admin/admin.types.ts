@@ -1,4 +1,7 @@
 import { BsDatepickerConfig, BsDaterangepickerConfig } from 'ngx-bootstrap/datepicker';
+import { IPointDefinition, SeasonStateType } from 'src/app/types/public.types';
+
+export { SeasonStateType, IPointDefinition } from 'src/app/types/public.types';
 
 export enum AdminNavItemId {
   Admin = 1,
@@ -14,15 +17,6 @@ export interface IAdminNavItem {
   route: string[];
 }
 
-export enum SeasonStateType {
-  None = 0,
-  Setup = 1,
-  Registration = 2,
-  Running = 3,
-  Finished = 10,
-  Archived = 20
-}
-
 export interface ISeasonSummary {
   id: string;
   name: string;
@@ -31,15 +25,6 @@ export interface ISeasonSummary {
   updated: string;
   status: SeasonStateType;
   registrationEndDate: string;
-}
-
-export interface IPointDefinition {
-  runs: number;
-  unassistedWickets: number;
-  assistedWickets: number;
-  catches: number;
-  runouts: number;
-  stumpings: number;
 }
 
 export interface ISeasonView {

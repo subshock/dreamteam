@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, zip } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SeasonStateType } from 'src/app/modules/admin/admin.types';
 import { PublicApiService } from 'src/app/services/public-api.service';
@@ -27,8 +27,7 @@ export class TeamsListComponent implements OnInit {
   constructor(private userApi: UserApiService, private modalService: BsModalService) { }
 
   ngOnInit(): void {
-    const teamObs = this.refreshSub.pipe(switchMap(() => this.userApi.getUserTeams()));
-    this.model$ = combineLatest([this.userApi.publicApi.getCurrentSeason(), teamObs]).pipe(
+    this.model$ = this.refreshSub.pipe(switchMap(() => zip(this.userApi.publicApi.getCurrentSeason(), this.userApi.getUserTeams())),
       map(([s, t]) => ({ teams: t, season: s}))
     );
   }
@@ -39,8 +38,12 @@ export class TeamsListComponent implements OnInit {
     const sub = modalRef.onHide.subscribe(() => {
       sub.unsubscribe();
       if (modalRef.content.result) {
-        this.refreshSub.next(false);
+        this.reload();
       }
     });
+  }
+
+  reload(): void {
+    this.refreshSub.next(false);
   }
 }

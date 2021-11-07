@@ -1,7 +1,11 @@
 <ng-container *ngIf="model$ | async as model">
   <h1>My Teams</h1>
 
-  <ng-container *ngIf="model.season.status !== SeasonStateType.Registration">
+  <ng-container *ngIf="model.season.tradePeriod">
+    <app-trade-countdown [tradePeriod]="model.season.tradePeriod" (expired)="reload()"></app-trade-countdown>
+  </ng-container>
+
+  <ng-container *ngIf="model.season.status !== SeasonStateType.Registration || (model.season.status === SeasonStateType.Registration && !model.season.tradePeriod)">
     <div class="alert alert-info">
       <h5>You cannot register any new teams at this time</h5>
     </div>
@@ -12,7 +16,7 @@
       <h5>You do not have any teams registered.</h5>
     </div>
 
-    <div class="cmd-bar mb-3">
+    <div class="cmd-bar mb-3" *ngIf="model.season.status === SeasonStateType.Registration && !!model.season.tradePeriod">
       <a type="button" class="btn btn-lg btn-success" [routerLink]="['./register']">
         <i class="fas fa-fw fa-plus"></i>
         Register Team
@@ -23,7 +27,7 @@
   <div class="card-deck">
     <div class="card" *ngFor="let t of model.teams">
       <div class="card-body">
-        <div class="float-right ml-3 mb-3" *ngIf="model.season.status === SeasonStateType.Registration">
+        <div class="float-right ml-3 mb-3" *ngIf="model.season.status === SeasonStateType.Registration && !!model.season.tradePeriod">
           <button type="button" class="btn btn-sm btn-outline-primary" (click)="updateTeam(t)">
             <i class="fas fa-fw fa-edit"></i>
           </button>
@@ -46,7 +50,7 @@
         </li>
       </ul>
       <div class="card-footer d-flex justify-content-between">
-        <a type="button" class="btn btn-primary" [routerLink]="[t.id, 'manage']">Manage</a>
+        <a type="button" class="btn btn-primary" [routerLink]="[t.id, 'manage']">{{ !!model.season.tradePeriod ? 'Manage' : 'View' }}</a>
         <span class="badge align-self-center" [class.badge-success]="t.paid"
           [class.badge-danger]="!t.paid">{{ t.paid ? 'PAID' : 'NOT PAID' }}</span>
       </div>

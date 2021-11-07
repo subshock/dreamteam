@@ -2,9 +2,10 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { ITradePeriod, SeasonStateType } from 'src/app/modules/admin/admin.types';
 import { UserApiService } from 'src/app/services/user-api.service';
-import { IPublicPlayer, IPublicSeasonInfo, ITeam, ITeamPlayer, TeamPlayerType } from 'src/app/types/public.types';
+import {
+  IPublicPlayer, IPublicSeasonInfo, IPublicTradePeriod, ITeam, ITeamPlayer, SeasonStateType, TeamPlayerType
+} from 'src/app/types/public.types';
 
 interface ICurrentTeam {
   balance: number;
@@ -15,7 +16,7 @@ interface IModel {
   team: ITeam;
   season: IPublicSeasonInfo;
   players: IPublicPlayer[];
-  tradePeriod: ITradePeriod;
+  tradePeriod: IPublicTradePeriod;
   current: ICurrentTeam;
   canEdit: boolean;
 }
@@ -51,14 +52,14 @@ export class TeamManageComponent implements OnInit {
 
     this.model$ = combineLatest([seasonObs, playerObs, teamObs]).pipe(
       map(([s, p, t]) => ({
-        canEdit: s.status === SeasonStateType.Registration || !!t.tradePeriod,
+        canEdit: s.status === SeasonStateType.Registration && !!s.tradePeriod,
         season: s,
         players: p,
         team: t.team,
         tradePeriod: t.tradePeriod,
         current: {
           balance: t.team.balance,
-          team: t.team.players.map(x => ({...x}))
+          team: t.team.players.map(x => ({ ...x }))
         }
       }))
     );
@@ -170,7 +171,7 @@ export class TeamManageComponent implements OnInit {
   }
 
   revertTeam(model: IModel) {
-    model.current.team = model.team.players.map(x => ({...x}));
+    model.current.team = model.team.players.map(x => ({ ...x }));
     model.current.balance = model.team.balance;
   }
 

@@ -1,0 +1,35 @@
+<div class="alert" *ngIf="countdown$ | async as c" [class.alert-info]="c.active" [class.alert-danger]="!c.active">
+  <ng-container *ngIf="tradePeriod.type == TradePeriodType.SeasonRegistration">
+    <h4>Registrations and Teams will be locked at {{ tradePeriod.endDate | date:'EEE d MMM yyyy h:mm a' }}</h4>
+  </ng-container>
+  <ng-container *ngIf="tradePeriod.type == TradePeriodType.TradePeriod">
+    <h4>Trade Period is open and will close at {{ tradePeriod.endDate | date:'EEE d MMM yyyy h:mm a' }}</h4>
+  </ng-container>
+  <ng-container *ngIf="c.active">
+    <h3>
+      <span>
+        <strong>{{ c.breakdown.days }}</strong>
+        <br>
+        Days
+      </span>
+      <span>
+        <strong>{{ c.breakdown.hours }}</strong>
+        <br>
+        Hours
+      </span>
+      <span>
+        <strong>{{ c.breakdown.minutes }}</strong>
+        <br>
+        Minutes
+      </span>
+      <span>
+        <strong>{{ c.breakdown.seconds }}</strong>
+        <br>
+        Seconds
+      </span>
+    </h3>
+  </ng-container>
+  <ng-container *ngIF="!c.active">
+    <h3>LOCKED</h3>
+  </ng-container>
+</div>

@@ -126,9 +126,9 @@ namespace DreamTeam.Data
             return seasonStatus == SeasonStateType.Registration;
         }
 
-        public bool CanAddTeamsToSeason(SeasonStateType seasonState)
+        public bool CanAddTeamsToSeason(SeasonStateType status, DateTimeOffset? registrationEndDate)
         {
-            return seasonState == SeasonStateType.Registration;
+            return status == SeasonStateType.Registration && (registrationEndDate == null || registrationEndDate > DateTimeOffset.Now);
         }
 
         public class SeasonViewDbo : Season

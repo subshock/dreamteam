@@ -6,7 +6,7 @@ import { SeasonStateType } from '../modules/admin/admin.types';
 import { DynamicScriptLoaderService } from '../services/dynamic-script-loader.service';
 import { PublicApiService } from '../services/public-api.service';
 import { UserApiService } from '../services/user-api.service';
-import { IPlayerLeaderboard, IPublicSeasonInfo, ITeamLeaderboard } from '../types/public.types';
+import { IPlayerLeaderboard, IPublicSeasonInfo, IPublicTradePeriod, ITeamLeaderboard } from '../types/public.types';
 
 interface ILeaderboard {
   season: IPublicSeasonInfo;
@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
   SeasonStateType = SeasonStateType;
   isAuthenticated$: Observable<boolean>;
   leaderboard$: Observable<ILeaderboard>;
+  tradePeriod$: Observable<IPublicTradePeriod>;
 
   readonly leaderboardLimit = 5;
 
@@ -33,6 +34,10 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.season$ = this.publicApi.getCurrentSeason().pipe(shareReplay(1));
+    this.tradePeriod$ = this.season$.pipe(
+      filter(x => !!x.tradePeriod),
+      map(x => x.tradePeriod)
+    );
     this.isAuthenticated$ = this.authService.isAuthenticated();
     this.leaderboard$ = this.season$.pipe(
       filter(s => s.status >= SeasonStateType.Running),

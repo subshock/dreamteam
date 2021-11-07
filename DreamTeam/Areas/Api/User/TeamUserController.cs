@@ -57,7 +57,7 @@ namespace DreamTeam.Areas.Api.User
 
             var season = await _db.GetSeasonAsync(model.SeasonId);
 
-            if (season == null || !_db.CanAddTeamsToSeason(season.Status))
+            if (season == null || !_db.CanAddTeamsToSeason(season.Status, season.RegistrationEndDate))
             {
                 ModelState.AddModelError("season", "Registering teams is forbidden");
                 return Ok(new { Success = false, Error = ModelState });
@@ -108,7 +108,7 @@ namespace DreamTeam.Areas.Api.User
 
             var season = await _db.GetSeasonByTeam(teamId);
 
-            if (season.Status != SeasonStateType.Registration || (season.RegistrationEndDate != null && season.RegistrationEndDate.Value < DateTime.Now))
+            if (!_db.CanAddTeamsToSeason(season.Status, season.RegistrationEndDate))
                 return Forbid();
 
             await _db.UpdateTeamDetails(UserId, teamId, model);

@@ -8,7 +8,7 @@
     </a>
   </div>
 
-  <ng-container *ngIf="model.season.status === SeasonStateType.Registration">
+  <ng-container *ngIf="model.season.status === SeasonStateType.Registration && !!model.season.tradePeriod">
     <div class="alert alert-info">
       <h5>This season is in registration mode</h5>
       <p>

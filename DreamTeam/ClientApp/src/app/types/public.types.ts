@@ -1,4 +1,20 @@
-import { IPointDefinition, ITradePeriod, SeasonStateType } from '../modules/admin/admin.types';
+export enum SeasonStateType {
+  None = 0,
+  Setup = 1,
+  Registration = 2,
+  Running = 3,
+  Finished = 10,
+  Archived = 20
+}
+
+export interface IPointDefinition {
+  runs: number;
+  unassistedWickets: number;
+  assistedWickets: number;
+  catches: number;
+  runouts: number;
+  stumpings: number;
+}
 
 export interface IPublicSeasonInfo {
   id: string;
@@ -12,6 +28,19 @@ export interface IPublicSeasonInfo {
   catches: number;
   runouts: number;
   stumpings: number;
+  tradePeriod?: IPublicTradePeriod;
+}
+
+export enum TradePeriodType {
+  SeasonRegistration = 1,
+  TradePeriod = 2
+}
+
+export interface IPublicTradePeriod {
+  type: TradePeriodType;
+  startDate: string;
+  endDate: string;
+  tradeLimit: number;
 }
 
 export interface ITeamRegister {
@@ -59,7 +88,7 @@ export interface ITeam {
 
 export interface ITeamAndTradePeriod {
   team: ITeam;
-  tradePeriod: ITradePeriod;
+  tradePeriod: IPublicTradePeriod;
 }
 
 export interface ITeamPlayerUpdate {

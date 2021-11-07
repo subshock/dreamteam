@@ -1,4 +1,7 @@
 <ng-container *ngIf="season$ | async as season">
+  <ng-container *ngIf="tradePeriod$ | async as tradePeriod">
+    <app-trade-countdown [tradePeriod]="tradePeriod"></app-trade-countdown>
+  </ng-container>
   <div class="jumbotron">
     <h2 class="display-6">How well do you know your Dragons? Forget supercoach, this is</h2>
     <h1 class="display-3"><strong>DRAGON DREAM TEAM</strong></h1>

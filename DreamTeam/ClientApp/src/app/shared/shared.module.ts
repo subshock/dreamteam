@@ -9,13 +9,15 @@ import { SeasonStatePipe } from './pipes/season-state.pipe';
 import { PlayerMultiplierPipe } from './pipes/player-multiplier.pipe';
 import { SquarePayComponent } from './components/square-pay/square-pay.component';
 import { RoundStatePipe } from './pipes/round-state.pipe';
+import { TradeCountdownComponent } from './components/trade-countdown/trade-countdown.component';
 
 @NgModule({
   declarations: [
     SeasonStatePipe,
     PlayerMultiplierPipe,
     SquarePayComponent,
-    RoundStatePipe
+    RoundStatePipe,
+    TradeCountdownComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import { RoundStatePipe } from './pipes/round-state.pipe';
     SeasonStatePipe,
     PlayerMultiplierPipe,
     SquarePayComponent,
-    RoundStatePipe
+    RoundStatePipe,
+    TradeCountdownComponent
   ]
 })
 export class SharedModule { }

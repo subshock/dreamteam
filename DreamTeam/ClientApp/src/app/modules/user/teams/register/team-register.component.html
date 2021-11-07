@@ -3,6 +3,7 @@
   <ng-container [ngSwitch]="season.status">
 
     <ng-container *ngSwitchCase="SeasonStateType.Registration">
+      <app-trade-countdown *ngIf="season.tradePeriod" [tradePeriod]="season.tradePeriod" (expired)="season.status = 0"></app-trade-countdown>
 
       <h3>Competition: <strong>{{ season.name }}</strong></h3>
       <p>Enter the team name and owner for the team you want to register. Additional teams can be registered here as
