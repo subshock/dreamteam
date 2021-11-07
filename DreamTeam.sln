@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DreamTeam", "DreamTeam\Drea
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{38E8008D-0262-4E8B-85B9-784235124933}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateRound", "Tools\GenerateRound\GenerateRound.csproj", "{93A2A3DD-A628-42CA-8776-2DBE8A3E5583}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,16 +17,9 @@ Global
 		{BBB9E6E6-6552-48E0-ABA3-B357AA2EA0B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBB9E6E6-6552-48E0-ABA3-B357AA2EA0B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBB9E6E6-6552-48E0-ABA3-B357AA2EA0B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93A2A3DD-A628-42CA-8776-2DBE8A3E5583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93A2A3DD-A628-42CA-8776-2DBE8A3E5583}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93A2A3DD-A628-42CA-8776-2DBE8A3E5583}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93A2A3DD-A628-42CA-8776-2DBE8A3E5583}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{93A2A3DD-A628-42CA-8776-2DBE8A3E5583} = {38E8008D-0262-4E8B-85B9-784235124933}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED2EDAC7-B21C-48A8-A878-04E67591EA87}
