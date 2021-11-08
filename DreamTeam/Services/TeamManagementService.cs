@@ -47,7 +47,7 @@ namespace DreamTeam.Services
             List<Guid> removedPlayers = null;
             List<Guid> addedPlayers = null;
 
-            if (tradePeriod != null)
+            if (tradePeriod?.Type == Areas.Api.Admin.ViewModels.TradePeriodType.TradePeriod)
             {
                 // Check that the number of changes is within the limit
                 var currentPlayers = team.Players.Where(x => !x.Added).Select(x => x.Id).ToList();
@@ -73,7 +73,8 @@ namespace DreamTeam.Services
             if (players.Sum(x => x.Cost) > season.Budget)
                 return new UserTeamUpdateResult { Success = false, Error = "Player cost is over the salary cap" };
 
-            await _db.UpdateTeamPlayers(teamId, tradePeriod?.Id, addedPlayers, removedPlayers, model.CaptainPlayerId, model.ViceCaptainPlayerId);
+            await _db.UpdateTeamPlayers(teamId, tradePeriod?.Type == Areas.Api.Admin.ViewModels.TradePeriodType.TradePeriod ? tradePeriod?.Id : null, 
+                addedPlayers, removedPlayers, model.CaptainPlayerId, model.ViceCaptainPlayerId);
 
             return new UserTeamUpdateResult { Success = true };
         }
