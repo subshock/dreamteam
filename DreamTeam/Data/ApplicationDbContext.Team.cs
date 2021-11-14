@@ -175,7 +175,7 @@ namespace DreamTeam.Data
             {
                 var tradePeriod = await GetCurrentTradePeriod(seasonId);
 
-                if (tradePeriod == null)
+                if (tradePeriod != null)
                     return true;
             }
 
