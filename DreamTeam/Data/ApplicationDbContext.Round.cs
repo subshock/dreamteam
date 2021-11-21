@@ -81,7 +81,7 @@ namespace DreamTeam.Data
         public Task<IEnumerable<RoundPlayerViewModel>> GetRoundPlayers(Guid seasonId, Guid roundId)
         {
             return Connection.QueryAsync<RoundPlayerDbo>("SELECT RP.Id, RP.PlayerId, P.Name, P.Multiplier, RP.Runs, RP.AssistedWickets, " +
-                "RP.UnassistedWickets, RP.Catches, RP.Runouts, RP.Stumpings AS [Points.Stumpings], RP.Points AS Total " +
+                "RP.UnassistedWickets, RP.Catches, RP.Runouts, RP.Stumpings, RP.Points AS Total " +
                 "FROM RoundPlayers AS RP " +
                 "   INNER JOIN Players AS P ON RP.PlayerId=P.Id " +
                 "   INNER JOIN Rounds AS R ON RP.RoundId=R.Id " +
