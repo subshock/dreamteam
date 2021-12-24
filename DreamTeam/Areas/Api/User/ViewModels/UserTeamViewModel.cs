@@ -18,6 +18,7 @@ namespace DreamTeam.Areas.Api.User.ViewModels
         public bool Paid { get; set; }
 
         public ICollection<UserTeamPlayerViewModel> Players { get; set; }
+        public UserTeamPreviousCaptainsViewModel PreviousCaptains { get; set; }
     }
 
     public class UserTeamPlayerViewModel
@@ -30,6 +31,12 @@ namespace DreamTeam.Areas.Api.User.ViewModels
         public bool Removed { get; set; }
         public int Cost { get; set; }
         public int Points { get; set; }
+    }
+
+    public class UserTeamPreviousCaptainsViewModel
+    {
+        public Guid CaptainId { get; set; }
+        public Guid ViceCaptainId { get; set; }
     }
 
     public class UserTeamPlayersUpdateViewModel

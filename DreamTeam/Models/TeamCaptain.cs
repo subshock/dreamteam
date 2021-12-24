@@ -25,5 +25,9 @@ namespace DreamTeam.Models
         public Player ViceCaptain { get; set; }
 
         public bool Removed { get; set; }
+        public Guid? RemovedTradePeriodId { get; set; }
+        [ForeignKey("RemovedTradePeriodId")]
+        public TradePeriod RemovedTradePeriod { get; set; }
+
     }
 }

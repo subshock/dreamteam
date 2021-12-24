@@ -57,7 +57,7 @@ namespace DreamTeam.Data
         public Task<PublicTradePeriodViewModel> GetCurrentTradePeriod(Guid seasonId)
         {
             return Connection.QueryFirstOrDefaultAsync<PublicTradePeriodViewModel>(
-                "SELECT Id, StartDate, EndDate, TradeLimit, 2 AS Type FROM TradePeriods WHERE SeasonId=@seasonId AND StartDate<=@now AND DATEADD(day, 1, EndDate)>@now " +
+                "SELECT Id, StartDate, EndDate, TradeLimit, 2 AS Type FROM TradePeriods WHERE SeasonId=@seasonId AND StartDate<=@now AND EndDate>@now " +
                 "UNION " +
                 "SELECT NULL, S.Created, S.RegistrationEndDate, 0, 1 AS Type FROM Seasons AS S WHERE S.Id = @seasonId AND S.RegistrationEndDate Is Not Null AND S.RegistrationEndDate > @now", 
                 new { seasonId, now = DateTime.UtcNow });
@@ -67,7 +67,7 @@ namespace DreamTeam.Data
         {
             return Connection.QueryFirstOrDefaultAsync<PublicTradePeriodViewModel>("SELECT TP.Id, TP.StartDate, TP.EndDate, TP.TradeLimit, 2 AS Type " +
                 "FROM TradePeriods TP INNER JOIN Teams AS T ON TP.SeasonId = T.SeasonId " +
-                "WHERE T.Id = @teamId AND TP.StartDate <= @now AND DATEADD(day, 1, TP.EndDate) > @now " +
+                "WHERE T.Id = @teamId AND TP.StartDate <= @now AND TP.EndDate>@now " +
                 "UNION " +
                 "SELECT NULL, S.Updated, S.RegistrationEndDate, 0, 1 AS Type " +
                 "FROM Seasons AS S INNER JOIN Teams AS T ON S.Id = T.SeasonId " +
@@ -76,7 +76,7 @@ namespace DreamTeam.Data
 
         public Task<bool> IsTradePeriodActive(Guid seasonId)
         {
-            return Connection.ExecuteScalarAsync<int>("SELECT 1 FROM TradePeriods WHERE SeasonId=@seasonId AND @now >= StartDate AND @now < DATEADD(day, 1, EndDate)",
+            return Connection.ExecuteScalarAsync<int>("SELECT 1 FROM TradePeriods WHERE SeasonId=@seasonId AND @now >= StartDate AND @now < EndDate",
                 new { seasonId })
                 .ContinueWith(x => x.Result != 0);
         }

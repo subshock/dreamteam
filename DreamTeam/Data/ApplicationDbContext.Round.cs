@@ -159,7 +159,7 @@ namespace DreamTeam.Data
             return Connection.QueryAsync<TeamPlayer>("SELECT TP.* " +
                 "FROM TeamPlayers AS TP " +
                 "    CROSS APPLY(SELECT StartDate, EndDate FROM Rounds WHERE Id = @roundId) AS R " +
-                "WHERE TP.TeamId = @teamId AND TP.Created < R.StartDate AND(TP.Removed = 0 OR TP.Updated > R.EndDate); ", 
+                "WHERE TP.TeamId = @teamId AND TP.Created < R.StartDate AND (TP.Removed = 0 OR TP.Updated > R.EndDate); ",
                 new { teamId, roundId });
         }
 

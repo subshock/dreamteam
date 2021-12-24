@@ -1,10 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DateTime } from 'luxon';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { UserApiService } from 'src/app/services/user-api.service';
 import {
-  IPublicPlayer, IPublicSeasonInfo, IPublicTradePeriod, ITeam, ITeamPlayer, SeasonStateType, TeamPlayerType
+  IPublicPlayer, IPublicSeasonInfo, IPublicTradePeriod, ITeam, ITeamPlayer, SeasonStateType, TeamPlayerType, TradePeriodType
 } from 'src/app/types/public.types';
 
 interface ICurrentTeam {
@@ -19,6 +20,7 @@ interface IModel {
   tradePeriod: IPublicTradePeriod;
   current: ICurrentTeam;
   canEdit: boolean;
+  trades?: { left: number };
 }
 
 @Component({
@@ -32,12 +34,15 @@ export class TeamManageComponent implements OnInit {
   SeasonStateType = SeasonStateType;
 
   TeamPlayerType = TeamPlayerType;
+  TradePeriodType = TradePeriodType;
 
   saving = false;
   saveErrorSub = new Subject<string>();
   saveError$ = this.saveErrorSub.asObservable();
 
   playerSearch: string = null;
+
+  private _displayTeam: ITeamPlayer[];
 
   constructor(private userApi: UserApiService, private route: ActivatedRoute, private router: Router) { }
 
@@ -52,7 +57,7 @@ export class TeamManageComponent implements OnInit {
 
     this.model$ = combineLatest([seasonObs, playerObs, teamObs]).pipe(
       map(([s, p, t]) => ({
-        canEdit: s.status === SeasonStateType.Registration && !!s.tradePeriod,
+        canEdit: this.isWithinTradePeriod(s),
         season: s,
         players: p,
         team: t.team,
@@ -60,9 +65,28 @@ export class TeamManageComponent implements OnInit {
         current: {
           balance: t.team.balance,
           team: t.team.players.map(x => ({ ...x }))
-        }
+        },
+        trades: this.getTradesLeft(t.team.players, t.tradePeriod)
       }))
     );
+  }
+
+  private isWithinTradePeriod(season: IPublicSeasonInfo): boolean {
+    if (season.status !== SeasonStateType.Registration && !season.tradePeriod) {
+      return false;
+    }
+
+    const endDate = season.tradePeriod ? DateTime.fromISO(season.tradePeriod.endDate) : null;
+
+    if (season.status === SeasonStateType.Registration && (endDate == null || endDate > DateTime.now())) {
+      return true;
+    }
+
+    if (season.status === SeasonStateType.Running && endDate !== null && endDate > DateTime.now()) {
+      return true;
+    }
+
+    return false;
   }
 
   addPlayerToTeam(model: IModel, player: any) {
@@ -84,6 +108,8 @@ export class TeamManageComponent implements OnInit {
     }
 
     model.current.balance -= player.cost;
+    model.trades = this.getTradesLeft(model.current.team, model.tradePeriod);
+    this._displayTeam = null;
   }
 
   removePlayerFromTeam(model: IModel, player: any) {
@@ -98,10 +124,16 @@ export class TeamManageComponent implements OnInit {
       player.removed = true;
     }
     model.current.balance += player.cost;
+    model.trades = this.getTradesLeft(model.current.team, model.tradePeriod);
+    this._displayTeam = null;
   }
 
   getCurrentTeam(model: IModel) {
-    return model.current.team.filter(x => !x.removed);
+    if (!this._displayTeam) {
+      this._displayTeam = model.current.team.filter(x => !x.removed);
+    }
+
+    return this._displayTeam;
   }
 
   getAvailablePlayers(model: IModel) {
@@ -119,6 +151,7 @@ export class TeamManageComponent implements OnInit {
         p.type = TeamPlayerType.Normal;
       }
     }
+    this._displayTeam = null;
   }
 
   setViceCaptain(model: IModel, player: any) {
@@ -130,6 +163,7 @@ export class TeamManageComponent implements OnInit {
         p.type = TeamPlayerType.Normal;
       }
     }
+    this._displayTeam = null;
   }
 
   isCaptainSet(team: any[]): boolean {
@@ -171,11 +205,46 @@ export class TeamManageComponent implements OnInit {
   }
 
   revertTeam(model: IModel) {
-    model.current.team = model.team.players.map(x => ({ ...x }));
-    model.current.balance = model.team.balance;
+    if (model.tradePeriod.type === TradePeriodType.TradePeriod) {
+      // restore the team by removing added players, resetting removed players
+      // and reassigning captains
+      model.current.team = model.current.team.filter(x => !x.added);
+      model.current.team.forEach(x => {
+        x.removed = false;
+        if (model.team.previousCaptains) {
+          x.type = (model.team.previousCaptains.captainId === x.id)
+            ? TeamPlayerType.Captain
+            : (model.team.previousCaptains.viceCaptainId === x.id)
+            ? TeamPlayerType.ViceCaptain
+            : TeamPlayerType.Normal;
+        }
+      });
+
+      model.current.team.sort((a, b) => a.type > b.type ? -1 : a.name.localeCompare(b.name));
+      model.current.balance = model.season.budget - model.current.team
+        .filter(x => !x.removed).reduce((prev, curr) => prev + curr.cost, 0);
+
+    } else {
+      model.current.team = model.team.players.map(x => ({ ...x }));
+      model.current.balance = model.team.balance;
+    }
+
+    model.trades = this.getTradesLeft(model.current.team, model.tradePeriod);
+    this._displayTeam = null;
   }
 
   updatePlayerSearch(search: string) {
     this.playerSearch = search;
+  }
+
+  getTradesLeft(teamPlayers: ITeamPlayer[], tradePeriod: IPublicTradePeriod): { left: number } {
+    if (tradePeriod && tradePeriod.type === TradePeriodType.TradePeriod) {
+      const limit = tradePeriod.tradeLimit;
+      const trades = teamPlayers.filter(x => x.added && !x.removed).length;
+
+      return {left: Math.max(0, limit - trades) };
+    }
+
+    return { left: 100 };
   }
 }

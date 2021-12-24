@@ -25,12 +25,24 @@
     </div>
   </ng-container>
 
+  <ng-container *ngIf="model.canEdit && model.tradePeriod">
+    <app-trade-countdown [tradePeriod]="model.tradePeriod"></app-trade-countdown>
+  </ng-container>
+
   <div class="row" *ngIf="getCurrentTeam(model) as currentTeam">
     <div class="col-md-6 col-my-team">
       <h4>Your Team</h4>
-      <p>
-        Remaining Balance: {{ model.current.balance }}
-      </p>
+      <div class="d-flex justify-content-between">
+        <p>
+          Remaining Balance: {{ model.current.balance }}
+        </p>
+        <p *ngIf="model.tradePeriod?.type === TradePeriodType.TradePeriod">
+          <span class="trade-limit badge badge-primary text-uppercase"
+            [class.badge-danger]="model.trades?.left == 0">
+            {{ model.trades?.left }} of {{ model.tradePeriod.tradeLimit }} trades remaining
+          </span>
+        </p>
+      </div>
       <table class="table table-striped table-hover table-sm">
         <thead class="thead-dark">
           <tr>
@@ -69,7 +81,9 @@
             </td>
             <td class="text-center">{{ p.cost }}</td>
             <td class="text-right" *ngIf="model.canEdit">
-              <button type="button" class="btn btn-danger btn-sm" (click)="removePlayerFromTeam(model, p)">
+              <button type="button" class="btn btn-danger btn-sm"
+                *ngIf="model.trades?.left > 0 || p.added"
+                (click)="removePlayerFromTeam(model, p)">
                 <i class="fas fa-fw fa-times"></i>
               </button>
             </td>

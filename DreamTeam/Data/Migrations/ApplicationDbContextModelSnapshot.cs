@@ -368,6 +368,9 @@ namespace DreamTeam.Data.Migrations
                     b.Property<bool>("Removed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("RemovedTradePeriodId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TeamId")
                         .HasColumnType("uniqueidentifier");
 
@@ -383,6 +386,8 @@ namespace DreamTeam.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CaptainId");
+
+                    b.HasIndex("RemovedTradePeriodId");
 
                     b.HasIndex("TeamId");
 
@@ -411,6 +416,9 @@ namespace DreamTeam.Data.Migrations
                     b.Property<bool>("Removed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("RemovedTradePeriodId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TeamId")
                         .HasColumnType("uniqueidentifier");
 
@@ -423,6 +431,8 @@ namespace DreamTeam.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PlayerId");
+
+                    b.HasIndex("RemovedTradePeriodId");
 
                     b.HasIndex("TeamId");
 
@@ -865,6 +875,10 @@ namespace DreamTeam.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DreamTeam.Models.TradePeriod", "RemovedTradePeriod")
+                        .WithMany()
+                        .HasForeignKey("RemovedTradePeriodId");
+
                     b.HasOne("DreamTeam.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId")
@@ -883,6 +897,8 @@ namespace DreamTeam.Data.Migrations
 
                     b.Navigation("Captain");
 
+                    b.Navigation("RemovedTradePeriod");
+
                     b.Navigation("Team");
 
                     b.Navigation("TradePeriod");
@@ -898,6 +914,10 @@ namespace DreamTeam.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DreamTeam.Models.TradePeriod", "RemovedTradePeriod")
+                        .WithMany()
+                        .HasForeignKey("RemovedTradePeriodId");
+
                     b.HasOne("DreamTeam.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId")
@@ -909,6 +929,8 @@ namespace DreamTeam.Data.Migrations
                         .HasForeignKey("TradePeriodId");
 
                     b.Navigation("Player");
+
+                    b.Navigation("RemovedTradePeriod");
 
                     b.Navigation("Team");
 

@@ -75,6 +75,11 @@ export interface ITeamPlayer extends IPublicPlayer {
   removed?: boolean;
 }
 
+export interface ICaptains {
+  captainId: string;
+  viceCaptainId: string;
+}
+
 export interface ITeam {
   id: string;
   name: string;
@@ -84,6 +89,7 @@ export interface ITeam {
   paid: boolean;
   balance: number;
   players: ITeamPlayer[];
+  previousCaptains?: ICaptains;
 }
 
 export interface ITeamAndTradePeriod {
