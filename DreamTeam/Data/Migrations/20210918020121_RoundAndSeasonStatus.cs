@@ -23,8 +23,6 @@ namespace DreamTeam.Data.Migrations
                 nullable: false,
                 defaultValue: 0);
 
-            migrationBuilder.Sql("UPDATE Rounds SET Status=Completed");
-
             migrationBuilder.DropColumn(
                 name: "Completed",
                 table: "Rounds");
