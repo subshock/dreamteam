@@ -23,6 +23,8 @@ import { RoundCompleteComponent } from './round/complete/round-complete.componen
 import { PaymentListComponent } from './payment/list/payment-list.component';
 import { PaymentViewComponent } from './payment/view/payment-view.component';
 import { PaymentContainerComponent } from './payment/payment-container.component';
+import { PrizeListComponent } from './prize/list/prize-list.component';
+import { PrizeEditorComponent } from './prize/editor/prize-editor.component';
 
 @NgModule({
   imports: [
@@ -42,7 +44,8 @@ import { PaymentContainerComponent } from './payment/payment-container.component
               { path: 'teams', component: TeamListComponent },
               { path: 'rounds', component: RoundListComponent },
               { path: 'rounds/:id', component: RoundViewComponent },
-              { path: 'trade-periods', component: TradePeriodListComponent }
+              { path: 'trade-periods', component: TradePeriodListComponent },
+              { path: 'prizes', component: PrizeListComponent }
             ]
           },
           {
@@ -76,7 +79,9 @@ import { PaymentContainerComponent } from './payment/payment-container.component
     RoundCompleteComponent,
     PaymentListComponent,
     PaymentViewComponent,
-    PaymentContainerComponent
+    PaymentContainerComponent,
+    PrizeListComponent,
+    PrizeEditorComponent
   ],
   providers: [],
 })

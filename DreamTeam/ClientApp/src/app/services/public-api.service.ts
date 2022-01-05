@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
-  IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPublicSeasonInfo, ITeamLeaderboard, ITeamReport
+  IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPrizeReport, IPublicSeasonInfo, ITeamLeaderboard, ITeamReport
 } from '../types/public.types';
 
 @Injectable({
@@ -63,7 +63,12 @@ export class PublicApiService {
       encodeURIComponent(teamId));
   }
 
+  getPrizeReport(seasonId: string): Observable<IPrizeReport[]> {
+    return this.httpClient.get<IPrizeReport[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/reports/prizes`);
+  }
+
   getPaymentSettings(): Observable<IPaymentSettings> {
     return this.httpClient.get<IPaymentSettings>(`${this.apiBase}/settings/payment`);
   }
+
 }

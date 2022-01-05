@@ -27,6 +27,7 @@ namespace DreamTeam.Data
                     (SELECT COUNT(*) FROM Teams WHERE SeasonId=S.Id) AS Teams,
                     (SELECT COUNT(*) FROM Rounds WHERE SeasonId=S.Id) AS Rounds,
                     (SELECT COUNT(*) FROM TradePeriods WHERE SeasonId=S.Id) AS TradePeriods,
+                    (SELECT COUNT(*) FROM Prizes WHERE SeasonId=S.Id) AS Prizes,
                     S.RegistrationEndDate
                 FROM Seasons AS S
                 WHERE S.Id=@id
@@ -137,6 +138,7 @@ namespace DreamTeam.Data
             public int Teams { get; set; }
             public int Rounds { get; set; }
             public int TradePeriods { get; set; }
+            public int Prizes { get; set; }
 
             public SeasonViewModel ToDto()
             {
@@ -150,6 +152,7 @@ namespace DreamTeam.Data
                     Updated = Updated,
                     Players = Players,
                     Teams = Teams,
+                    Prizes = Prizes,
                     Rounds = Rounds,
                     Status = Status,
                     TradePeriods = TradePeriods,

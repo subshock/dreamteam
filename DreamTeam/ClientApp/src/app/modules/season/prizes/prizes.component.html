@@ -1,0 +1,24 @@
+<h2>Prizes</h2>
+
+<ng-container *ngIf="dataSub$ | async as model">
+  <div class="alert alert-info" *ngIf="model.season.status === SeasonStateType.Running">
+    <strong>This season is still running.</strong> The results shown will be finalised when the season has been
+    completed.
+  </div>
+
+  <div class="d-flex justify-content-between flex-wrap">
+    <div class="flex-fill p-2" *ngFor="let p of model.prizes">
+      <div class="alert alert-secondary">
+        <h4>
+          {{ p.name }}
+          <span class="float-right badge badge-primary">{{ p.description }}</span>
+        </h4>
+        <p class="lead">
+          {{ p.team }}
+          <br><small>{{ p.owner }}</small>
+          <br>{{ p.points | number }} points
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -42,6 +42,7 @@ namespace DreamTeam.Data
         public DbSet<TradePeriod> TradePeriods { get; set; }
         public DbSet<TeamRoundResult> TeamRoundResults { get; set; }
         public DbSet<TeamRoundRank> TeamRoundRanks { get; set; }
+        public DbSet<Prize> Prizes { get; set; }
         public DbSet<TaskLog> TaskLogs { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     }

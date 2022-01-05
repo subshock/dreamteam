@@ -4,6 +4,7 @@ import { LeaderboardContainerComponent } from './leaderboard/leaderboard-contain
 import { PlayerLeaderboardComponent } from './leaderboard/player-leaderboard.component';
 import { TeamLeaderboardComponent } from './leaderboard/team-leaderboard.component';
 import { SeasonPlayerViewComponent } from './player/season-player-view.component';
+import { PrizesComponent } from './prizes/prizes.component';
 import { SeasonContainerComponent } from './season-container.component';
 import { SeasonTeamViewComponent } from './team/season-team-view.component';
 
@@ -25,7 +26,8 @@ const routes: Routes = [
         ]
       },
       { path: 'player/:id', component: SeasonPlayerViewComponent },
-      { path: 'team/:id', component: SeasonTeamViewComponent }
+      { path: 'team/:id', component: SeasonTeamViewComponent },
+      { path: 'prizes', component: PrizesComponent }
     ]
   }
 ];

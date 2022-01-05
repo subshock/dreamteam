@@ -105,5 +105,11 @@ namespace DreamTeam.Areas.Api.Public
         {
             return Ok(await _db.GetTeamReport(seasonId, teamId));
         }
+
+        [HttpGet("{seasonId:guid}/reports/prizes")]
+        public async Task<IActionResult> GetPrizeReport(Guid seasonId)
+        {
+            return Ok(await _db.GetPrizeReport(seasonId));
+        }
     }
 }

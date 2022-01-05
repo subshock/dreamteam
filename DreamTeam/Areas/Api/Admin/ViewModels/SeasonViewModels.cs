@@ -37,6 +37,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public int Teams { get; set; }
         public int Rounds { get; set; }
         public int TradePeriods { get; set; }
+        public int Prizes { get; set; }
 
         public DateTimeOffset? RegistrationEndDate { get; set; }
     }

@@ -152,6 +152,22 @@ namespace DreamTeam.Data
             }
         }
 
+        public Task<IEnumerable<PrizeReportViewModel>> GetPrizeReport(Guid seasonId)
+        {
+            return Connection.QueryAsync<PrizeReportViewModel>("SELECT P.Name, P.Description, T.Name AS [Team], T.Owner, T.Points " +
+                "FROM Prizes AS P " +
+                "	CROSS APPLY ( " +
+                "		SELECT T.Name, T.Owner, SUM(TRR.Points) AS Points, RANK() OVER (ORDER BY SUM(TRR.Points) DESC) AS Position " +
+                "		FROM Rounds AS R " +
+                "			INNER JOIN TeamRoundResults AS TRR ON TRR.RoundId=R.Id " +
+                "			INNER JOIN Teams AS T ON TRR.TeamId=T.Id " +
+                "		WHERE R.SeasonId=@seasonId AND R.Status=1 AND R.StartDate BETWEEN P.StartDate AND P.EndDate " +
+                "		GROUP BY T.Name, T.Owner " +
+                "	) AS T " +
+                "WHERE P.SeasonId=@seasonId AND P.Position=T.Position " +
+                "ORDER BY P.SortOrder ASC", new { seasonId });
+        }
+
         public class ReportDbo
         {
             public class PlayerBenchmarkDbo

@@ -107,4 +107,13 @@ namespace DreamTeam.Areas.Api.Public.ViewModels
             public int? SeasonRank { get; set; }
         }
     }
+
+    public class PrizeReportViewModel
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Team { get; set; }
+        public string Owner { get; set; }
+        public int Points { get; set; }
+    }
 }

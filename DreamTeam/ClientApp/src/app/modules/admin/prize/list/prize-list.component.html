@@ -1,0 +1,59 @@
+<div class="cmd-bar mb-3">
+  <button type="button" class="btn btn-success" (click)="addPrize()">
+    <i class="fas fa-fw fa-plus"></i>
+    Add Prize
+  </button>
+</div>
+
+<table class="table table-hover table-striped table-sm">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Position</th>
+      <th class="text-right">
+        <button type="button" class="btn btn-sm btn-dark" (click)="refresh()">
+          <i class="fas fa-fw fa-sync"></i>
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="prizes$ | async as prizes">
+      <tr *ngFor="let p of prizes">
+        <td>{{ p.name }}</td>
+        <td class="text-muted">{{p.description}}</td>
+        <td>{{ p.startDate | date:'d MMM yyyy' }}</td>
+        <td>{{ p.endDate | date:'d MMM yyyy' }}</td>
+        <td class="text-center">{{ p.position }}</td>
+        <td class="text-right">
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-primary" (click)="updatePrize(p)">
+              Update
+            </button>
+            <button type="button" class="btn btn-danger" (click)="deletePrizeStart(p, deletePrizeDlg)">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+
+<ng-template #deletePrizeDlg>
+  <div class="modal-header">
+    <h4 class="modal-title">Delete Prize</h4>
+  </div>
+  <div class="modal-body">
+    <p>
+      Are you sure you want to delete the prize '{{ deleteObj.name }}' from this season?
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="deletePrize(deleteObj)">Delete</button>
+    <button type="button" class="btn btn-secondary" (click)="modalRef?.hide()">Cancel</button>
+  </div>
+</ng-template>

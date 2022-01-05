@@ -5,7 +5,7 @@ import {
   IPaymentDetail,
   IPaymentSearch,
   IPaymentSummary,
-  IPlayerUpdate, IPlayerView, IRoundPlayer, IRoundPlayerUpdate, IRoundSummary, IRoundUpdate, IRoundView,
+  IPlayerUpdate, IPlayerView, IPrize, IPrizeUpdate, IRoundPlayer, IRoundPlayerUpdate, IRoundSummary, IRoundUpdate, IRoundView,
   ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary, ITradePeriod, ITradePeriodUpdate, SeasonStateType
 } from '../admin.types';
 import { APP_BASE_HREF } from '@angular/common';
@@ -135,5 +135,32 @@ export class AdminApiService {
 
   getPaymentDetails(id: string): Observable<IPaymentDetail> {
     return this.httpClient.get<IPaymentDetail>(`${this.apiBase}/payment/${encodeURIComponent(id)}`);
+  }
+
+  getPrizes(seasonId: string): Observable<IPrize[]> {
+    return this.httpClient.get<IPrize[]>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/prizes`);
+  }
+
+  getPrize(seasonId: string, id: string): Observable<IPrize> {
+    return this.httpClient.get<IPrize>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/prizes/` +
+      `${encodeURIComponent(id)}`);
+  }
+
+  addPrize(seasonId: string, model: IPrizeUpdate): Observable<unknown> {
+    return this.httpClient.post<unknown>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/prizes`, model);
+  }
+
+  updatePrize(seasonId: string, id: string, model: IPrizeUpdate): Observable<unknown> {
+    return this.httpClient.post<unknown>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/prizes/` +
+      `${encodeURIComponent(id)}`, model);
+  }
+
+  deletePrize(seasonId: string, id: string): Observable<unknown> {
+    return this.httpClient.delete<unknown>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/prizes/` +
+      `${encodeURIComponent(id)}`);
+  }
+
+  setPrizeOrder(seasonId: string, prizeIds: string[]): Observable<unknown> {
+    return this.httpClient.post<unknown>(`${this.apiBase}/season/${encodeURIComponent(seasonId)}/prizes/order`, prizeIds);
   }
 }

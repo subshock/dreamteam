@@ -25,6 +25,7 @@ import {
   CanvasRenderer
 } from 'echarts/renderers';
 import { SeasonTeamViewComponent } from './team/season-team-view.component';
+import { PrizesComponent } from './prizes/prizes.component';
 
 echarts.use(
   [TooltipComponent, LegendComponent, LineChart, CanvasRenderer, GridComponent]
@@ -39,7 +40,8 @@ echarts.use(
     RoundPaginationComponent,
     LeaderboardContainerComponent,
     SeasonPlayerViewComponent,
-    SeasonTeamViewComponent
+    SeasonTeamViewComponent,
+    PrizesComponent
   ],
   imports: [
     NgxEchartsModule.forRoot({ echarts }),

@@ -39,6 +39,7 @@ export interface ISeasonView {
   teams: number;
   rounds: number;
   tradePeriods: number;
+  prizes: number;
   pointDefinition: IPointDefinition;
   registrationEndDate: string;
 }
@@ -181,3 +182,21 @@ export const DefaultDaterangepickerConfig: Partial<BsDaterangepickerConfig> = {
   rangeInputFormat: 'ddd D MMM YYYY',
   rangeSeparator: ' - '
 };
+
+export interface IPrize {
+  id: string;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  position: number;
+  sortOrder: number;
+}
+
+export interface IPrizeUpdate {
+  name: string;
+  description: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  position: number;
+}

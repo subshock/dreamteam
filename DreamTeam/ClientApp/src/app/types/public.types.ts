@@ -215,3 +215,11 @@ export interface ITeamReport {
   rounds: ITeamReportRound[];
   benchmarks: ITeamReportBenchmark[];
 }
+
+export interface IPrizeReport {
+  name: string;
+  description: string;
+  team: string;
+  owner: string;
+  points: number;
+}

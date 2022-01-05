@@ -15,7 +15,7 @@ export class AdminSeasonStateService {
   season$: Observable<ISeasonView>;
 
   private tabsSubject = new BehaviorSubject<{ [key: string]: boolean }>(
-    { 'details': true, 'players': true, 'teams': true, 'rounds': true, 'trade-periods': true });
+    { 'details': true, 'players': true, 'teams': true, 'rounds': true, 'trade-periods': true, 'prizes': true });
   tabs$: Observable<{ [key: string]: boolean }> = this.tabsSubject.asObservable();
 
   constructor(private adminSvc: AdminApiService) {
