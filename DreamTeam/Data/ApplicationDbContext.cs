@@ -31,6 +31,8 @@ namespace DreamTeam.Data
             }
         }
 
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<TenantAdmin> TenantAdmins { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }

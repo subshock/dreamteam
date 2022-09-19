@@ -6,6 +6,9 @@ namespace DreamTeam.Models
 {
     public class Season : BaseEntity, IPointDefinition
     {
+        public Guid TenantId { get; set; }
+        [ForeignKey("TenantId")]
+        public Tenant Tenant { get; set; }
         public string Name { get; set; }
         public SeasonStateType Status { get; set; }
         public int Budget { get; set; }
