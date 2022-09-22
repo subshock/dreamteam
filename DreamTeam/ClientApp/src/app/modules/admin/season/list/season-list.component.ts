@@ -6,7 +6,6 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SeasonEditorComponent } from '../editor/season-editor.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminStateService } from '../../services/admin-state.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './season-list.component.html',
@@ -24,14 +23,7 @@ export class SeasonListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.adminState.addNavItem({ id: AdminNavItemId.Seasons, name: 'Seasons', route: ['/admin/season'] });
-    this.seasons$ = this.adminApi.getSeasons().pipe(
-      tap(seasons => {
-        // TODO: remove once we properly support multiple seasons
-        if (seasons.length === 1) {
-          this.router.navigate(['./', seasons[0].id], { relativeTo: this.route });
-        }
-      })
-    );
+    this.seasons$ = this.adminApi.getSeasons();
   }
 
   ngOnDestroy(): void {

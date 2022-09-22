@@ -3,7 +3,7 @@
     <tr>
       <th>Name</th>
       <th>Cost</th>
-      <th>Type</th>
+      <th>Multiplier</th>
       <th class="text-right">
         <button type="button" class="btn btn-sm btn-dark" (click)="refresh()">
           <i class="fas fa-fw fa-sync"></i>
@@ -45,8 +45,8 @@
       </td>
       <td>
         <select class="form-control" [(ngModel)]="newPlayer.multiplier">
-          <option value="1">Male Player</option>
-          <option value="2">Female Player</option>
+          <option value="1">1X</option>
+          <option value="2">2X</option>
         </select>
       </td>
       <td class="text-right">
@@ -69,8 +69,8 @@
     </td>
     <td>
       <select class="form-control" [(ngModel)]="editPlayer.multiplier">
-        <option value="1">Male Player</option>
-        <option value="2">Female Player</option>
+        <option value="1">1X</option>
+        <option value="2">2X</option>
       </select>
     </td>
     <td class="text-right">
