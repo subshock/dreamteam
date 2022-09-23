@@ -15,7 +15,7 @@ namespace DreamTeam.Data
         {
             var season = await Connection.QueryFirstOrDefaultAsync<PublicSeasonInfoViewModel>("SELECT Id, Name, Status, Cost, Budget, Runs, " +
                 "UnassistedWickets, AssistedWickets, Catches, Runouts, Stumpings " +
-                "FROM Seasons WHERE (@id Is Null OR Id=@id)", new { id });
+                "FROM Seasons WHERE (@id Is Null OR Id=@id) ORDER BY Status", new { id });
 
             if (season == null) return season;
 
