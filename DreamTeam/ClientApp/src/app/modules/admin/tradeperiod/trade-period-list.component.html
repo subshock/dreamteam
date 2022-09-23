@@ -15,7 +15,7 @@
     </thead>
     <tbody *ngIf="tradePeriods$ | async as tradePeriods">
       <tr *ngIf="tradePeriods.length == 0">
-        <td colspan="9" class="table-info text-center"><em>There are no trade periods defined for this season.</em></td>
+        <td colspan="4" class="table-info text-center"><em>There are no trade periods defined for this season.</em></td>
       </tr>
       <ng-container *ngFor="let tp of tradePeriods; let i = index">
         <tr *ngIf="editIndex != i; else updateTradePeriodTpl" [class.table-secondary]="editIndex != null"
@@ -36,7 +36,7 @@
     </tbody>
     <tfoot class="form">
       <tr>
-        <td colspan="9">
+        <td colspan="4">
           <h5>Add Trade Period to Round</h5>
         </td>
       </tr>

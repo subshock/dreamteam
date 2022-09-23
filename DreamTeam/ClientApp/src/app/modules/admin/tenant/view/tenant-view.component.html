@@ -1,0 +1,94 @@
+<ng-container *ngIf="tenant$ | async as tenant">
+  <ng-container *ngIf="!editing; else editTenant">
+    <h2>{{ tenant.name }}</h2>
+    <dl>
+      <dt>Slug:</dt>
+      <dd>{{ tenant.slug }}</dd>
+    </dl>
+    <dl>
+      <dt>Enabled:</dt>
+      <dd>
+        <i class="fas fa-fw" [class.fa-check-square]="tenant.enabled" [class.text-success]="tenant.enabled"
+          [class.fa-minus-square]="!tenant.enabled" [class.text-danger]="!tenant.enabled"></i>
+      </dd>
+    </dl>
+    <p>
+      <button type="button" class="btn btn-primary" [disabled]="saving" (click)="startUpdate()">Update</button>
+    </p>
+
+    <hr>
+
+    <h3>Admins</h3>
+
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th class="text-right">
+            <button type="button" class="btn btn-sm bt-dark" (click)="reloadAdmins()"><i class="fas fa-sync"></i></button>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngIf="admins$ | async as admins">
+        <tr *ngIf="admins.length === 0" class="table-info">
+          <td colspan="3">
+            <em>No admins assigned to this tenant</em>
+          </td>
+        </tr>
+        <tr *ngFor="let item of admins">
+          <td>{{ item.name }}</td>
+          <td>{{ item.username }}</td>
+          <td class="text-right">
+            <button type="button" class="btn btn-sm btn-danger" [disabled]="saving" (click)="removeAdmin(item.id)">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">
+            <h4>Add Admin</h4>
+          </td>
+        </tr>
+        <tr [formGroup]="adminForm">
+          <td colspan="2">
+            <select class="form-control" formControlName="id" *ngIf="users$ | async as users">
+              <option value="">(Select)</option>
+              <option *ngFor="let u of users" [ngValue]="u.id">{{ u.name }} ({{ u.userName }})</option>
+            </select>
+          </td>
+          <td class="text-right">
+            <button type="button" class="btn btn-success" [disabled]="saving || !adminForm.valid" (click)="addAdmin()">
+              Add User
+            </button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </ng-container>
+
+  <ng-template #editTenant>
+    <div [formGroup]="tenantForm">
+      <div class="form-group">
+        <label for="tenantName">Name:</label>
+        <input type="text" class="form-control" formControlName="name" id="tenantName">
+      </div>
+      <div class="form-group">
+        <label for="tenantSlug">Slug:</label>
+        <input type="text" class="form-control" formControlName="slug" id="tenantSlug">
+      </div>
+      <div class="form-group">
+        <div class="custom-control custom-switch">
+          <input type="checkbox" class="custom-control-input" id="tenantEnabled" formControlName="enabled">
+          <label class="custom-control-label" for="tenantEnabled">Enabled</label>
+        </div>
+      </div>
+      <p>
+        <button type="button" class="btn btn-success mr-2" [disabled]="!tenantForm.valid || saving" (click)="updateTenant()">Save</button>
+        <button type="button" class="btn btn-secondary" [disabled]="saving" (click)="cancelUpdate()">Cancel</button>
+      </p>
+    </div>
+  </ng-template>
+</ng-container>

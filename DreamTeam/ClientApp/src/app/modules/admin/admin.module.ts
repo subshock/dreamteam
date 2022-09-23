@@ -25,6 +25,9 @@ import { PaymentViewComponent } from './payment/view/payment-view.component';
 import { PaymentContainerComponent } from './payment/payment-container.component';
 import { PrizeListComponent } from './prize/list/prize-list.component';
 import { PrizeEditorComponent } from './prize/editor/prize-editor.component';
+import { TenantListComponent } from './tenant/list/tenant-list.component';
+import { TenantContainerComponent } from './tenant/tenant-container.component';
+import { TenantViewComponent } from './tenant/view/tenant-view.component';
 
 @NgModule({
   imports: [
@@ -36,6 +39,13 @@ import { PrizeEditorComponent } from './prize/editor/prize-editor.component';
         canActivate: [AuthorizeGuard, AdminGuard],
         children: [
           { path: '', pathMatch: 'full', component: AdminDashboardComponent },
+          {
+            path: 'tenant', component: TenantContainerComponent, children: [
+              { path: '', pathMatch: 'full', component: TenantListComponent },
+              { path: 'add', pathMatch: 'full', component: TenantViewComponent, data: { 'mode': 'add' } },
+              { path: ':id', component: TenantViewComponent, data: { mode: 'update' } }
+            ]
+          },
           { path: 'season', pathMatch: 'full', component: SeasonListComponent },
           {
             path: 'season/:id', component: SeasonViewContainerComponent, children: [
@@ -81,7 +91,10 @@ import { PrizeEditorComponent } from './prize/editor/prize-editor.component';
     PaymentViewComponent,
     PaymentContainerComponent,
     PrizeListComponent,
-    PrizeEditorComponent
+    PrizeEditorComponent,
+    TenantListComponent,
+    TenantContainerComponent,
+    TenantViewComponent
   ],
   providers: [],
 })

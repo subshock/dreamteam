@@ -106,6 +106,9 @@ namespace DreamTeam
                 options.AddPolicy("Administrator", policy => policy
                     .RequireAuthenticatedUser()
                     .RequireClaim(ClaimTypes.Role, "Administrator"));
+                options.AddPolicy("SysAdmin", policy => policy
+                    .RequireAuthenticatedUser()
+                    .RequireClaim(ClaimTypes.Role, "SysAdmin"));
             });
 
             // In production, the Angular files will be served from this directory

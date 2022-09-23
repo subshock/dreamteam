@@ -7,7 +7,9 @@ export enum AdminNavItemId {
   Admin = 1,
   Seasons = 2,
   SeasonView = 3,
-  Payments = 4
+  Payments = 4,
+  Tenants = 5,
+  TenantView = 6
 }
 
 export interface IAdminNavItem {
@@ -199,4 +201,32 @@ export interface IPrizeUpdate {
   startDate: string | Date;
   endDate: string | Date;
   position: number;
+}
+
+export interface ITenant {
+  id: string;
+  name: string;
+  slug: string;
+  enabled: boolean;
+  created: string;
+  updated: string;
+}
+
+export interface IAddUpdateTenant {
+  name: string;
+  slug: string;
+  enabled: boolean;
+}
+
+export interface ITenantAdmin {
+  id: string;
+  name: string;
+  username: string;
+}
+
+export interface IAppUser {
+  id: string;
+  name: string;
+  userName: string;
+  email: string;
 }

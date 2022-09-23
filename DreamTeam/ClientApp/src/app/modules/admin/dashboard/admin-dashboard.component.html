@@ -1,3 +1,19 @@
-<p>
-  <a [routerLink]="['./season']">Seasons</a>
-</p>
+<div class="d-flex g-2">
+  <div class="card mr-2">
+    <div class="card-body">
+      <h3><a [routerLink]="['./tenant']">Tenants</a></h3>
+    </div>
+  </div>
+
+  <div class="card mr-2">
+    <div class="card-body">
+      <h3><a [routerLink]="['./season']">Seasons</a></h3>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h3><a [routerLink]="['./payment']">Payments</a></h3>
+    </div>
+  </div>
+</div>
