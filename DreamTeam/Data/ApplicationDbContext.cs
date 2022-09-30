@@ -47,5 +47,6 @@ namespace DreamTeam.Data
         public DbSet<Prize> Prizes { get; set; }
         public DbSet<TaskLog> TaskLogs { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+        public DbSet<SeasonContent> SeasonContents { get; set; }
     }
 }

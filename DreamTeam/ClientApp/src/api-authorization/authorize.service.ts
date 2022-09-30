@@ -31,7 +31,8 @@ export enum AuthenticationResultStatus {
 
 export interface IUser {
   name?: string;
-  role?: string;
+  role?: string | string[];
+  tenant?: string | string[];
 }
 
 @Injectable({
@@ -58,8 +59,13 @@ export class AuthorizeService {
 
   public isAdmin(): Observable<boolean> {
     return this.getUser().pipe(
-      map(u => u && u.role &&
-        (u.role === ApplicationRoles.Administrator || (Array.isArray(u.role) && u.role.includes(ApplicationRoles.Administrator))))
+      map(u => userHasClaim(u, 'role', ApplicationRoles.Administrator))
+    );
+  }
+
+  public isTenantAdmin(slug: string): Observable<boolean> {
+    return this.getUser().pipe(
+      map(u => userHasClaim(u, 'tenant', slug))
     );
   }
 
@@ -204,4 +210,9 @@ export class AuthorizeService {
         mergeMap(() => this.userManager.getUser()),
         map(u => u && u.profile));
   }
+}
+
+export function userHasClaim(user: IUser, claimType: string, claimValue: string): boolean {
+  return user && user[claimType] &&
+    (user[claimType] === claimValue || (Array.isArray(user[claimType]) && user[claimType].includes(claimValue)));
 }

@@ -9,6 +9,7 @@
     <tr>
       <th>Tenant</th>
       <th>Slug</th>
+      <th class="text-center">Payment Gateway</th>
       <th class="text-center">Enabled</th>
       <th class="text-right">
         <button type="button" class="btn btn-sm btn-dark" (click)="reload()">
@@ -25,6 +26,9 @@
     <tr *ngFor="let t of tenants">
       <td><a [routerLink]="['./', t.id]">{{ t.name }}</a></td>
       <td>{{ t.slug }}</td>
+      <td class="text-center">
+        <i class="fas fa-fw" [class.fa-check-square]="t.usePaymentGateway" [class.fa-square]="!t.usePaymentGateway"></i>
+      </td>
       <td class="text-center">
         <i class="fas fa-fw" [class.fa-check-square]="t.enabled"
           [class.fa-square]="!t.enabled"></i>

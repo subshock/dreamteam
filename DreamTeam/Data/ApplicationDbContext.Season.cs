@@ -15,10 +15,20 @@ namespace DreamTeam.Data
 
         public Task<IEnumerable<SeasonSummaryViewModel>> GetSeasonsAsync()
         {
-            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Status, Created, Updated, Name, RegistrationEndDate FROM Seasons ORDER BY Created DESC");
+            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Status, Created, Updated, Name, RegistrationEndDate " +
+                "FROM Seasons ORDER BY Created DESC");
         }
 
-        public async Task<SeasonViewModel> GetSeasonAsync(Guid id)
+        public Task<IEnumerable<SeasonSummaryViewModel>> GetSeasonsByTenantAsync(string tenant)
+        {
+            return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT S.Id, S.Status, S.Created, S.Updated, S.Name, S.Cost, S.RegistrationEndDate " +
+                "FROM Seasons AS S " +
+                "   INNER JOIN Tenants AS T ON S.TenantId=T.Id " +
+                "WHERE T.Slug=@tenant " +
+                "ORDER BY Created DESC", new { tenant });
+        }
+
+        public async Task<SeasonViewModel> GetSeasonAsync(Guid id, string tenant = null)
         {
             var obj = await Connection.QueryFirstOrDefaultAsync<SeasonViewDbo>(@"
                 SELECT S.Id, S.Name, S.Budget, S.Created, S.Updated, S.Cost, S.Status,
@@ -28,25 +38,32 @@ namespace DreamTeam.Data
                     (SELECT COUNT(*) FROM Rounds WHERE SeasonId=S.Id) AS Rounds,
                     (SELECT COUNT(*) FROM TradePeriods WHERE SeasonId=S.Id) AS TradePeriods,
                     (SELECT COUNT(*) FROM Prizes WHERE SeasonId=S.Id) AS Prizes,
-                    S.RegistrationEndDate
+                    S.RegistrationEndDate, S.TenantId, S.MaxPlayers, S.ScoringPlayers
                 FROM Seasons AS S
-                WHERE S.Id=@id
-                ", new { id });
+                    INNER JOIN Tenants AS T ON S.TenantId=T.Id
+                WHERE S.Id=@id AND (@tenant Is Null OR T.Slug=@tenant)
+                ", new { id, tenant });
 
             return obj?.ToDto();
         }
 
         public async Task<Season> GetSeasonByTeam(Guid teamId)
         {
-            return await Connection.QueryFirstOrDefaultAsync<Season>("SELECT S.* FROM Seasons AS S INNER JOIN Teams AS T ON S.Id=T.SeasonId WHERE T.Id=@teamId", 
+            return await Connection.QueryFirstOrDefaultAsync<Season>("SELECT S.* FROM Seasons AS S INNER JOIN Teams AS T ON S.Id=T.SeasonId WHERE T.Id=@teamId",
                 new { teamId });
         }
 
-        public async Task<Season> CreateSeasonAsync(UpdateSeasonViewModel model)
+        public async Task<Season> CreateSeasonAsync(string tenantSlug, UpdateSeasonViewModel model)
         {
+            var tenant = await GetTenantBySlug(tenantSlug);
+
+            if (tenant == null || !tenant.Enabled)
+                throw new ArgumentException("Tenant could not be found");
+
             var season = new Season()
             {
                 Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
                 Status = SeasonStateType.Setup,
                 Name = model.Name,
                 Cost = model.Cost,
@@ -58,7 +75,9 @@ namespace DreamTeam.Data
                 Stumpings = model.PointDefinition.Stumpings,
                 AssistedWickets = model.PointDefinition.AssistedWickets,
                 UnassistedWickets = model.PointDefinition.UnassistedWickets,
-                RegistrationEndDate = model.RegistrationEndDate
+                RegistrationEndDate = model.RegistrationEndDate,
+                MaxPlayers = model.MaxPlayers,
+                ScoringPlayers = model.ScoringPlayers
             };
 
             Seasons.Add(season);
@@ -68,12 +87,17 @@ namespace DreamTeam.Data
             return season;
         }
 
-        public Task UpdateSeasonAsync(Guid id, UpdateSeasonViewModel model)
+        public async Task UpdateSeasonAsync(string tenantSlug, Guid id, UpdateSeasonViewModel model)
         {
-            var season = Seasons.FirstOrDefault(x => x.Id == id);
+            var tenant = await GetTenantBySlug(tenantSlug);
+
+            if (tenant == null || !tenant.Enabled)
+                throw new ArgumentException("Tenant could not be found");
+
+            var season = Seasons.FirstOrDefault(x => x.Id == id && x.TenantId == tenant.Id);
 
             if (season == null)
-                return Task.CompletedTask;
+                return;
 
             season.Updated = DateTime.UtcNow;
             season.Name = model.Name;
@@ -86,15 +110,22 @@ namespace DreamTeam.Data
             season.AssistedWickets = model.PointDefinition.AssistedWickets;
             season.UnassistedWickets = model.PointDefinition.UnassistedWickets;
             season.RegistrationEndDate = model.RegistrationEndDate;
+            season.MaxPlayers = model.MaxPlayers;
+            season.ScoringPlayers = model.ScoringPlayers;
 
             Seasons.Update(season);
 
-            return SaveChangesAsync();
+            await SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateSeasonStatusAsync(Guid id, SeasonStateType newStatus)
+        public async Task<bool> UpdateSeasonStatusAsync(string tenantSlug, Guid id, SeasonStateType newStatus)
         {
-            var season = Seasons.FirstOrDefault(x => x.Id == id);
+            var tenant = await GetTenantBySlug(tenantSlug);
+
+            if (tenant == null || !tenant.Enabled)
+                return false;
+
+            var season = Seasons.FirstOrDefault(x => x.Id == id && x.TenantId == tenant.Id);
 
             if (season == null)
                 return false;
@@ -115,9 +146,12 @@ namespace DreamTeam.Data
             return await SaveChangesAsync() > 0;
         }
 
-        public Task DeleteSeasonAsync(Guid id)
+        public async Task DeleteSeasonAsync(string tenantSlug, Guid id)
         {
-            return Connection.ExecuteAsync("DELETE FROM Seasons WHERE Id=@id", new { id });
+            var tenant = await GetTenantBySlug(tenantSlug);
+
+            if (tenant != null && tenant.Enabled)
+                await Connection.ExecuteAsync("DELETE FROM Seasons WHERE Id=@id AND TenantId=@tenantId", new { id, tenantId = tenant.Id });
         }
 
         public async Task<bool> CanAddTeamsToSeasonAsync(Guid id)
@@ -156,6 +190,7 @@ namespace DreamTeam.Data
                     Rounds = Rounds,
                     Status = Status,
                     TradePeriods = TradePeriods,
+                    TenantId = TenantId,
                     PointDefinition = new PointViewModel
                     {
                         Runs = Runs,
@@ -165,7 +200,9 @@ namespace DreamTeam.Data
                         Runouts = Runouts,
                         Stumpings = Stumpings
                     },
-                    RegistrationEndDate = RegistrationEndDate
+                    RegistrationEndDate = RegistrationEndDate,
+                    MaxPlayers = MaxPlayers,
+                    ScoringPlayers = ScoringPlayers
                 };
             }
         }

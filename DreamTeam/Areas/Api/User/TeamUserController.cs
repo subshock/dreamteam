@@ -19,18 +19,26 @@ namespace DreamTeam.Areas.Api.User
         private readonly ApplicationDbContext _db;
         private readonly TeamManagementService _teamSvc;
         private readonly SquarePaymentService _paymentSvc;
+        private readonly ManualPaymentService _manualPaymentSvc;
 
-        public TeamUserController(ApplicationDbContext db, TeamManagementService teamSvc, SquarePaymentService paymentSvc)
+        public TeamUserController(ApplicationDbContext db, TeamManagementService teamSvc, SquarePaymentService paymentSvc, ManualPaymentService manualPaymentSvc)
         {
             _db = db;
             _teamSvc = teamSvc;
             _paymentSvc = paymentSvc;
+            _manualPaymentSvc = manualPaymentSvc;
         }
 
         [HttpGet()]
         public async Task<IActionResult> GetTeamsForUser()
         {
             return Ok(await _db.GetTeamsForUser(UserId));
+        }
+
+        [HttpGet("season/{seasonId:guid}")]
+        public async Task<IActionResult> GetTeamsForUserBySeason(Guid seasonId)
+        {
+            return Ok(await _db.GetTeamsForUser(UserId, seasonId));
         }
 
         [HttpGet("{teamId:guid}")]
@@ -56,21 +64,22 @@ namespace DreamTeam.Areas.Api.User
                 return Ok(new { Success = false, Error = ModelState });
 
             var season = await _db.GetSeasonAsync(model.SeasonId);
+            var tenant = season != null ? await _db.GetTenant(season.TenantId) : null;
 
-            if (season == null || !_db.CanAddTeamsToSeason(season.Status, season.RegistrationEndDate))
+            if (tenant == null || season == null || !_db.CanAddTeamsToSeason(season.Status, season.RegistrationEndDate))
             {
                 ModelState.AddModelError("season", "Registering teams is forbidden");
                 return Ok(new { Success = false, Error = ModelState });
             }
-
-            string registrationToken = null;
 
             var user = (await userManager.FindByIdAsync(UserId));
 
             if (user == null)
                 return BadRequest("User does not exist");
 
-            var paymentResult = await _paymentSvc.Payment(season.Cost, model.Teams.Count, model.PaymentToken, model.VerificationToken, user.Email);
+            IPaymentService paymentSvc = tenant.UsePaymentGateway ? _paymentSvc : _manualPaymentSvc;
+
+            var paymentResult = await paymentSvc.Payment(season.Cost, model.Teams.Count, model.PaymentToken, model.VerificationToken, user.Email);
 
             await _db.LogPayment(paymentResult);
 
@@ -79,23 +88,23 @@ namespace DreamTeam.Areas.Api.User
                 return Ok(new { Success = false, Error = paymentResult.Exception.Errors });
             }
 
-            registrationToken = paymentResult.Response.Payment.Id;
+            var registrationToken = paymentResult.Response?.Payment?.Id ?? null;
 
             await _db.RegisterTeams(model, UserId, registrationToken);
 
             return Ok(new
             {
                 Success = true,
-                Payment = true,
+                Payment = false,
                 Messages = new
                 {
-                    Total = paymentResult.Response.Payment.TotalMoney,
-                    Card = new
+                    Total = paymentResult.Response?.Payment?.TotalMoney ?? new Square.Models.Money(Convert.ToInt32(season.Cost * model.Teams.Count * 100), "AUD"),
+                    Card = tenant.UsePaymentGateway ? new
                     {
                         Brand = paymentResult.Response.Payment.CardDetails.Card.CardBrand,
                         Last4 = paymentResult.Response.Payment.CardDetails.Card.Last4
-                    },
-                    paymentResult.Response.Payment.ReceiptUrl
+                    } : null,
+                    paymentResult.Response?.Payment?.ReceiptUrl
                 }
             });
         }

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { RoundStateType } from 'src/app/modules/admin/admin.types';
+import { RoundStateType } from 'src/app/modules/tenant-admin/tenant-admin.types';
 
 const stateMap = {
   'name': {

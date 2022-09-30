@@ -1,0 +1,167 @@
+<ng-container *ngIf="model$ | async as model">
+  <h3>Manage: <strong>{{ model.team.name }}</strong></h3>
+  <p>Owner: <strong>{{ model.team.owner }}</strong></p>
+  <div class="cmd-bar mb-3">
+    <a class="btn btn-secondary" [routerLink]="['../../..']">
+      <i class="fas fa-fw fa-chevron-left"></i>
+      Back to Team List
+    </a>
+  </div>
+
+  <ng-container *ngIf="model.season.status === SeasonStateType.Registration && !!model.season.tradePeriod">
+    <div class="alert alert-info">
+      <h5>This season is in registration mode</h5>
+      <p>
+        You are free to change your team as much as you like before registration ends and
+        your team will be locked.
+      </p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!model.canEdit">
+    <div class="alert alert-info">
+      <h5>Team Locked</h5>
+      <p>You can't make changes to this team at this time.</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="model.canEdit && model.tradePeriod">
+    <app-trade-countdown [tradePeriod]="model.tradePeriod"></app-trade-countdown>
+  </ng-container>
+
+  <div class="row" *ngIf="getCurrentTeam(model) as currentTeam">
+    <div class="col-md-6 col-my-team">
+      <h4>Your Team</h4>
+      <div class="d-flex justify-content-between">
+        <p>
+          Remaining Balance: {{ model.current.balance }}
+        </p>
+        <p *ngIf="model.tradePeriod?.type === TradePeriodType.TradePeriod">
+          <span class="trade-limit badge badge-primary text-uppercase"
+            [class.badge-danger]="model.trades?.left == 0">
+            {{ model.trades?.left }} of {{ model.tradePeriod.tradeLimit }} trades remaining
+          </span>
+        </p>
+      </div>
+      <table class="table table-striped table-hover table-sm">
+        <thead class="thead-dark">
+          <tr>
+            <th>#</th>
+            <th>&nbsp;</th>
+            <th>Player</th>
+            <th class="text-center">Cost</th>
+            <th *ngIf="model.canEdit">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="currentTeam.length === 0" class="table-warning">
+            <td colspan="6" class="text-center">
+              There are no players in your team.  Add players from the available list.
+            </td>
+          </tr>
+          <tr *ngFor="let p of currentTeam; let i = index">
+            <td class="text-right">
+              {{ i + 1 }}
+              <i *ngIf="p.added" class="fas fa-fw fa-plus-square text-success" title="Newly Added"></i>
+            </td>
+            <td class="col-captain">
+              <button type="button" class="btn btn-sm" (click)="setCaptain(model, p)"
+                *ngIf="model.canEdit || p.type == TeamPlayerType.Captain"
+                [class.btn-primary]="p.type == TeamPlayerType.Captain"
+                [class.btn-outline-secondary]="p.type !== TeamPlayerType.Captain">C</button>
+              <button type="button" class="btn btn-sm" (click)="setViceCaptain(model, p)"
+                *ngIf="model.canEdit || p.type == TeamPlayerType.ViceCaptain"
+                [class.btn-primary]="p.type === TeamPlayerType.ViceCaptain"
+                [class.btn-outline-secondary]="p.type !== TeamPlayerType.ViceCaptain">VC</button>
+            </td>
+            <td>
+              {{ p.name }}
+              <span *ngIf="p.multiplier > 1" class="badge badge-primary float-right"
+                title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number }}x</span>
+            </td>
+            <td class="text-center">{{ p.cost }}</td>
+            <td class="text-right" *ngIf="model.canEdit">
+              <button type="button" class="btn btn-danger btn-sm"
+                *ngIf="model.trades?.left > 0 || p.added"
+                (click)="removePlayerFromTeam(model, p)">
+                <i class="fas fa-fw fa-times"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot *ngIf="model.canEdit">
+          <tr>
+            <th colspan="2">
+              <strong>{{ currentTeam.length }}</strong> / {{ model.season.maxPlayers }}
+            </th>
+            <th colspan="3">
+              <div class="c-vc-needed">
+                <span *ngIf="!isCaptainSet(currentTeam)">Captain needed.</span>
+                <span *ngIf="!isViceCaptainSet(currentTeam)">Vice Captain needed.</span>
+              </div>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+      <div *ngIf="saveError$ | async as saveError" class="alert alert-danger">
+        <h6>There was a problem saving your team.</h6>
+        <p>{{ saveError }}</p>
+      </div>
+      <div class="cmd-bar" *ngIf="model.canEdit">
+        <button type="button" class="btn btn-success" (click)="saveTeam(model)" [disabled]="saving || !isTeamValid(currentTeam, model)">Save Team</button>
+        <button type="button" class="btn btn-secondary" (click)="revertTeam(model)">Revert Team</button>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-available-players" *ngIf="currentTeam.length < model.season.maxPlayers && model.canEdit">
+      <h4>Available Players</h4>
+      <p>Choose a player to add to your team.</p>
+      <table class="table table-striped table-hover table-sm">
+        <thead class="thead-dark">
+          <tr>
+            <th>&nbsp;</th>
+            <th>Player</th>
+            <th class="text-center">Cost</th>
+            <th class="text-right">Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="4">
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Search..." [ngModel]="playerSearch"
+                  (ngModelChange)="updatePlayerSearch($event)">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-dark" type="button" (click)="updatePlayerSearch('')">
+                    <i class="fas fa-fw fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="getAvailablePlayers(model) as availablePlayers">
+          <tr *ngIf="availablePlayers.length === 0" class="table-warning">
+            <td colspan="4" class="text-center">
+              There are no players available that would fit within your budget.  Try removing some high value players from
+              your team and add some lower values ones instead.
+            </td>
+          </tr>
+          <tr *ngFor="let p of availablePlayers">
+            <td>
+              <button type="button" class="btn btn-sm btn-success" (click)="addPlayerToTeam(model, p)">
+                <i class="fas fa-plus fa-fw"></i>
+              </button>
+            </td>
+            <td>{{ p.name }}
+              <span *ngIf="p.multiplier > 1" class="badge badge-primary float-right"
+                title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number }}x</span>
+            </td>
+            <td class="text-center">{{ p.cost }}</td>
+            <td class="text-right">{{ p.points | number }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>

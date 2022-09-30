@@ -2,11 +2,10 @@ import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnIn
 import { combineLatest, EMPTY, from, Observable } from 'rxjs';
 import { delay, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
-import { SeasonStateType } from '../modules/admin/admin.types';
 import { DynamicScriptLoaderService } from '../services/dynamic-script-loader.service';
 import { PublicApiService } from '../services/public-api.service';
 import { UserApiService } from '../services/user-api.service';
-import { IPlayerLeaderboard, IPublicSeasonInfo, IPublicTradePeriod, ITeamLeaderboard } from '../types/public.types';
+import { IPlayerLeaderboard, IPublicSeasonInfo, IPublicTradePeriod, ITeamLeaderboard, SeasonStateType } from '../types/public.types';
 
 interface ILeaderboard {
   season: IPublicSeasonInfo;

@@ -19,9 +19,6 @@ namespace DreamTeam.Services
 
         public async Task<UserTeamUpdateResult> UpdateTeam(string userId, Guid teamId, UserTeamPlayersUpdateViewModel model)
         {
-            if (model.Players.Count != Constants.PlayersPerTeam)
-                return new UserTeamUpdateResult { Success = false, Error = "Wrong number of players" };
-
             if (!model.Players.Any(x => x == model.CaptainPlayerId))
                 return new UserTeamUpdateResult { Success = false, Error = "Captain is not in team" };
 
@@ -32,6 +29,9 @@ namespace DreamTeam.Services
 
             if (season == null)
                 return new UserTeamUpdateResult { Success = false, Error = "Season does not exist" };
+
+            if (model.Players.Count != season.MaxPlayers)
+                return new UserTeamUpdateResult { Success = false, Error = "Wrong number of players" };
 
             var tradePeriod = await _db.GetCurrentTradePeriod(season.Id);
 
@@ -51,7 +51,7 @@ namespace DreamTeam.Services
             {
                 // Check that the number of changes is within the limit
                 var currentPlayers = team.Players.Where(x => !x.Added).Select(x => x.Id).ToList();
-                var changes = Constants.PlayersPerTeam - model.Players.Where(x => currentPlayers.Contains(x)).Count();
+                var changes = season.MaxPlayers - model.Players.Where(x => currentPlayers.Contains(x)).Count();
 
                 if (changes > tradePeriod.TradeLimit)
                     return new UserTeamUpdateResult { Success = false, Error = "Too many trades" };
@@ -67,7 +67,7 @@ namespace DreamTeam.Services
 
             var players = (await _db.GetPlayersAsync(model.Players)).ToList();
 
-            if (players.Count != Constants.PlayersPerTeam)
+            if (players.Count != season.MaxPlayers)
                 return new UserTeamUpdateResult { Success = false, Error = "Players do not exist" };
 
             if (players.Sum(x => x.Cost) > season.Budget)

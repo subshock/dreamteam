@@ -3,24 +3,16 @@ import { CommonModule } from '@angular/common';
 import { TeamsListComponent } from './teams/list/teams-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule } from '@angular/router';
-import { TeamRegisterComponent } from './teams/register/team-register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { UserContainerComponent } from './user-container.component';
-import { TeamManageComponent } from './teams/manage/team-manage.component';
-import { TeamEditorComponent } from './teams/editor/team-editor.component';
-import { TeamRegisterDoneComponent } from './teams/register/team-register-done.component';
 
 
 
 @NgModule({
   declarations: [
     TeamsListComponent,
-    TeamRegisterComponent,
-    UserContainerComponent,
-    TeamManageComponent,
-    TeamEditorComponent,
-    TeamRegisterDoneComponent
+    UserContainerComponent
   ],
   imports: [
     CommonModule,
@@ -30,9 +22,6 @@ import { TeamRegisterDoneComponent } from './teams/register/team-register-done.c
     RouterModule.forChild([
       { path: '', canActivate: [AuthorizeGuard], component: UserContainerComponent, children: [
         { path: 'teams', pathMatch: 'full', component: TeamsListComponent },
-        { path: 'teams/register', pathMatch: 'full', component: TeamRegisterComponent },
-        { path: 'teams/register/done', component: TeamRegisterDoneComponent },
-        { path: 'teams/:id/manage', component: TeamManageComponent }
       ] },
       { path: '', pathMatch: 'full', redirectTo: 'teams' },
     ])

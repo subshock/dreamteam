@@ -32,6 +32,7 @@ export class TenantViewComponent implements OnInit, OnDestroy {
     this.tenantForm = fb.group({
       'name': ['', Validators.required],
       'slug': ['', Validators.required],
+      'usePaymentGateway': ['', Validators.required],
       'enabled': [false, Validators.required]
     });
     this.adminForm = fb.group({
@@ -93,7 +94,7 @@ export class TenantViewComponent implements OnInit, OnDestroy {
 
   startUpdate(): void {
     this.subscriptions.add(this.tenant$.pipe(take(1)).subscribe(t => {
-      this.tenantForm.setValue({ name: t.name, slug: t.slug, enabled: t.enabled });
+      this.tenantForm.setValue({ name: t.name, slug: t.slug, enabled: t.enabled, usePaymentGateway: t.usePaymentGateway });
       this.editing = true;
     }));
   }

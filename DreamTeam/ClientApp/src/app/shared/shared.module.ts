@@ -10,6 +10,10 @@ import { PlayerMultiplierPipe } from './pipes/player-multiplier.pipe';
 import { SquarePayComponent } from './components/square-pay/square-pay.component';
 import { RoundStatePipe } from './pipes/round-state.pipe';
 import { TradeCountdownComponent } from './components/trade-countdown/trade-countdown.component';
+import { UserTeamDataViewComponent } from './components/user-team-data-view/user-team-data-view.component';
+import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TeamEditorComponent } from './components/user-team-data-view/editor/team-editor.component';
 
 @NgModule({
   declarations: [
@@ -17,10 +21,15 @@ import { TradeCountdownComponent } from './components/trade-countdown/trade-coun
     PlayerMultiplierPipe,
     SquarePayComponent,
     RoundStatePipe,
-    TradeCountdownComponent
+    TradeCountdownComponent,
+    UserTeamDataViewComponent,
+    TeamEditorComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
     ButtonsModule.forRoot(),
     BsDropdownModule.forRoot(),
     BsDatepickerModule.forRoot(),
@@ -37,7 +46,8 @@ import { TradeCountdownComponent } from './components/trade-countdown/trade-coun
     PlayerMultiplierPipe,
     SquarePayComponent,
     RoundStatePipe,
-    TradeCountdownComponent
+    TradeCountdownComponent,
+    UserTeamDataViewComponent
   ]
 })
 export class SharedModule { }

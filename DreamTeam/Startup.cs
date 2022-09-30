@@ -121,6 +121,7 @@ namespace DreamTeam
             services.AddScoped<TaskLogService>();
             services.AddScoped<RoundCompletedBackgroundTask>();
             services.AddScoped<SquarePaymentService>();
+            services.AddScoped<ManualPaymentService>();
 
             services.Configure<SquarePaymentApiOptions>(Configuration.GetSection("Square"));
             services.AddSingleton<SquareClientFactory>();

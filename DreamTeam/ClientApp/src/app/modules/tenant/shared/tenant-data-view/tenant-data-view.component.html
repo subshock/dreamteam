@@ -1,0 +1,32 @@
+<h2 class="d-flex justify-content-between">
+  <a [routerLink]="['/', 't', tenant.slug]">{{ tenant.name }}</a>
+  <a *ngIf="tenant.isAdmin" [routerLink]="['/', 't', tenant.slug, 'admin']" class="btn btn-primary">
+    <i class="fas fa-shield-alt"></i>
+    Administration
+  </a>
+</h2>
+
+<ng-container *ngIf="tenant.seasons.length === 0">
+  <div class="alert alert-info">There are no competitions for this tenant.</div>
+</ng-container>
+
+<ng-container *ngFor="let season of tenant.seasons">
+  <div class="card mb-2">
+    <div class="card-body">
+      <h5 class="card-title d-flex justify-content-between">
+        <a [routerLink]="['/', 's', season.id]">{{ season.name }}</a>
+        <span class="{{ season.status | seasonState:'badge' }}">{{ season.status | seasonState }}</span>
+      </h5>
+      <div class="d-flex justify-content-start">
+        <a *ngIf="season.status === SeasonStateType.Registration"
+          [routerLink]="['/', 's', season.id, 'register']" class="btn btn-secondary mr-2">Register Teams</a>
+        <a [routerLink]="['/', 's', season.id, 'rules']" class="btn btn-secondary mr-2">Rules</a>
+        <ng-container *ngIf="season.status > SeasonStateType.Registration">
+          <a [routerLink]="['/', 's', season.id, 'teams']" class="btn btn-secondary mr-2">Team Leaderboard</a>
+          <a [routerLink]="['/', 's', season.id, 'players']" class="btn btn-secondary mr-2">Player Leaderboard</a>
+          <a [routerLink]="['/', 's', season.id, 'prizes']" class="btn btn-secondary mr-2">Prizes</a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -75,7 +75,7 @@ namespace DreamTeam.Services
                             Points = x.Points * (x.PlayerId == captainId ? 2 : 1)
                         })
                         .OrderByDescending(x => x.Points)
-                        .Take(Constants.PlayersCountedInTeam)
+                        .Take(season.ScoringPlayers)
                         .Aggregate(new TeamRoundResult { Id = Guid.NewGuid(), TeamId = team.Id, Created = now, RoundId = round.Id }, (acc, curr) =>
                         {
                             acc.Runs += curr.Runs;

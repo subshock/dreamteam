@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
-  IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPrizeReport, IPublicSeasonInfo, ITeamLeaderboard, ITeamReport
+  IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPrizeReport, IPublicSeasonInfo,
+  IPublicTenant, ITeamLeaderboard, ITeamReport, ITenantSeason
 } from '../types/public.types';
 
 @Injectable({
@@ -15,6 +16,18 @@ export class PublicApiService {
 
   constructor(private httpClient: HttpClient, @Inject(APP_BASE_HREF) baseHref: string) {
     this.apiBase = baseHref + 'api/public';
+  }
+
+  getTenants(): Observable<ITenantSeason[]> {
+    return this.httpClient.get<ITenantSeason[]>(`${this.apiBase}/tenant`);
+  }
+
+  getTenant(slug: string): Observable<IPublicTenant> {
+    return this.httpClient.get<IPublicTenant>(`${this.apiBase}/tenant/${encodeURIComponent(slug)}`);
+  }
+
+  getTenantSeasons(slug: string): Observable<ITenantSeason> {
+    return this.httpClient.get<ITenantSeason>(`${this.apiBase}/tenant/${encodeURIComponent(slug)}/seasons`);
   }
 
   getCurrentSeason(): Observable<IPublicSeasonInfo> {

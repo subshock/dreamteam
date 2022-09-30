@@ -30,8 +30,9 @@ import { RulesComponent } from './rules/rules.component';
     { path: 'rules', component: RulesComponent },
     { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule) },
     { path: 'my', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },
-    { path: 'season', loadChildren: () => import('./modules/season/season.module').then(m => m.SeasonModule) }
-], { }),
+    { path: 's', loadChildren: () => import('./modules/season/season.module').then(m => m.SeasonModule) },
+    { path: 't', loadChildren: () => import('./modules/tenant/tenant.module').then(m => m.TenantModule) }
+], { paramsInheritanceStrategy: 'always' }),
     BrowserAnimationsModule,
     SharedModule
   ],

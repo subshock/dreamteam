@@ -6,10 +6,15 @@
       <dd>{{ tenant.slug }}</dd>
     </dl>
     <dl>
+      <dt>Use Payment Gateway</dt>
+      <dd>
+        <i class="fas fa-fw" [class.fa-check-square]="tenant.usePaymentGateway" [class.fa-square]="!tenant.usePaymentGateway"></i>
+      </dd>
+    </dl>
+    <dl>
       <dt>Enabled:</dt>
       <dd>
-        <i class="fas fa-fw" [class.fa-check-square]="tenant.enabled" [class.text-success]="tenant.enabled"
-          [class.fa-minus-square]="!tenant.enabled" [class.text-danger]="!tenant.enabled"></i>
+        <i class="fas fa-fw" [class.fa-check-square]="tenant.enabled" [class.fa-minus-square]="!tenant.enabled"></i>
       </dd>
     </dl>
     <p>
@@ -78,6 +83,12 @@
       <div class="form-group">
         <label for="tenantSlug">Slug:</label>
         <input type="text" class="form-control" formControlName="slug" id="tenantSlug">
+      </div>
+      <div class="form-group">
+        <div class="custom-control custom-switch">
+          <input type="checkbox" class="custom-control-input" id="tenantUsePaymentGateway" formControlName="usePaymentGateway">
+          <label class="custom-control-label" for="tenantUsePaymentGateway">Use Payment Gateway</label>
+        </div>
       </div>
       <div class="form-group">
         <div class="custom-control custom-switch">

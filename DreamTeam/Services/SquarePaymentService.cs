@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DreamTeam.Services
 {
-    public class SquarePaymentService
+    public class SquarePaymentService : IPaymentService
     {
         private readonly Square.ISquareClient _client;
         private readonly ILogger _logger;

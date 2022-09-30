@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DateTime } from 'luxon';
-import { interval, Observable, Subscription, timer } from 'rxjs';
+import { Observable, Subscription, timer } from 'rxjs';
 import { filter, map, share, startWith, take } from 'rxjs/operators';
 import { IPublicTradePeriod, TradePeriodType } from 'src/app/types/public.types';
 
@@ -38,7 +38,7 @@ export class TradeCountdownComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions = new Subscription();
     const endDate = DateTime.fromISO(this.tradePeriod.endDate);
-    this.countdown$ = interval(1000).pipe(
+    this.countdown$ = timer(0, 1000).pipe(
       map(() => ({
         now: DateTime.now(),
       })),
@@ -47,7 +47,6 @@ export class TradeCountdownComponent implements OnInit, OnDestroy {
         endDate: endDate,
         breakdown: endDate > m.now ? this.calculateBreakdown(endDate, m.now) : null
       })),
-      startWith(),
       share()
     );
 

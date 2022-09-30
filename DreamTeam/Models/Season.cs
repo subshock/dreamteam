@@ -23,6 +23,9 @@ namespace DreamTeam.Models
         public int Runouts { get; set; }
         public int Stumpings { get; set; }
 
+        public int MaxPlayers { get; set; }
+        public int ScoringPlayers { get; set; }
+
         public DateTimeOffset? RegistrationEndDate { get; set; }
 
 

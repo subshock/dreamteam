@@ -1,9 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { SeasonStateType } from '../modules/admin/admin.types';
 import { PublicApiService } from '../services/public-api.service';
-import { IPublicSeasonInfo } from '../types/public.types';
+import { IPublicSeasonInfo, SeasonStateType } from '../types/public.types';
 
 @Component({
   templateUrl: './rules.component.html',

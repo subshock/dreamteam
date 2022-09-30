@@ -21,7 +21,7 @@ namespace DreamTeam.Data
                 Created = DateTime.UtcNow,
                 PaymentDetails = response.Exception != null 
                     ? JsonSerializer.Serialize(response.Exception.Data)
-                    : JsonSerializer.Serialize(response.Response.Payment)
+                    : JsonSerializer.Serialize(response.Response?.Payment)
             };
 
             Payments.Add(payment);

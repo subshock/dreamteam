@@ -17,7 +17,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public SeasonStateType Status { get; set; }
 
         public DateTimeOffset? RegistrationEndDate { get; set; }
-    }
+        public decimal Cost { get; set; }    }
 
     public class SeasonViewModel
     {
@@ -40,6 +40,11 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         public int Prizes { get; set; }
 
         public DateTimeOffset? RegistrationEndDate { get; set; }
+        public Guid TenantId { get; set; }
+        public string Tenant { get; set; }
+        public string Slug { get; set; }
+        public int MaxPlayers { get; set; }
+        public int ScoringPlayers { get; set; }
     }
 
     public class UpdateSeasonViewModel
@@ -53,5 +58,7 @@ namespace DreamTeam.Areas.Api.Admin.ViewModels
         [Required]
         public PointViewModel PointDefinition { get; set; }
         public DateTimeOffset? RegistrationEndDate { get; set; }
+        public int MaxPlayers { get; set; }
+        public int ScoringPlayers { get; set; }
     }
 }

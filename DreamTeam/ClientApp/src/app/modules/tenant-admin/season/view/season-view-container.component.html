@@ -1,0 +1,47 @@
+<ng-container *ngIf="season$ | async as season">
+  <ul class="nav nav-tabs" *ngIf="tabs$ | async as tabs">
+    <li class="nav-item">
+      <a class="nav-link"
+        routerLinkActive="active" [routerLink]="['./']" [routerLinkActiveOptions]="{ exact: true }"
+        [class.disabled]="!tabs['details']">Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./players']"
+        [class.disabled]="!tabs['players']">
+        Players
+        <span class="ml-1 badge badge-pill badge-info">{{ season.players }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./rounds']"
+        [class.disabled]="!tabs['rounds']">
+        Rounds
+        <span class="ml-1 badge badge-pill badge-info">{{ season.rounds }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./trade-periods']"
+        [class.disabled]="!tabs['trade-periods']">
+        Trade Periods
+        <span class="ml-1 badge badge-pill badge-info">{{ season.tradePeriods }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./teams']"
+        [class.disabled]="!tabs['teams']">
+        Teams
+        <span class="ml-1 badge badge-pill badge-info">{{ season.teams }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['./prizes']"
+        [class.disabled]="!tabs['prizes']">
+        Prizes
+        <span class="ml-1 badge badge-pill badge-info">{{ season.prizes }}</span>
+      </a>
+    </li>
+  </ul>
+  <div class="tab-container">
+    <router-outlet></router-outlet>
+  </div>
+</ng-container>

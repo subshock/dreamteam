@@ -1,0 +1,18 @@
+<h1>Team Registration Complete</h1>
+<p *ngIf="payment.card">Your payment has been received and your teams have been registered.</p>
+<h4>Payment Details</h4>
+<dl>
+  <dt>Amount</dt>
+  <dd>{{ payment.total.amount / 100 | currency }} {{ payment.total.currency }}</dd>
+</dl>
+<dl *ngIf="payment.card">
+  <dt>Card</dt>
+  <dd>{{ payment.card.brand }} ending with ...{{ payment.card.last4 }}</dd>
+</dl>
+<div class="cmd-bar">
+  <a [routerLink]="['../..']" class="btn btn-primary">Continue</a>
+  <a *ngIf="payment.receiptUrl" [href]="payment.receiptUrl" class="btn btn-secondary" target="_blank">
+    <i class="fas fa-fw fa-external-link-alt"></i>
+    Receipt
+  </a>
+</div>

@@ -285,6 +285,9 @@ namespace DreamTeam.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("MaxPlayers")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -295,6 +298,9 @@ namespace DreamTeam.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Runs")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScoringPlayers")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -317,6 +323,34 @@ namespace DreamTeam.Data.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Seasons");
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.SeasonContent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SeasonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("Updated")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeasonId");
+
+                    b.ToTable("SeasonContents");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.TaskLog", b =>
@@ -585,6 +619,9 @@ namespace DreamTeam.Data.Migrations
 
                     b.Property<DateTimeOffset?>("Updated")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("UsePaymentGateway")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -957,6 +994,17 @@ namespace DreamTeam.Data.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("DreamTeam.Models.SeasonContent", b =>
+                {
+                    b.HasOne("DreamTeam.Models.Season", "Season")
+                        .WithMany()
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Season");
+                });
+
             modelBuilder.Entity("DreamTeam.Models.Team", b =>
                 {
                     b.HasOne("DreamTeam.Models.Season", "Season")
@@ -1085,7 +1133,7 @@ namespace DreamTeam.Data.Migrations
             modelBuilder.Entity("DreamTeam.Models.TenantAdmin", b =>
                 {
                     b.HasOne("DreamTeam.Models.Tenant", "Tenant")
-                        .WithMany()
+                        .WithMany("Admins")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1159,6 +1207,11 @@ namespace DreamTeam.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.Tenant", b =>
+                {
+                    b.Navigation("Admins");
                 });
 #pragma warning restore 612, 618
         }

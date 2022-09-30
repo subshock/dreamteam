@@ -1,0 +1,107 @@
+<ng-container *ngIf="season$ | async as season">
+  <ng-container *ngIf="tradePeriod$ | async as tradePeriod">
+    <app-trade-countdown [tradePeriod]="tradePeriod"></app-trade-countdown>
+
+    <ng-container *ngIf="isAuthenticated$ | async; else needSignInToRegister">
+      <div class="cmd-bar mb-3" *ngIf="season.status === SeasonStateType.Registration && !!tradePeriod">
+        <a type="button" class="btn btn-lg btn-success" [routerLink]="['./register']">
+          <i class="fas fa-fw fa-plus"></i>
+          Register Team
+        </a>
+        <span class="ml-3">Entry: <strong>{{ season.cost | currency }}</strong></span>
+      </div>
+    </ng-container>
+
+    <ng-template #needSignInToRegister>
+      <div class="alert alert-success">
+        <h4>Login or Register an new account to create a team in this competition.</h4>
+        <div>
+          <a class="btn btn-success btn-lg mr-3" [routerLink]="['/', 'authentication', 'login']">Login</a>
+          <a class="btn btn-success btn-lg" [routerLink]="['/', 'authentication', 'register']">Register</a>
+        </div>
+      </div>
+    </ng-template>
+
+  </ng-container>
+
+  <ng-container *ngIf="teams$ | async as teams">
+    <h5 (click)="expand['teams'] = !expand['teams']">
+      <i class="fas fa-fw fa-chevron-right" [class.fa-rotate-90]="!!expand['teams']"></i>
+      My Teams <span class="badge badge-primary">{{ teams.length | number }}</span>
+    </h5>
+    <div *ngIf="!!expand['teams']">
+      <app-user-team-data-view [teams]="teams" [season]="season" (teamUpdate)="teamUpdate()"></app-user-team-data-view>
+    </div>
+  </ng-container>
+  <app-prize-data-view [season]="season"></app-prize-data-view>
+  <ng-container *ngIf="leaderboard$ | async as leaderboard">
+    <div class="row leaderboards">
+      <div class="col-6">
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th colspan="3">
+                <a [routerLink]="['./', 'teams']">
+                  Team Leaderboard
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of leaderboard.teams">
+              <th class="text-center">{{ t.rank }}</th>
+              <td>
+                <a [routerLink]="['./', 'team', t.id]">
+                  {{ t.name }}
+                </a>
+              </td>
+              <td class="text-right">{{ t.points | number }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3">
+                <a class="btn btn-primary" [routerLink]="['./', 'teams']">
+                  More...
+                </a>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="col-6">
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th colspan="3">
+                <a [routerLink]="['./', 'players']">
+                  Player Leaderboard
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of leaderboard.players">
+              <th class="text-center">{{ p.rank }}</th>
+              <td>
+                <a [routerLink]="['./', 'player', p.id]">
+                  {{ p.name }}
+                </a>
+              </td>
+              <td class="text-right">{{ p.points | number }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3">
+                <a class="btn btn-primary" [routerLink]="['./', 'players']">
+                  More...
+                </a>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
