@@ -22,11 +22,12 @@
           <div *ngIf="t.userName">{{t.userName}}</div>
         </td>
         <td>{{ t.updated | date:'d MMM yyyy h:mm a' }}</td>
-        <td><span class="label" [class.label-success]="t.valid" [class.label-secondary]="!t.valid">{{ t.valid ? 'Ready' : 'Not Ready' }}</span></td>
+        <td><span class="badge" [class.badge-success]="t.valid" [class.badge-secondary]="!t.valid">{{ t.valid ? 'Ready' : 'Not Ready' }}</span></td>
         <td>{{ t.balance | number:'1.0-0' }}</td>
         <td><span class="badge" [class.badge-success]="t.paid" [class.badge-danger]="!t.paid">{{ t.paid ? 'Yes' : 'No' }}</span></td>
         <td class="text-right">
-          <button type="button" class="btn btn-primary">View</button>
+          <button type="button" class="btn btn-sm btn-primary" *ngIf="!t.paid" (click)="markPaid(t)">Mark as Paid</button>
+          <button type="button" class="btn btn-sm btn-danger" *ngIf="t.paid" (click)="markUnpaid(t)">Mark as Unpaid</button>
         </td>
       </tr>
     </ng-container>

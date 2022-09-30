@@ -93,7 +93,8 @@ namespace DreamTeam.Services
                     await _db.SaveChangesAsync();
 
                     teamCount++;
-                    await _log.LogMessage(taskId, TaskTitle, $"Calculated results for team: '{team.Name}'.", teamCount * 100 / teams.Count);
+                    await _log.LogMessage(taskId, TaskTitle, $"Calculated results for team: '{team.Name}' - {teamResult.Points} points.", 
+                        teamCount * 100 / teams.Count);
                 }
 
                 await _log.LogMessage(taskId, TaskTitle, "Calculating ranks.");
