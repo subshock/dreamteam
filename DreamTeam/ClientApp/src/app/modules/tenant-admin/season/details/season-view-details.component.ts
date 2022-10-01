@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { IPublicTenant } from 'src/app/types/public.types';
 import { TenantStateService } from '../../../tenant/tenant-state.service';
 import { ISeasonView } from '../../tenant-admin.types';
+import { SeasonContentEditorComponent } from '../content/season-content-editor.component';
 import { SeasonEditorComponent } from '../editor/season-editor.component';
 import { SeasonChangeStatusComponent } from '../status/season-change-status.component';
 
@@ -57,6 +58,17 @@ export class SeasonViewDetailsComponent implements OnInit {
         this.state.refreshSeason();
       }
       sub.unsubscribe();
+    });
+  }
+
+  updateRules(model: IModel): void {
+    this.modalRef = this.modalService.show(SeasonContentEditorComponent, {
+      class: 'modal-lg',
+      initialState: {
+        tenantSlug: model.tenant.slug,
+        seasonId: model.season.id,
+        name: 'Rules'
+      }
     });
   }
 }

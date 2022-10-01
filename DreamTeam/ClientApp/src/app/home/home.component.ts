@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, EMPTY, from, Observable } from 'rxjs';
+import { combineLatest, EMPTY, from, Observable, of } from 'rxjs';
 import { delay, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { DynamicScriptLoaderService } from '../services/dynamic-script-loader.service';
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   constructor(private publicApi: PublicApiService, private authService: AuthorizeService) { }
 
   ngOnInit(): void {
-    this.season$ = this.publicApi.getCurrentSeason().pipe(shareReplay(1));
+    this.season$ = of(null).pipe(shareReplay(1));
     this.tradePeriod$ = this.season$.pipe(
       filter(x => !!x.tradePeriod),
       map(x => x.tradePeriod)

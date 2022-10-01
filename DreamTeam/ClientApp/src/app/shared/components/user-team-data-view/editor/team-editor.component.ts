@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { UserApiService } from 'src/app/services/user-api.service';
-import { ITeam, ITeamAndTradePeriod, SeasonStateType } from 'src/app/types/public.types';
+import { IPublicSeasonInfo, ITeam, ITeamAndTradePeriod, SeasonStateType } from 'src/app/types/public.types';
 
 @Component({
   template: `
@@ -40,13 +40,14 @@ export class TeamEditorComponent implements OnInit {
 
   model$: Observable<ITeamAndTradePeriod>;
   result = false;
+  season: IPublicSeasonInfo;
 
   teamForm: FormGroup;
 
   constructor(private modalRef: BsModalRef, private userApi: UserApiService) { }
 
   ngOnInit(): void {
-    this.model$ = this.userApi.publicApi.getCurrentSeason().pipe(
+    this.model$ = of(this.season).pipe(
       tap(s => {
         if (s.status !== SeasonStateType.Registration) {
           this.cancel();

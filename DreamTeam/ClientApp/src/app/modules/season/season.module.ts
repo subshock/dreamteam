@@ -32,6 +32,7 @@ import { TeamRegisterComponent } from './register/team-register.component';
 import { TeamRegisterDoneComponent } from './register/team-register-done.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TeamManageComponent } from './manage/team-manage.component';
+import { SeasonRulesComponent } from './rules/season-rules.component';
 
 echarts.use(
   [TooltipComponent, LegendComponent, LineChart, CanvasRenderer, GridComponent]
@@ -52,7 +53,8 @@ echarts.use(
     PrizeDataViewComponent,
     TeamRegisterComponent,
     TeamRegisterDoneComponent,
-    TeamManageComponent
+    TeamManageComponent,
+    SeasonRulesComponent
   ],
   imports: [
     NgxEchartsModule.forRoot({ echarts }),

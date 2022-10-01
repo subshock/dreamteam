@@ -11,7 +11,7 @@
 </ng-container>
 
 <ng-container *ngFor="let season of tenant.seasons">
-  <div class="card mb-2">
+  <div class="card mb-2" *ngIf="season.status === SeasonStateType.Registration || !options.summary">
     <div class="card-body">
       <h5 class="card-title d-flex justify-content-between">
         <a [routerLink]="['/', 's', season.id]">{{ season.name }}</a>
@@ -30,3 +30,7 @@
     </div>
   </div>
 </ng-container>
+
+<div *ngIf="options.summary">
+  <a [routerLink]="['/', 't', tenant.slug]" class="btn btn-outline-primary">View more&hellip;</a>
+</div>

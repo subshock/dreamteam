@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SeasonStateType } from 'src/app/types/public.types';
+import { ISeasonContent, SeasonStateType } from 'src/app/types/public.types';
 import {
   IPlayerUpdate, IPlayerView, IPrize, IPrizeUpdate, IRoundPlayer, IRoundPlayerUpdate, IRoundSummary, IRoundUpdate, IRoundView,
   ISeasonSummary, ISeasonUpdate, ISeasonView, ITeamSummary, ITradePeriod, ITradePeriodUpdate
@@ -161,5 +161,15 @@ export class TenantAdminService {
   setPrizeOrder(slug: string, seasonId: string, prizeIds: string[]): Observable<unknown> {
     return this.httpClient.post<unknown>(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/prizes/order`,
       prizeIds);
+  }
+
+  getSeasonContent(slug: string, seasonId: string, name: string): Observable<ISeasonContent> {
+    return this.httpClient.get<ISeasonContent>(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}` +
+      `/content/${encodeURIComponent(name)}`);
+  }
+
+  updateSeasonContent(slug: string, seasonId: string, item: ISeasonContent): Observable<unknown> {
+    return this.httpClient.post(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}` +
+      `/content/${encodeURIComponent(item.name)}`, item);
   }
 }

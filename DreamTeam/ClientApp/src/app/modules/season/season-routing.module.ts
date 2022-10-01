@@ -10,6 +10,7 @@ import { SeasonPlayerViewComponent } from './player/season-player-view.component
 import { PrizesComponent } from './prizes/prizes.component';
 import { TeamRegisterDoneComponent } from './register/team-register-done.component';
 import { TeamRegisterComponent } from './register/team-register.component';
+import { SeasonRulesComponent } from './rules/season-rules.component';
 import { SeasonContainerComponent } from './season-container.component';
 import { SeasonTeamViewComponent } from './team/season-team-view.component';
 
@@ -36,7 +37,8 @@ const routes: Routes = [
       { path: 'player/:id', component: SeasonPlayerViewComponent },
       { path: 'team/:id', component: SeasonTeamViewComponent },
       { path: 'team/:id/manage', component: TeamManageComponent, canActivate: [AuthorizeGuard] },
-      { path: 'prizes', component: PrizesComponent }
+      { path: 'prizes', component: PrizesComponent },
+      { path: 'rules', component: SeasonRulesComponent }
     ]
   }
 ];

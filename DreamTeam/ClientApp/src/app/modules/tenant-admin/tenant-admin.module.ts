@@ -19,6 +19,8 @@ import { SeasonViewContainerComponent } from './season/view/season-view-containe
 import { TeamListComponent } from './team/list/team-list.component';
 import { TenantAdminContainerComponent } from './tenant-admin-container.component';
 import { TradePeriodListComponent } from './tradeperiod/trade-period-list.component';
+import { SeasonContentEditorComponent } from './season/content/season-content-editor.component';
+import { NgxSummernoteModule } from 'ngx-summernote';
 
 
 @NgModule({
@@ -37,12 +39,14 @@ import { TradePeriodListComponent } from './tradeperiod/trade-period-list.compon
     RoundCompleteComponent,
     PrizeListComponent,
     PrizeEditorComponent,
-    TenantAdminContainerComponent
+    TenantAdminContainerComponent,
+    SeasonContentEditorComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxSummernoteModule,
     RouterModule.forChild([
       {
         path: '',

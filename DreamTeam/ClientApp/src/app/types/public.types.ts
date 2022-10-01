@@ -245,3 +245,8 @@ export interface IPrizeReport {
   owner: string;
   points: number;
 }
+
+export interface ISeasonContent {
+  name: string;
+  content: string;
+}

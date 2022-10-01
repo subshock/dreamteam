@@ -24,7 +24,7 @@ export class UserTeamDataViewComponent implements OnInit {
   }
 
   updateTeam(team: IUserTeamSummary): void {
-    const modalRef = this.modalService.show(TeamEditorComponent, { initialState: { teamId: team.id } });
+    const modalRef = this.modalService.show(TeamEditorComponent, { initialState: { teamId: team.id, season: this.season } });
 
     const sub = modalRef.onHide.subscribe(() => {
       sub.unsubscribe();

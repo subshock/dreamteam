@@ -1,7 +1,7 @@
 <h1>Competitions</h1>
 <ng-container *ngIf="model$ | async as tenants">
   <ng-container *ngFor="let tenant of tenants">
-    <app-tenant-data-view [tenant]="tenant" class="tenant border-bottom"></app-tenant-data-view>
+    <app-tenant-data-view [tenant]="tenant" [options]="{ summary: true }" class="tenant border-bottom"></app-tenant-data-view>
   </ng-container>
 </ng-container>
 

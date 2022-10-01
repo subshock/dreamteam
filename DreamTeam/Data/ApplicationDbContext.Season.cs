@@ -13,6 +13,12 @@ namespace DreamTeam.Data
     {
         #region Season operations
 
+        public Task<bool> IsSeasonInTenant(Guid seasonId, string tenant)
+        {
+            return Connection.ExecuteScalarAsync<bool>("SELECT CAST(1 as bit) FROM Seasons AS S INNER JOIN Tenants AS T ON S.TenantId=T.Id " +
+                "WHERE S.Id=@seasonId AND T.Slug=@tenant", new { seasonId, tenant });
+        }
+
         public Task<IEnumerable<SeasonSummaryViewModel>> GetSeasonsAsync()
         {
             return Connection.QueryAsync<SeasonSummaryViewModel>("SELECT Id, Status, Created, Updated, Name, RegistrationEndDate " +
@@ -164,6 +170,15 @@ namespace DreamTeam.Data
         public bool CanAddTeamsToSeason(SeasonStateType status, DateTimeOffset? registrationEndDate)
         {
             return status == SeasonStateType.Registration && (registrationEndDate == null || registrationEndDate > DateTimeOffset.Now);
+        }
+
+        public Task UpdateSeasonContent(Guid seasonId, string name, string content)
+        {
+            return Connection.ExecuteAsync("IF EXISTS(SELECT Id FROM SeasonContents WHERE SeasonId=@seasonId AND Name=@name) " +
+                "   UPDATE SeasonContents SET Content=@content, Updated=@now WHERE SeasonId=@seasonId AND Name=@name " +
+                "ELSE " +
+                "   INSERT INTO SeasonContents (Id, Created, Updated, SeasonId, Name, Content) VALUES (newid(), @now, @now, @seasonId, @name, @content);",
+                new { seasonId, name, content, now = DateTimeOffset.Now });
         }
 
         public class SeasonViewDbo : Season

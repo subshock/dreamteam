@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPrizeReport, IPublicSeasonInfo,
-  IPublicTenant, ITeamLeaderboard, ITeamReport, ITenantSeason
+  IPublicTenant, ISeasonContent, ITeamLeaderboard, ITeamReport, ITenantSeason
 } from '../types/public.types';
 
 @Injectable({
@@ -30,12 +30,12 @@ export class PublicApiService {
     return this.httpClient.get<ITenantSeason>(`${this.apiBase}/tenant/${encodeURIComponent(slug)}/seasons`);
   }
 
-  getCurrentSeason(): Observable<IPublicSeasonInfo> {
-    return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/current`);
-  }
-
   getSeason(id: string): Observable<IPublicSeasonInfo> {
     return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/${encodeURIComponent(id)}`);
+  }
+
+  getSeasonContent(id: string, name: string): Observable<ISeasonContent> {
+    return this.httpClient.get<ISeasonContent>(`${this.apiBase}/season/${encodeURIComponent(id)}/content/${encodeURIComponent(name)}`);
   }
 
   getSeasonPlayers(seasonId: string): Observable<any[]> {
