@@ -15,7 +15,7 @@
 
     <ng-template #needSignInToRegister>
       <div class="alert alert-success">
-        <h4>Login or Register an new account to create a team in this competition.</h4>
+        <h4>Login or Register a new account to create a team in this competition.</h4>
         <div>
           <a class="btn btn-success btn-lg mr-3" [routerLink]="['/', 'authentication', 'login']">Login</a>
           <a class="btn btn-success btn-lg" [routerLink]="['/', 'authentication', 'register']">Register</a>
@@ -37,7 +37,7 @@
   <app-prize-data-view [season]="season"></app-prize-data-view>
   <ng-container *ngIf="leaderboard$ | async as leaderboard">
     <div class="row leaderboards">
-      <div class="col-6">
+      <div class="col-md">
         <table class="table table-striped table-hover">
           <thead class="thead-dark">
             <tr>
@@ -70,7 +70,7 @@
           </tfoot>
         </table>
       </div>
-      <div class="col-6">
+      <div class="col-md">
         <table class="table table-striped table-hover">
           <thead class="thead-dark">
             <tr>

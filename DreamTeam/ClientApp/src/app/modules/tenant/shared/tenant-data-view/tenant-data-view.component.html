@@ -17,7 +17,7 @@
         <a [routerLink]="['/', 's', season.id]">{{ season.name }}</a>
         <span class="{{ season.status | seasonState:'badge' }}">{{ season.status | seasonState }}</span>
       </h5>
-      <div class="d-flex justify-content-start">
+      <div class="season-commands">
         <a *ngIf="season.status === SeasonStateType.Registration"
           [routerLink]="['/', 's', season.id, 'register']" class="btn btn-secondary mr-2">Register Teams</a>
         <a [routerLink]="['/', 's', season.id, 'rules']" class="btn btn-secondary mr-2">Rules</a>

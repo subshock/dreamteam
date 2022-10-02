@@ -5,13 +5,13 @@
         <tr>
           <th class="text-center">Rank</th>
           <th>Player</th>
+          <th class="text-right">Points</th>
           <th class="text-center" popover="Runs">R</th>
           <th class="text-center" popover="Unassisted Wickets">UW</th>
           <th class="text-center" popover="Assisted Wickets">AW</th>
           <th class="text-center" popover="Catches">C</th>
           <th class="text-center" popover="Runouts">RO</th>
           <th class="text-center" popover="Stumpings">ST</th>
-          <th class="text-right">Points</th>
         </tr>
       </thead>
       <tbody>
@@ -22,13 +22,13 @@
               title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number }}x</span>
             <a [routerLink]="['../player', p.id]">{{ p.name }}</a>
           </td>
+          <td class="text-right font-weight-bold">{{ p.points | number }}</td>
           <td class="text-center">{{ p.runs | number }}</td>
           <td class="text-center">{{ p.unassistedWickets | number }}</td>
           <td class="text-center">{{ p.assistedWickets | number }}</td>
           <td class="text-center">{{ p.catches | number }}</td>
           <td class="text-center">{{ p.runouts | number }}</td>
           <td class="text-center">{{ p.stumpings | number }}</td>
-          <td class="text-right">{{ p.points | number }}</td>
         </tr>
       </tbody>
     </table>

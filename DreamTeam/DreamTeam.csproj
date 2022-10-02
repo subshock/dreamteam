@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\app\shared\" />
+    <Folder Include="wwwroot\content\tenants\scc\" />
   </ItemGroup>
 
   <ItemGroup>

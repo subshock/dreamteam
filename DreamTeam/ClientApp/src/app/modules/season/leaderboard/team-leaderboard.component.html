@@ -5,13 +5,13 @@
         <tr>
           <th class="text-center">Rank</th>
           <th>Team</th>
+          <th class="text-right">Points</th>
           <th class="text-center" popover="Runs">R</th>
           <th class="text-center" popover="Unassisted Wickets">UW</th>
           <th class="text-center" popover="Assisted Wickets">AW</th>
           <th class="text-center" popover="Catches">C</th>
           <th class="text-center" popover="Runouts">RO</th>
           <th class="text-center" popover="Stumpings">ST</th>
-          <th class="text-right">Points</th>
         </tr>
       </thead>
       <tbody>
@@ -20,13 +20,13 @@
           <td>
             <a [routerLink]="['../team', t.id]">{{ t.name }}<br><span class="text-muted">{{ t.owner }}</span></a>
           </td>
+          <td class="text-right font-weight-bold">{{ t.points | number }}</td>
           <td class="text-center">{{ t.runs | number }}</td>
           <td class="text-center">{{ t.unassistedWickets | number }}</td>
           <td class="text-center">{{ t.assistedWickets | number }}</td>
           <td class="text-center">{{ t.catches | number }}</td>
           <td class="text-center">{{ t.runouts | number }}</td>
           <td class="text-center">{{ t.stumpings | number }}</td>
-          <td class="text-right">{{ t.points | number }}</td>
         </tr>
       </tbody>
     </table>

@@ -1,41 +1,47 @@
 .tenants {
-  display: flex;
-  flex-flow: row wrap;
+  display        : flex;
+  flex-flow      : row wrap;
   justify-content: between;
 
   .tenant {
-    position: relative;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-    background-color: #f0f0f0;
-    flex: 1 1 40%;
-    text-align: center;
-    height: 450px;
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: flex-end;
-    background-repeat: no-repeat;
+    position           : relative;
+    border             : 1px solid #ccc;
+    border-radius      : 5px;
+    margin-right       : 10px;
+    background-color   : #f0f0f0;
+    flex               : 1 1 40%;
+    text-align         : center;
+    min-height         : 300px;
+    display            : flex;
+    flex-flow          : column wrap;
+    justify-content    : flex-end;
+    background-repeat  : no-repeat;
     background-position: center;
-    background-size: cover;
-    opacity: 0.8;
+    background-size    : cover;
+    opacity            : 0.8;
 
     &:hover {
       opacity: 1;
     }
 
     a {
-      font-size: 48px;
-      color: #eee;
-      font-weight: bold;
+      font-size       : 48px;
+      color           : #eee;
+      font-weight     : bold;
       background-color: rgba(0, 0, 0, 0.25);
-      padding-left: 15px;
-      padding-right: 15px;
+      padding-left    : 15px;
+      padding-right   : 15px;
 
       &:hover {
         text-decoration: none;
-        color: #fff;
+        color          : #fff;
       }
     }
+  }
+}
+
+@media(min-width: 768px) {
+  .tenants .tenant {
+    min-height: 450px;
   }
 }
