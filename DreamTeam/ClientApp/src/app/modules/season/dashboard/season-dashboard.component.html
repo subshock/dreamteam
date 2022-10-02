@@ -1,4 +1,5 @@
 <ng-container *ngIf="season$ | async as season">
+  <h1>{{ season.name }}</h1>
   <ng-container *ngIf="tradePeriod$ | async as tradePeriod">
     <app-trade-countdown [tradePeriod]="tradePeriod"></app-trade-countdown>
 

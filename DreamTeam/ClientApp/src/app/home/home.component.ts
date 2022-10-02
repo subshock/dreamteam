@@ -1,17 +1,9 @@
-import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, EMPTY, from, Observable, of } from 'rxjs';
-import { delay, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
-import { DynamicScriptLoaderService } from '../services/dynamic-script-loader.service';
 import { PublicApiService } from '../services/public-api.service';
-import { UserApiService } from '../services/user-api.service';
-import { IPlayerLeaderboard, IPublicSeasonInfo, IPublicTradePeriod, ITeamLeaderboard, SeasonStateType } from '../types/public.types';
-
-interface ILeaderboard {
-  season: IPublicSeasonInfo;
-  players: IPlayerLeaderboard[];
-  teams: ITeamLeaderboard[];
-}
+import { ITenantSeason } from '../types/public.types';
 
 @Component({
   selector: 'app-home',
@@ -21,29 +13,15 @@ interface ILeaderboard {
 })
 export class HomeComponent implements OnInit {
 
-  season$: Observable<IPublicSeasonInfo>;
-  SeasonStateType = SeasonStateType;
-  isAuthenticated$: Observable<boolean>;
-  leaderboard$: Observable<ILeaderboard>;
-  tradePeriod$: Observable<IPublicTradePeriod>;
+  isAuthenticated$: Observable<{ success: boolean; }>;
+  tenants$: Observable<ITenantSeason[]>;
 
   readonly leaderboardLimit = 5;
 
   constructor(private publicApi: PublicApiService, private authService: AuthorizeService) { }
 
   ngOnInit(): void {
-    this.season$ = of(null).pipe(shareReplay(1));
-    this.tradePeriod$ = this.season$.pipe(
-      filter(x => !!x.tradePeriod),
-      map(x => x.tradePeriod)
-    );
-    this.isAuthenticated$ = this.authService.isAuthenticated();
-    this.leaderboard$ = this.season$.pipe(
-      filter(s => s.status >= SeasonStateType.Running),
-      switchMap(s => combineLatest([
-        this.publicApi.getPlayerLeaderboardReport(s.id, null, this.leaderboardLimit),
-        this.publicApi.getTeamLeaderboardReport(s.id, null, this.leaderboardLimit)
-      ]).pipe(map(([p, t]) => ({ season: s, players: p, teams: t }))))
-    );
+    this.isAuthenticated$ = this.authService.isAuthenticated().pipe(map(x => ({ success: x })));
+    this.tenants$ = this.publicApi.getTenants();
   }
 }
