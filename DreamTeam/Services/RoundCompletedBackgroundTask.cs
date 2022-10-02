@@ -75,7 +75,7 @@ namespace DreamTeam.Services
                             Points = x.Points * (x.PlayerId == captainId ? 2 : 1)
                         })
                         .OrderByDescending(x => x.Points)
-                        .Take(Constants.PlayersCountedInTeam)
+                        .Take(season.ScoringPlayers)
                         .Aggregate(new TeamRoundResult { Id = Guid.NewGuid(), TeamId = team.Id, Created = now, RoundId = round.Id }, (acc, curr) =>
                         {
                             acc.Runs += curr.Runs;
@@ -93,7 +93,8 @@ namespace DreamTeam.Services
                     await _db.SaveChangesAsync();
 
                     teamCount++;
-                    await _log.LogMessage(taskId, TaskTitle, $"Calculated results for team: '{team.Name}'.", teamCount * 100 / teams.Count);
+                    await _log.LogMessage(taskId, TaskTitle, $"Calculated results for team: '{team.Name}' - {teamResult.Points} points.", 
+                        teamCount * 100 / teams.Count);
                 }
 
                 await _log.LogMessage(taskId, TaskTitle, "Calculating ranks.");

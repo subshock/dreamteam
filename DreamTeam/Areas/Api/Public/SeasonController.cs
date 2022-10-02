@@ -19,17 +19,6 @@ namespace DreamTeam.Areas.Api.Public
             _db = db;
         }
 
-        [HttpGet("current")]
-        public async Task<IActionResult> GetCurrentSeason()
-        {
-            var obj = await _db.PublicGetSeasonInfo();
-
-            if (obj == null)
-                return NotFound();
-
-            return Ok(obj);
-        }
-
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetSeason(Guid id)
         {
@@ -39,6 +28,18 @@ namespace DreamTeam.Areas.Api.Public
                 return NotFound();
 
             return Ok(obj);
+        }
+
+        [HttpGet("{seasonId:guid}/content/{name}")]
+        public async Task<IActionResult> GetSeasonContent(Guid seasonId, string name)
+        {
+            var obj = await _db.SeasonContents.FirstOrDefaultAsync(x => x.SeasonId == seasonId && x.Name == name);
+
+            return Ok(new
+            {
+                Name = obj?.Name ?? name,
+                Content = obj?.Content ?? ""
+            });
         }
 
         [HttpGet("{seasonId:guid}/players")]

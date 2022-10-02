@@ -1,15 +1,40 @@
-.leaderboards {
-  table {
-    thead a {
-      color: #fff;
+.tenants {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: between;
+
+  .tenant {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    background-color: #f0f0f0;
+    flex: 1 1 40%;
+    text-align: center;
+    height: 450px;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: flex-end;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
     }
 
-    tbody a {
-      color: #333;
+    a {
+      font-size: 48px;
+      color: #eee;
+      font-weight: bold;
+      background-color: rgba(0, 0, 0, 0.25);
+      padding-left: 15px;
+      padding-right: 15px;
 
       &:hover {
-        text-decoration: underline;
-        color: #888;
+        text-decoration: none;
+        color: #fff;
       }
     }
   }

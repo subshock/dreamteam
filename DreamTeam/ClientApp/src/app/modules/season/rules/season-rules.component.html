@@ -1,0 +1,60 @@
+<ng-container *ngIf="model$ | async as model">
+  <div class="d-lg-flex">
+    <div class="mr-3 jumbotron">
+      <h1>Rules</h1>
+      <div [innerHTML]="model.rules"></div>
+    </div>
+
+    <div>
+      <div *ngIf="model.season as season" class="jumbotron mb-3">
+        <h1>{{ season.name }}</h1>
+
+        <div class="d-flex flex-wrap">
+          <dl>
+            <dt>Cost to Enter</dt>
+            <dd>{{ season.cost | currency }}</dd>
+          </dl>
+
+          <dl>
+            <dt>Salary Cap</dt>
+            <dd>{{ season.budget | number }}</dd>
+          </dl>
+        </div>
+
+        <h5>Points Breakdown</h5>
+
+        <div class="d-flex flex-wrap">
+          <dl>
+            <dt>Run</dt>
+            <dd>{{ season.runs | number }}</dd>
+          </dl>
+
+          <dl>
+            <dt>Unassisted Wicket</dt>
+            <dd>{{ season.unassistedWickets | number }}</dd>
+          </dl>
+
+          <dl>
+            <dt>Assisted Wicket</dt>
+            <dd>{{ season.assistedWickets | number }}</dd>
+          </dl>
+
+          <dl>
+            <dt>Catch</dt>
+            <dd>{{ season.catches | number }}</dd>
+          </dl>
+
+          <dl>
+            <dt>Runout</dt>
+            <dd>{{ season.runouts | number }}</dd>
+          </dl>
+
+          <dl>
+            <dt>Stumping</dt>
+            <dd>{{ season.stumpings | number }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

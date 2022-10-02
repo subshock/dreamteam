@@ -1,4 +1,5 @@
-﻿using DreamTeam.Models;
+﻿using DreamTeam.Data;
+using DreamTeam.Models;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
@@ -14,10 +15,12 @@ namespace DreamTeam.Services.Auth
     public class AuthProfileService : DefaultProfileService
     {
         protected readonly UserManager<ApplicationUser> _userManager;
+        protected readonly ApplicationDbContext _db;
 
-        public AuthProfileService(UserManager<ApplicationUser> userManager, ILogger<AuthProfileService> logger) : base(logger)
+        public AuthProfileService(UserManager<ApplicationUser> userManager, ApplicationDbContext db, ILogger<AuthProfileService> logger) : base(logger)
         {
             _userManager = userManager;
+            _db = db;
         }
 
         public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
@@ -34,6 +37,12 @@ namespace DreamTeam.Services.Auth
 
                 foreach (var role in roles)
                     context.IssuedClaims.Add(new Claim("role", role));
+
+                // get any tenants that the user is an admin for and add it to their claims
+                var tenants = await _db.GetTenantsByUser(user.Id);
+
+                foreach (var tenant in tenants)
+                    context.IssuedClaims.Add(new Claim("tenant", tenant.Slug));
             }
         }
 

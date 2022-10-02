@@ -1,7 +1,18 @@
 @import '../../../../assets/less/global.less';
 
 .navbar {
-  position: relative;
-  top: -17px;
+  position  : relative;
+  top       : -17px;
   background: @publicSeasonHeaderBg;
+
+  .navbar-brand {
+    a {
+      color: #fff;
+
+      &:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+      }
+    }
+  }
 }

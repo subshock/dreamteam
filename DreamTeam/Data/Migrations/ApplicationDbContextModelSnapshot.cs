@@ -285,6 +285,9 @@ namespace DreamTeam.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("MaxPlayers")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -297,11 +300,17 @@ namespace DreamTeam.Data.Migrations
                     b.Property<int>("Runs")
                         .HasColumnType("int");
 
+                    b.Property<int>("ScoringPlayers")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<int>("Stumpings")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("UnassistedWickets")
                         .HasColumnType("int");
@@ -311,7 +320,37 @@ namespace DreamTeam.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("Seasons");
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.SeasonContent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SeasonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("Updated")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeasonId");
+
+                    b.ToTable("SeasonContents");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.TaskLog", b =>
@@ -558,6 +597,62 @@ namespace DreamTeam.Data.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("TeamRoundResults");
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.Tenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("Updated")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("UsePaymentGateway")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tenants");
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.TenantAdmin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("Updated")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TenantAdmins");
                 });
 
             modelBuilder.Entity("DreamTeam.Models.TradePeriod", b =>
@@ -888,6 +983,28 @@ namespace DreamTeam.Data.Migrations
                     b.Navigation("Round");
                 });
 
+            modelBuilder.Entity("DreamTeam.Models.Season", b =>
+                {
+                    b.HasOne("DreamTeam.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.SeasonContent", b =>
+                {
+                    b.HasOne("DreamTeam.Models.Season", "Season")
+                        .WithMany()
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Season");
+                });
+
             modelBuilder.Entity("DreamTeam.Models.Team", b =>
                 {
                     b.HasOne("DreamTeam.Models.Season", "Season")
@@ -1013,6 +1130,23 @@ namespace DreamTeam.Data.Migrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("DreamTeam.Models.TenantAdmin", b =>
+                {
+                    b.HasOne("DreamTeam.Models.Tenant", "Tenant")
+                        .WithMany("Admins")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DreamTeam.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DreamTeam.Models.TradePeriod", b =>
                 {
                     b.HasOne("DreamTeam.Models.Season", "Season")
@@ -1073,6 +1207,11 @@ namespace DreamTeam.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DreamTeam.Models.Tenant", b =>
+                {
+                    b.Navigation("Admins");
                 });
 #pragma warning restore 612, 618
         }

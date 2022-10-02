@@ -24,36 +24,5 @@
     </div>
   </ng-container>
 
-  <div class="card-deck">
-    <div class="card" *ngFor="let t of model.teams">
-      <div class="card-body">
-        <div class="float-right ml-3 mb-3" *ngIf="model.season.status === SeasonStateType.Registration && !!model.season.tradePeriod">
-          <button type="button" class="btn btn-sm btn-outline-primary" (click)="updateTeam(t)">
-            <i class="fas fa-fw fa-edit"></i>
-          </button>
-        </div>
-        <h5 class="card-title">{{ t.name }}</h5>
-        <p class="card-text text-muted">{{ t.owner }}</p>
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          Salary Cap: <strong>{{ model.season.budget - t.balance | number }} / {{ model.season.budget | number }}</strong>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          Total Points: <strong>{{ t.points | number:'1.0-0' }}</strong>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          Position: <span class="badge badge-primary badge-pill">{{ t.seasonRank | number:'1.0-0' }}</span>
-        </li>
-        <li class="list-group-item list-group-item-danger" *ngIf="!t.valid">
-          This team is incomplete and needs attention.
-        </li>
-      </ul>
-      <div class="card-footer d-flex justify-content-between">
-        <a type="button" class="btn btn-primary" [routerLink]="[t.id, 'manage']">{{ !!model.season.tradePeriod ? 'Manage' : 'View' }}</a>
-        <span class="badge align-self-center" [class.badge-success]="t.paid"
-          [class.badge-danger]="!t.paid">{{ t.paid ? 'PAID' : 'NOT PAID' }}</span>
-      </div>
-    </div>
-  </div>
+  <app-user-team-data-view [teams]="model.teams" [season]="model.season" (teamUpdate)="reload()"></app-user-team-data-view>
 </ng-container>

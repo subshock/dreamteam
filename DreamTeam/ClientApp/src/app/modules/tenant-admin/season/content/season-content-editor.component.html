@@ -1,0 +1,12 @@
+<ng-container *ngIf="data$ | async as data">
+  <div class="modal-header">
+    <h3 class="modal-title">Update {{ name }}</h3>
+  </div>
+  <div class="modal-body">
+    <textarea [(ngModel)]="data.content" [ngxSummernote]="{height:500}"></textarea>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="save(data)">Save</button>
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+  </div>
+</ng-container>

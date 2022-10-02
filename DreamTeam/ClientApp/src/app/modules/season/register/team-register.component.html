@@ -1,0 +1,94 @@
+<ng-container *ngIf="model$ | async as model">
+  <h1>Register Team</h1>
+  <ng-container [ngSwitch]="model.season.status">
+
+    <ng-container *ngSwitchCase="SeasonStateType.Registration">
+      <app-trade-countdown *ngIf="model.season.tradePeriod" [tradePeriod]="model.season.tradePeriod" (expired)="model.season.status = 0"></app-trade-countdown>
+
+      <p>Enter the team name and owner for the team you want to register. Additional teams can be registered here as
+        well.</p>
+
+      <div *ngIf="error$ | async as error" class="alert alert-danger">
+        <h5>There was an error</h5>
+        <ul>
+          <li *ngFor="let e of error">{{ e }}</li>
+        </ul>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="save(model)" class="team-register-form">
+        <div class="d-lg-flex justify-content-between">
+          <div formArrayName="teams" class="flex-fill mr-3">
+            <ng-container *ngFor="let team of teams.controls; let i = index">
+              <div class="card mb-3">
+                <div class="card-body" [formGroupName]="i">
+                  <a class="btn-close text-danger cursor-pointer" *ngIf="teams.length > 1" (click)="removeTeam(i)"><i
+                      class="fas fa-fw fa-window-close fa-lg"></i></a>
+                  <div class="form-group">
+                    <label for="name-{{ i }}">Team Name</label>
+                    <input type="text" id="name-{{ i }}" class="form-control" formControlName="name">
+                  </div>
+                  <div class="form-group">
+                    <label for="owner-{{ i }}">Owner:</label>
+                    <input type="text" id="owner-{{ i }}" class="form-control" formControlName="owner">
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <p>
+              <button type="button" class="btn btn-success" (click)="addTeam()">
+                <i class="fas fa-fw fa-plus"></i>
+                Add Additional Team
+              </button>
+            </p>
+          </div>
+
+          <div class="invoice flex-fill">
+            <h4>Total</h4>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Teams</td>
+                  <td class="text-right">{{ teams.length }}</td>
+                </tr>
+                <tr>
+                  <td>Cost per Team</td>
+                  <td class="text-right">{{ model.season.cost | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>TOTAL</th>
+                  <th class="text-right">{{ model.season.cost * teams.length | currency }}</th>
+                </tr>
+              </tfoot>
+            </table>
+            <ng-container *ngIf="model.tenant.usePaymentGateway; else tplManualPayment">
+              <h4>Secure Payment</h4>
+              <p>Credit card payments are powered by <a href="https://www.squareup.com" target="_blank">Square</a></p>
+              <app-square-pay (error)="handlePaymentErrors($event)" #payment></app-square-pay>
+            </ng-container>
+            <ng-template #tplManualPayment>
+              <div class="alert alert-info">Payment must be made manually through cash to the competition organiser.</div>
+            </ng-template>
+            <p class="text-right">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="!registerForm.valid || (save$ | async)?.saving">Register Teams</button>
+            </p>
+          </div>
+        </div>
+      </form>
+
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <div class="alert alert-info">
+        <h5>This competition does not allowing the registering of any teams at this time.</h5>
+      </div>
+      <p>
+        <a class="btn btn-secondary" [routerLink]="['../']">
+          <i class="fas fa-fw fa-chevron-left"></i>
+          Back
+        </a>
+      </p>
+    </ng-container>
+  </ng-container>
+</ng-container>

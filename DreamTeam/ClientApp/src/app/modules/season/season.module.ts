@@ -26,6 +26,13 @@ import {
 } from 'echarts/renderers';
 import { SeasonTeamViewComponent } from './team/season-team-view.component';
 import { PrizesComponent } from './prizes/prizes.component';
+import { SeasonDashboardComponent } from './dashboard/season-dashboard.component';
+import { PrizeDataViewComponent } from './components/prize-data-view/prize-data-view.component';
+import { TeamRegisterComponent } from './register/team-register.component';
+import { TeamRegisterDoneComponent } from './register/team-register-done.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TeamManageComponent } from './manage/team-manage.component';
+import { SeasonRulesComponent } from './rules/season-rules.component';
 
 echarts.use(
   [TooltipComponent, LegendComponent, LineChart, CanvasRenderer, GridComponent]
@@ -41,11 +48,19 @@ echarts.use(
     LeaderboardContainerComponent,
     SeasonPlayerViewComponent,
     SeasonTeamViewComponent,
-    PrizesComponent
+    PrizesComponent,
+    SeasonDashboardComponent,
+    PrizeDataViewComponent,
+    TeamRegisterComponent,
+    TeamRegisterDoneComponent,
+    TeamManageComponent,
+    SeasonRulesComponent
   ],
   imports: [
     NgxEchartsModule.forRoot({ echarts }),
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     SeasonRoutingModule
   ]

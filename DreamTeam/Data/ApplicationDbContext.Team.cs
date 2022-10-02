@@ -21,15 +21,17 @@ namespace DreamTeam.Data
                 "ORDER BY T.Created, T.Name, COALESCE(U.Name, U.UserName)", new { seasonId });
         }
 
-        public Task<IEnumerable<TeamSummaryViewModel>> GetTeamsForUser(string userId)
+        public Task<IEnumerable<TeamSummaryViewModel>> GetTeamsForUser(string userId, Guid? seasonId = null)
         {
             return Connection.QueryAsync<TeamSummaryViewModel>("SELECT T.Id, COALESCE(T.Updated, T.Created) AS Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid, P.Points, K.SeasonRank " +
                 "FROM Teams AS T " +
+                "    INNER JOIN Seasons AS S ON T.SeasonId=S.Id " +
+                "    INNER JOIN Tenants AS TE ON TE.Id=S.TenantId " +
                 "    OUTER APPLY(SELECT SUM(TRR.Points) AS Points FROM Rounds AS R INNER JOIN TeamRoundResults AS TRR ON TRR.RoundId = R.Id WHERE R.Status = 1 AND TRR.TeamId = T.Id) AS P " +
                 "    OUTER APPLY(SELECT TOP(1) TRK.SeasonRank FROM Rounds AS R INNER JOIN TeamRoundRanks AS TRK ON TRK.RoundId = R.Id WHERE R.Status = 1 AND TRK.TeamId = T.Id ORDER BY R.StartDate DESC) AS K " +
-                "WHERE UserId = @userId " +
+                "WHERE UserId = @userId AND TE.Enabled=1 AND (@seasonId Is Null OR S.Id=@seasonId) " +
                 "GROUP BY T.Id, T.Created, T.Updated, T.Name, T.Owner, T.Valid, T.Balance, T.Paid, P.Points, K.SeasonRank " +
-                "ORDER BY T.Name", new { userId });
+                "ORDER BY T.Name", new { userId, seasonId });
         }
 
         public async Task<UserTeamViewModel> GetUserTeam(string userId, Guid teamId, Guid? tradePeriodId)
@@ -66,7 +68,7 @@ namespace DreamTeam.Data
         {
             var season = await GetSeasonAsync(model.SeasonId);
 
-            if (token == null) token = Guid.NewGuid().ToString("N");
+            var registrationToken = token ?? Guid.NewGuid().ToString("N");
 
             foreach (var team in model.Teams)
             {
@@ -80,7 +82,7 @@ namespace DreamTeam.Data
                     SeasonId = model.SeasonId,
                     Balance = season.Budget,
                     Paid = !string.IsNullOrEmpty(token),
-                    RegistrationToken = token,
+                    RegistrationToken = registrationToken,
                     Valid = false
                 };
 

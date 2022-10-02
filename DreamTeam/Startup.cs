@@ -106,6 +106,9 @@ namespace DreamTeam
                 options.AddPolicy("Administrator", policy => policy
                     .RequireAuthenticatedUser()
                     .RequireClaim(ClaimTypes.Role, "Administrator"));
+                options.AddPolicy("SysAdmin", policy => policy
+                    .RequireAuthenticatedUser()
+                    .RequireClaim(ClaimTypes.Role, "SysAdmin"));
             });
 
             // In production, the Angular files will be served from this directory
@@ -118,6 +121,7 @@ namespace DreamTeam
             services.AddScoped<TaskLogService>();
             services.AddScoped<RoundCompletedBackgroundTask>();
             services.AddScoped<SquarePaymentService>();
+            services.AddScoped<ManualPaymentService>();
 
             services.Configure<SquarePaymentApiOptions>(Configuration.GetSection("Square"));
             services.AddSingleton<SquareClientFactory>();

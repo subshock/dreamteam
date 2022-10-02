@@ -11,15 +11,13 @@ import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
-import { RulesComponent } from './rules/rules.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
-    RulesComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -27,11 +25,11 @@ import { RulesComponent } from './rules/rules.component';
     ApiAuthorizationModule,
     RouterModule.forRoot([
     { path: '', component: HomeComponent, pathMatch: 'full' },
-    { path: 'rules', component: RulesComponent },
     { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule) },
     { path: 'my', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },
-    { path: 'season', loadChildren: () => import('./modules/season/season.module').then(m => m.SeasonModule) }
-], { }),
+    { path: 's', loadChildren: () => import('./modules/season/season.module').then(m => m.SeasonModule) },
+    { path: 't', loadChildren: () => import('./modules/tenant/tenant.module').then(m => m.TenantModule) }
+], { paramsInheritanceStrategy: 'always' }),
     BrowserAnimationsModule,
     SharedModule
   ],

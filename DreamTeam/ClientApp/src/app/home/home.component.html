@@ -1,105 +1,17 @@
-<ng-container *ngIf="season$ | async as season">
-  <ng-container *ngIf="tradePeriod$ | async as tradePeriod">
-    <app-trade-countdown [tradePeriod]="tradePeriod"></app-trade-countdown>
-  </ng-container>
-  <div class="jumbotron">
-    <h2 class="display-6">How well do you know your Dragons? Forget supercoach, this is</h2>
-    <h1 class="display-3"><strong>DRAGON DREAM TEAM</strong></h1>
-    <ng-container [ngSwitch]="season.status">
-      <ng-container *ngSwitchCase="SeasonStateType.Setup">
-        <h2 class="dipslay-6 text-warning">Coming Soon!</h2>
-      </ng-container>
-      <ng-container *ngSwitchCase="SeasonStateType.Registration">
-        <p class="lead">
-          Here is your chance to prove how well you know your Dragons and win yourself some CASH at the same time.
-        </p>
-        <p class="lead">You choose a squad of 12 players from any of the 5 senior grades and if your squad is the Best
-          performed over the course of the season then you take home the loot!
-        </p>
-        <p>Player ratings are based on last seasons Club Champion standings</p>
-        <h2 class="display-5">Entry is just <strong>{{ season.cost | currency }}</strong></h2>
-        <div class="d-flex mt-3 justify-content-between">
-          <a class="btn btn-lg btn-primary" [routerLink]="['/rules']">Check out the Rules</a>
-          <ng-container *ngIf="isAuthenticated$ | async; else signInRegisterTpl">
-            <a class="btn btn-lg btn-primary" [routerLink]="['/my/teams']">Register your Teams</a>
-          </ng-container>
-        </div>
-      </ng-container>
-    </ng-container>
-  </div>
-</ng-container>
-<ng-container *ngIf="leaderboard$ | async as leaderboard">
-  <div class="row leaderboards">
-    <div class="col-6">
-      <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-          <tr>
-            <th colspan="3">
-              <a [routerLink]="['season', leaderboard.season.id, 'teams']">
-                Team Leaderboard
-              </a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let t of leaderboard.teams">
-            <th class="text-center">{{ t.rank }}</th>
-            <td>
-              <a [routerLink]="['season', leaderboard.season.id, 'team', t.id]">
-                {{ t.name }}
-              </a>
-            </td>
-            <td class="text-right">{{ t.points | number }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="3">
-              <a class="btn btn-primary" [routerLink]="['season', leaderboard.season.id, 'teams']">
-                More...
-              </a>
-            </th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-    <div class="col-6">
-      <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-          <tr>
-            <th colspan="3">
-              <a [routerLink]="['season', leaderboard.season.id, 'players']">
-                Player Leaderboard
-              </a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of leaderboard.players">
-            <th class="text-center">{{ p.rank }}</th>
-            <td>
-              <a [routerLink]="['season', leaderboard.season.id, 'player', p.id]">
-                {{ p.name }}
-              </a>
-            </td>
-            <td class="text-right">{{ p.points | number }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="3">
-              <a class="btn btn-primary" [routerLink]="['season', leaderboard.season.id, 'players']">
-                More...
-              </a>
-            </th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
+<ng-container *ngIf="isAuthenticated$ | async as auth">
+  <ng-container *ngIf="auth.success; else signInRegisterTpl"></ng-container>
 </ng-container>
 
+<div *ngIf="tenants$ | async as tenants" class="tenants">
+  <div *ngFor="let t of tenants" class="tenant"
+    [style.background-image]="'url(&quot;/content/tenants/'+t.slug + '/logo.png&quot;)'">
+    <a class="stretched-link" [routerLink]="['/', 't', t.slug]">{{ t.name }}</a>
+  </div>
+</div>
+
 <ng-template #signInRegisterTpl>
-  <a class="btn btn-lg btn-success" [routerLink]="['/authentication/login']">Login</a>
-  <a class="btn btn-lg btn-success" [routerLink]="['/authentication/register']">Register</a>
+  <div class="alert alert-info mb-3">
+    <a class="btn btn-lg btn-success mr-2" [routerLink]="['/authentication/login']">Login</a>
+    <a class="btn btn-lg btn-success" [routerLink]="['/authentication/register']">Register</a>
+  </div>
 </ng-template>

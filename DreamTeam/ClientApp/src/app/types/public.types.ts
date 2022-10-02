@@ -7,6 +7,25 @@ export enum SeasonStateType {
   Archived = 20
 }
 
+export interface IPublicTenant {
+  slug: string;
+  name: string;
+  usePaymentGateway: boolean;
+}
+
+export interface ITenantSeason {
+  slug: string;
+  name: string;
+  seasons: {
+    id: string;
+    name: string;
+    status: SeasonStateType;
+    cost: number;
+    registrationEndDate: string;
+  }[];
+  isAdmin?: boolean;
+}
+
 export interface IPointDefinition {
   runs: number;
   unassistedWickets: number;
@@ -29,6 +48,9 @@ export interface IPublicSeasonInfo {
   runouts: number;
   stumpings: number;
   tradePeriod?: IPublicTradePeriod;
+  tenant: string;
+  slug: string;
+  maxPlayers: number;
 }
 
 export enum TradePeriodType {
@@ -222,4 +244,9 @@ export interface IPrizeReport {
   team: string;
   owner: string;
   points: number;
+}
+
+export interface ISeasonContent {
+  name: string;
+  content: string;
 }

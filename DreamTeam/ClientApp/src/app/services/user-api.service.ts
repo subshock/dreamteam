@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ITradePeriod } from '../modules/admin/admin.types';
+import { ITradePeriod } from '../modules/tenant-admin/tenant-admin.types';
 import {
   ITeamAndTradePeriod, ITeamPlayerUpdate, ITeamPlayerUpdateResult, ITeamRegister,
   ITeamRegisterResult, IUserTeamSummary
@@ -28,6 +28,10 @@ export class UserApiService {
 
   getUserTeams(): Observable<IUserTeamSummary[]> {
     return this.httpClient.get<IUserTeamSummary[]>(`${this.apiBase}/teams`);
+  }
+
+  getUserTeamsBySeason(seasonId: string): Observable<IUserTeamSummary[]> {
+    return this.httpClient.get<IUserTeamSummary[]>(`${this.apiBase}/teams/season/${encodeURIComponent(seasonId)}`);
   }
 
   getUserTeam(teamId: string): Observable<ITeamAndTradePeriod> {

@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
-  IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPrizeReport, IPublicSeasonInfo, ITeamLeaderboard, ITeamReport
+  IPaymentSettings, IPlayerLeaderboard, IPlayerReport, IPrizeReport, IPublicSeasonInfo,
+  IPublicTenant, ISeasonContent, ITeamLeaderboard, ITeamReport, ITenantSeason
 } from '../types/public.types';
 
 @Injectable({
@@ -17,12 +18,24 @@ export class PublicApiService {
     this.apiBase = baseHref + 'api/public';
   }
 
-  getCurrentSeason(): Observable<IPublicSeasonInfo> {
-    return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/current`);
+  getTenants(): Observable<ITenantSeason[]> {
+    return this.httpClient.get<ITenantSeason[]>(`${this.apiBase}/tenant`);
+  }
+
+  getTenant(slug: string): Observable<IPublicTenant> {
+    return this.httpClient.get<IPublicTenant>(`${this.apiBase}/tenant/${encodeURIComponent(slug)}`);
+  }
+
+  getTenantSeasons(slug: string): Observable<ITenantSeason> {
+    return this.httpClient.get<ITenantSeason>(`${this.apiBase}/tenant/${encodeURIComponent(slug)}/seasons`);
   }
 
   getSeason(id: string): Observable<IPublicSeasonInfo> {
     return this.httpClient.get<IPublicSeasonInfo>(`${this.apiBase}/season/${encodeURIComponent(id)}`);
+  }
+
+  getSeasonContent(id: string, name: string): Observable<ISeasonContent> {
+    return this.httpClient.get<ISeasonContent>(`${this.apiBase}/season/${encodeURIComponent(id)}/content/${encodeURIComponent(name)}`);
   }
 
   getSeasonPlayers(seasonId: string): Observable<any[]> {

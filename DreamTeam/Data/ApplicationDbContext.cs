@@ -31,6 +31,8 @@ namespace DreamTeam.Data
             }
         }
 
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<TenantAdmin> TenantAdmins { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
@@ -45,5 +47,6 @@ namespace DreamTeam.Data
         public DbSet<Prize> Prizes { get; set; }
         public DbSet<TaskLog> TaskLogs { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+        public DbSet<SeasonContent> SeasonContents { get; set; }
     }
 }

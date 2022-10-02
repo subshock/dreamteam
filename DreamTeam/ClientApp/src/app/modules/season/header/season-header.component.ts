@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { IPublicSeasonInfo } from 'src/app/types/public.types';
+import { IPublicSeasonInfo, SeasonStateType } from 'src/app/types/public.types';
 
 @Component({
   selector: 'app-season-header',
@@ -10,6 +10,7 @@ import { IPublicSeasonInfo } from 'src/app/types/public.types';
 export class SeasonHeaderComponent implements OnInit {
 
   @Input() season: IPublicSeasonInfo;
+  SeasonStateType = SeasonStateType;
 
   constructor() { }
 

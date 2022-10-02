@@ -23,7 +23,7 @@ export class SeasonContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.season$ = this.state.season$;
-    this.subscriptions = this.route.paramMap.pipe(map(p => p.get('id'))).subscribe(id => this.state.setSeasonId(id));
+    this.subscriptions = this.route.paramMap.pipe(map(p => p.get('seasonid'))).subscribe(id => this.state.setSeasonId(id));
     this.subscriptions.add(this.state.season$.pipe(catchError(() => {
       this.router.navigate(['/']);
       return EMPTY;

@@ -1,14 +1,14 @@
 ﻿using DreamTeam.Areas.Api.Admin.ViewModels;
 using DreamTeam.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DreamTeam.Areas.Api.Admin
 {
     [Route("api/admin/[controller]")]
+    [Authorize(Policy = "SysAdmin")]
     public class PaymentController : BaseAdminController
     {
         private readonly ApplicationDbContext _db;
