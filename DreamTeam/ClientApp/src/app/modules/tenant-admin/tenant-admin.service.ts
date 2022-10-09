@@ -56,6 +56,13 @@ export class TenantAdminService {
     return this.httpClient.delete(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/players/${encodeURIComponent(playerId)}`);
   }
 
+  importPlayers(slug: string, seasonId: string, file: any, hasHeader: boolean, overwrite: boolean): Observable<string[]> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.httpClient.post<string[]>(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/players/import` +
+      `?hasHeaders=${!!hasHeader}&overwrite=${!!overwrite}`, formData);
+  }
+
   getTeams(slug: string, seasonId: string): Observable<ITeamSummary[]> {
     return this.httpClient.get<ITeamSummary[]>(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/teams`);
   }

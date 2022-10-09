@@ -1,4 +1,6 @@
 ﻿using DreamTeam.Areas.Api.Admin.ViewModels;
+using DreamTeam.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -54,6 +56,27 @@ namespace DreamTeam.Areas.Api.Tenant
             await _db.DeletePlayerAsync(seasonId, id);
 
             return Ok();
+        }
+
+        [HttpPost("{seasonId:guid}/players/import")]
+        public async Task<IActionResult> ImportPlayers(Guid seasonId, IFormFile file,
+            [FromServices] ImportService importSvc,
+            [FromQuery] bool hasHeaders = false, [FromQuery] bool overwrite = false)
+        {
+            if (file != null)
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    var result = await importSvc.ImportPlayersFromExcel(seasonId, hasHeaders, overwrite, stream);
+
+                    if (result.Result)
+                        return Ok(result.Messages);
+
+                    return BadRequest(result.Messages);
+                }
+            }
+
+            return BadRequest(new List<string> { "File is required" });
         }
     }
 }

@@ -1,0 +1,83 @@
+<div class="modal-header">
+  <h4>Import Players</h4>
+</div>
+<ng-container *ngIf="view$ | async as view">
+  <ng-container *ngIf="view === 'form'">
+    <div class="modal-body">
+      <div class="alert alert-info">
+        <p>To import players, your Excel spreadsheet should have the players in the first worksheet with columns for:
+        </p>
+        <ul>
+          <li>Name</li>
+          <li>Cost</li>
+          <li>Multiplier <em>(optional)</em></li>
+        </ul>
+      </div>
+      <div [formGroup]="form">
+        <div class="mb-2">
+          <label for="file">Excel Spreadsheet:</label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file" formControlName="file"
+              (change)="onFileChanged($event)">
+            <label class="custom-file-label" for="file">{{ form.value.file || 'Choose Excel workbook&hellip;' }}</label>
+          </div>
+        </div>
+        <div class="mb-2">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="hasHeaders" formControlName="hasHeaders">
+            <label class="custom-control-label" for="hasHeaders">Worksheet has headers in first row</label>
+          </div>
+        </div>
+        <div class="mb-2">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="overwrite" formControlName="overwrite">
+            <label class="custom-control-label" for="overwrite">Update existing players</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" [disabled]="!form.valid" (click)="import()">Import</button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="view === 'importing'">
+    <div class="modal-body">
+      <div class="alert alert-info">
+        <h4>Importing players</h4>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="view === 'error'">
+    <div class="modal-body">
+      <div class="alert alert-danger">
+        <h4>There were errors importing players.</h4>
+        <ul>
+          <li *ngFor="let message of messages$ | async">{{ message }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="back()">Back</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="view ==='done'">
+    <div class="modal-body">
+      <div class="alert alert-success">
+        <h4>Import complete</h4>
+        <ul>
+          <li *ngFor="let message of messages$ | async">{{ message }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="done()">Done</button>
+    </div>
+  </ng-container>
+</ng-container>

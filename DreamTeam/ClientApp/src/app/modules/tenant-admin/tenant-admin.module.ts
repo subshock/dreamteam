@@ -21,6 +21,7 @@ import { TenantAdminContainerComponent } from './tenant-admin-container.componen
 import { TradePeriodListComponent } from './tradeperiod/trade-period-list.component';
 import { SeasonContentEditorComponent } from './season/content/season-content-editor.component';
 import { NgxSummernoteModule } from 'ngx-summernote';
+import { PlayerImportDialogComponent } from './player/import/player-import-dialog.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { NgxSummernoteModule } from 'ngx-summernote';
     PrizeListComponent,
     PrizeEditorComponent,
     TenantAdminContainerComponent,
-    SeasonContentEditorComponent
+    SeasonContentEditorComponent,
+    PlayerImportDialogComponent
   ],
   imports: [
     CommonModule,
