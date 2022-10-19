@@ -43,7 +43,8 @@ namespace DreamTeam
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDataProtection()
-                .PersistKeysToDbContext<ApplicationDbContext>();
+                .PersistKeysToDbContext<ApplicationDbContext>()
+                .SetApplicationName("DreamTeam");
 
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -61,7 +62,8 @@ namespace DreamTeam
 
             services.AddHangfireServer();
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            if (_env.IsDevelopment())
+                services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -95,8 +97,8 @@ namespace DreamTeam
                 //})
                 .AddIdentityServerJwt();
 
-            services.AddTransient<IEmailSender, SendGridEmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.AddTransient<IEmailSender, AzureEmailSender>();
+            services.Configure<AzureEmailSenderOptions>(Configuration.GetSection("AzureEmail"));
 
             services.AddControllersWithViews();
             services.AddRazorPages();
