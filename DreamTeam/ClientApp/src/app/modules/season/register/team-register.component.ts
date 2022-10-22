@@ -53,6 +53,11 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
     this.model$ = combineLatest([this.state.season$, this.authService.getUser()]).pipe(
       map(x => ({ season: x[0], user: x[1] })),
       switchMap(m => this.publicApi.getTenant(m.season.slug).pipe(map(t => ({...m, tenant: t})))),
+      tap(m => {
+        if (m.season.status !== SeasonStateType.Registration || !m.season.tradePeriod) {
+          this.router.navigate(['..'], { relativeTo: this.route });
+        }
+      }),
       shareReplay(1)
     );
 
