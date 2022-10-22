@@ -1,5 +1,10 @@
 <ng-container *ngIf="season$ | async as season">
-  <h1>{{ season.name }}</h1>
+  <h1>{{ season.name }}
+    <a [routerLink]="['/', 't', season.slug, 'admin', 'season', season.id]" class="btn btn-primary float-right">
+      <i class="fas fa-shield-alt"></i>
+      Administration
+    </a>
+  </h1>
   <ng-container *ngIf="tradePeriod$ | async as tradePeriod">
     <app-trade-countdown [tradePeriod]="tradePeriod"></app-trade-countdown>
 

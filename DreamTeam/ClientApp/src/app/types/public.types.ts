@@ -51,6 +51,7 @@ export interface IPublicSeasonInfo {
   tenant: string;
   slug: string;
   maxPlayers: number;
+  isAdmin?: boolean;
 }
 
 export enum TradePeriodType {

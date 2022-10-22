@@ -37,7 +37,9 @@ export class SeasonDashboardComponent implements OnInit {
     private userApi: UserApiService) { }
 
   ngOnInit(): void {
-    this.season$ = this.state.season$.pipe(shareReplay(1));
+    this.season$ = this.state.season$.pipe(
+      switchMap(s => this.authService.isTenantAdmin(s.slug).pipe(map(ta => ({ ...s, isAdmin: ta })))),
+      shareReplay(1));
     this.tradePeriod$ = this.season$.pipe(
       filter(x => !!x.tradePeriod),
       map(x => x.tradePeriod)

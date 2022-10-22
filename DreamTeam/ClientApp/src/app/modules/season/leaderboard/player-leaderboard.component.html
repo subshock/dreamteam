@@ -1,4 +1,4 @@
-<ng-container *ngIf="leaderboard$ | async as players">
+<ng-container *ngIf="model$ | async as model">
   <div class="table-responsive">
     <table class="table table-striped table-hover">
       <thead class="thead-dark">
@@ -15,12 +15,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let p of players">
+        <tr *ngFor="let p of model.leaderboard">
           <td class="text-center">{{ p.rank }}</td>
           <td>
             <span *ngIf="p.multiplier > 1" class="badge badge-primary float-right"
               title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number }}x</span>
-            <a [routerLink]="['../player', p.id]">{{ p.name }}</a>
+            <a [routerLink]="['/', 's', model.season.id, 'player', p.id]">{{ p.name }}</a>
           </td>
           <td class="text-right font-weight-bold">{{ p.points | number }}</td>
           <td class="text-center">{{ p.runs | number }}</td>
