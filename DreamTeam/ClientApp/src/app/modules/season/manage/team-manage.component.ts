@@ -73,7 +73,7 @@ export class TeamManageComponent implements OnInit {
   }
 
   private isWithinTradePeriod(season: IPublicSeasonInfo): boolean {
-    if (season.status !== SeasonStateType.Registration && !season.tradePeriod) {
+    if (!season.tradePeriod) {
       return false;
     }
 
