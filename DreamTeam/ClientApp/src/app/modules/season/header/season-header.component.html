@@ -7,7 +7,7 @@
   <ul class="navbar-nav">
     <li class="nav-item" routerLinkActive="active"><a class="nav-link"
         [routerLink]="['/', 's', season.id, 'rules']">Rules</a></li>
-    <ng-container *ngIf="season.status > SeasonStateType.Running">
+    <ng-container *ngIf="season.status >= SeasonStateType.Running">
       <li class="nav-item" routerLinkActive="active"><a class="nav-link"
           [routerLink]="['/', 's', season.id, 'prizes']">Prizes</a></li>
       <li class="nav-item" routerLinkActive="active"><a class="nav-link"
