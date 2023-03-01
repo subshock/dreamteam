@@ -1,0 +1,32 @@
+<ng-container *ngIf="competition$ | async as competition">
+  <ng-container *ngIf="competition.registrationOpen">
+    <div class="register">
+      <div class="register-intro">
+        <h4>Cost to Enter</h4>
+        <p><strong>{{ competition.cost | currency }}</strong> per entry</p>
+        <h4>Rules</h4>
+        <p>
+          Select the winner in the nominated AFL &ldquo;Match of the Round.&rdquo; If you're correct you continue. If you're
+          incorrect you are eliminated.
+        </p>
+        <p>You must select the entire season before the start of Round 1 of the AFL season, Thursday March 16th.</p>
+        <h4>1st Prize</h4>
+        <p><strong>$400</strong> donated by Steve Prowse <a href="https://adroit.com.au/" target="_blank">Adroit Insurance &amp; Risk</a></p>
+        <h4>Runners Up</h4>
+        <p>2 &times; <strong>$50</strong> pre paid coffee cards donated by
+          <a href="https://brewhouseroasters.com.au/" target="_blank">Brewhouse Bendigo</a></p>
+        <h4>Queries</h4>
+        <p>Contact Steve Prowse (0422 869 460).</p>
+
+        <h4>
+          <a [routerLink]="['register']" class="btn btn-lg btn-primary">Register an Entry</a>
+        </h4>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!competition.registrationOpen">
+
+  </ng-container>
+</ng-container>
+

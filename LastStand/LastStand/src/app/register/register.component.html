@@ -1,0 +1,54 @@
+<ng-container [ngSwitch]="view$ | async">
+  <ng-container *ngSwitchCase="'form'">
+    <h2>Entry</h2>
+
+    <ng-container *ngIf="save$ | async as saving">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" class="form-control" formControlName="name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address:</label>
+          <input type="email" id="email" class="form-control" formControlName="email">
+        </div>
+
+        <div *ngFor="let round of competition.rounds; let i = index" formArrayName="tips" class="round">
+          <h4>Round {{ i + 1 }}</h4>
+          <label class="home">
+            <input type="radio" id="home-{{i}}" formControlName="{{i}}" [value]="1">
+            {{ round.homeTeam }}
+          </label>
+          <div class="vs">vs.</div>
+          <label class="away">
+            <input type="radio" id="away-{{i}}" formControlName="{{i}}" [value]="2">
+            {{ round.awayTeam }}
+          </label>
+        </div>
+
+        <h4>Entry Fee:</h4>
+        <p><strong>{{ competition.cost | currency }}</strong></p>
+
+        <h4>Secure Payment</h4>
+        <p>Credit card payments are powered by <a href="https://www.squareup.com" target="_blank">Square</a></p>
+        <app-square-pay (error)="handlePaymentErrors($event)" (valid)="handlePaymentValid($event)"
+          #payment></app-square-pay>
+
+        <div *ngIf="error$ | async as error" class="alert alert-danger">
+          <h5>There was an error</h5>
+          <ul>
+            <li *ngFor="let e of error">{{ e }}</li>
+          </ul>
+        </div>
+
+        <p>
+          <button type="submit" class="btn btn-primary" [disabled]="!form.valid || saving.saving">Register</button>
+        </p>
+      </form>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'done'">
+  </ng-container>
+</ng-container>

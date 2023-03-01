@@ -4,14 +4,16 @@ using DreamTeam.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DreamTeam.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228101240_LastStandEntities")]
+    partial class LastStandEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,9 +98,6 @@ namespace DreamTeam.Data.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("money");
-
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
@@ -161,9 +160,6 @@ namespace DreamTeam.Data.Migrations
 
                     b.Property<Guid>("EntryId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
 
                     b.Property<int>("Tip")
                         .HasColumnType("int");

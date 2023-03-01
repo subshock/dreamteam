@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -131,6 +132,21 @@ namespace DreamTeam
             services.AddScoped(provider => provider.GetRequiredService<SquareClientFactory>().BuildClient());
 
             SqlMapper.AddTypeHandler(new JsonDocumentTypeHandler());
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins", builder => {
+                    var origins = new List<CorsOrigin>();
+                    Configuration.GetSection("Cors:origins").Bind(origins);
+
+                    foreach (var o in origins)
+                        builder.WithOrigins(o.Uri);
+
+                    builder.AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -158,6 +174,7 @@ namespace DreamTeam
             }
 
             app.UseRouting();
+            app.UseCors("AllowSpecificOrigins");
 
             app.UseAuthentication();
             app.UseIdentityServer();

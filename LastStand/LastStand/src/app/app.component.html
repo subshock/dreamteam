@@ -1,0 +1,9 @@
+<ng-container *ngIf="competition$ | async as competition; else noComp">
+    <h1>{{ competition.name }}</h1>
+    <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #noComp>
+    <h1>Last Person Standing</h1>
+    <p>There are no current competitions.</p>
+</ng-template>

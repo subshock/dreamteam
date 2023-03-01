@@ -48,5 +48,14 @@ namespace DreamTeam.Data
         public DbSet<TaskLog> TaskLogs { get; set; }
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<SeasonContent> SeasonContents { get; set; }
+
+        #region Last Stand
+
+        public DbSet<Models.LastStand.Competition> LastStandCompetitions { get; set; }
+        public DbSet<Models.LastStand.Entry> LastStandEntries { get; set; }
+        public DbSet<Models.LastStand.EntryRound> LastStandEntryRounds { get; set; }
+        public DbSet<Models.LastStand.Round> LastStandRounds { get; set; }
+
+        #endregion
     }
 }

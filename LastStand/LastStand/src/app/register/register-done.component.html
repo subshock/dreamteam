@@ -1,0 +1,22 @@
+<ng-container *ngIf="result$ | async as result">
+  <h2>Entry Registered</h2>
+
+  <p *ngIf="result.messages.card">Your payment has been received and your teams have been registered.</p>
+  <h4>Payment Details</h4>
+  <dl>
+    <dt>Amount</dt>
+    <dd>{{ result.messages.total.amount / 100 | currency }} {{ result.messages.total.currency }}</dd>
+  </dl>
+  <dl *ngIf="result.messages.card">
+    <dt>Card</dt>
+    <dd>{{ result.messages.card.brand }} ending with ...{{ result.messages.card.last4 }}</dd>
+  </dl>
+  <div class="cmd-bar">
+    <a [routerLink]="['/']" class="btn btn-primary">Continue</a>
+    <a *ngIf="result.messages.receiptUrl" [href]="result.messages.receiptUrl" class="btn btn-secondary"
+      target="_blank">
+      <i class="fas fa-fw fa-external-link-alt"></i>
+      Receipt
+    </a>
+  </div>
+</ng-container>
