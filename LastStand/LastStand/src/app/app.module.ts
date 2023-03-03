@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SquarePayComponent } from './components/square-pay/square-pay.component';
 import { RegisterDoneComponent } from './register/register-done.component';
+import { IconDirective } from './directives/icon.directive';
+import { CleanPipe } from './pipes/clean.pipe';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { RegisterDoneComponent } from './register/register-done.component';
     RegisterComponent,
     HomeComponent,
     SquarePayComponent,
-    RegisterDoneComponent
+    RegisterDoneComponent,
+    IconDirective,
+    CleanPipe
   ],
   imports: [
     BrowserModule,

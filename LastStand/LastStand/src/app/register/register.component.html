@@ -4,27 +4,36 @@
 
     <ng-container *ngIf="save$ | async as saving">
       <form [formGroup]="form" (ngSubmit)="save()">
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" class="form-control" formControlName="name">
+
+        <div class="row mb-2">
+          <div class="col-md">
+            <div class="form-group">
+              <label for="name">Name:</label>
+              <input type="text" id="name" class="form-control" formControlName="name">
+            </div>
+          </div>
+
+          <div class="col-md">
+            <div class="form-group">
+              <label for="email">Email Address:</label>
+              <input type="email" id="email" class="form-control" formControlName="email">
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="email">Email Address:</label>
-          <input type="email" id="email" class="form-control" formControlName="email">
-        </div>
-
-        <div *ngFor="let round of competition.rounds; let i = index" formArrayName="tips" class="round">
-          <h4>Round {{ i + 1 }}</h4>
-          <label class="home">
-            <input type="radio" id="home-{{i}}" formControlName="{{i}}" [value]="1">
-            {{ round.homeTeam }}
-          </label>
-          <div class="vs">vs.</div>
-          <label class="away">
-            <input type="radio" id="away-{{i}}" formControlName="{{i}}" [value]="2">
-            {{ round.awayTeam }}
-          </label>
+        <div class="rounds mb-2">
+          <div *ngFor="let round of competition.rounds; let i = index" formArrayName="tips" class="round">
+            <h4>Round {{ i + 1 }}</h4>
+            <label class="team home">
+              <input type="radio" id="home-{{i}}" formControlName="{{i}}" [value]="1">
+              <svg class="club" appIcon="icn-flag-{{ round.homeTeam | clean }}" title="{{ round.homeTeam }}"></svg>
+            </label>
+            <svg class="vs" appIcon="icn-versus"></svg>
+            <label class="team away">
+              <input type="radio" id="away-{{i}}" formControlName="{{i}}" [value]="2">
+              <svg class="club" appIcon="icn-flag-{{ round.awayTeam | clean }}" title="{{ round.awayTeam }}"></svg>
+            </label>
+          </div>
         </div>
 
         <h4>Entry Fee:</h4>
@@ -47,8 +56,5 @@
         </p>
       </form>
     </ng-container>
-  </ng-container>
-
-  <ng-container *ngSwitchCase="'done'">
   </ng-container>
 </ng-container>

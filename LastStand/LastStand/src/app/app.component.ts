@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Title } from '@angular/platform-browser';
+import { Observable, tap } from 'rxjs';
 import { ICompetition } from './laststand.types';
 import { LastStandStateService } from './services/laststand-state.service';
 
@@ -14,7 +15,11 @@ export class AppComponent {
 
   competition$: Observable<ICompetition>;
 
-  constructor(private state: LastStandStateService) {
-    this.competition$ = state.competition$;
+  constructor(private state: LastStandStateService, private titleSvc: Title) {
+    this.competition$ = state.competition$.pipe(
+      tap(comp => {
+        this.titleSvc.setTitle(comp.name);
+      })
+    );
   }
 }

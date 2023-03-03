@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         'tips': new FormArray<FormControl<number | null>>(
           comp.rounds.map(x => new FormControl<number | null>(null, Validators.required))
         ),
-        'payment': new FormControl<boolean>(false, Validators.requiredTrue)
+        'payment': new FormControl<boolean>(false)
       });
       this.competition = comp;
       this.view$.next('form');
