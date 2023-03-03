@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - dreamteam2
 on:
   push:
     branches:
-      - releases/**
+      - releases/dreamteam/**
   workflow_dispatch:
 
 jobs:
