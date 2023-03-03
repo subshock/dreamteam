@@ -66,4 +66,8 @@ export class AdminApiService {
   listUsers(): Observable<IAppUser[]> {
     return this.httpClient.get<IAppUser[]>(`${this.apiBase}/user`);
   }
+
+  getCors(): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiBase}/system/cors`);
+  }
 }

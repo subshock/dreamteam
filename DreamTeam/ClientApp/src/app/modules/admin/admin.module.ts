@@ -14,6 +14,7 @@ import { PaymentContainerComponent } from './payment/payment-container.component
 import { TenantListComponent } from './tenant/list/tenant-list.component';
 import { TenantContainerComponent } from './tenant/tenant-container.component';
 import { TenantViewComponent } from './tenant/view/tenant-view.component';
+import { SystemComponent } from './system/system.component';
 
 @NgModule({
   imports: [
@@ -37,6 +38,9 @@ import { TenantViewComponent } from './tenant/view/tenant-view.component';
               { path: '', pathMatch: 'full', component: PaymentListComponent },
               { path: ':id', component: PaymentViewComponent }
             ]
+          },
+          {
+            path: 'system', component: SystemComponent
           }
         ]
       },
@@ -54,7 +58,8 @@ import { TenantViewComponent } from './tenant/view/tenant-view.component';
     PaymentContainerComponent,
     TenantListComponent,
     TenantContainerComponent,
-    TenantViewComponent
+    TenantViewComponent,
+    SystemComponent
   ],
   providers: [],
 })

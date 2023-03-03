@@ -1,0 +1,6 @@
+<h2>System</h2>
+
+<ng-container *ngIf="cors$ | async as cors">
+  <h3>CORS</h3>
+  <pre>{{ cors | json }}</pre>
+</ng-container>
