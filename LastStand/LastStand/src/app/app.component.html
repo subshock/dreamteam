@@ -1,11 +1,19 @@
 <div class="container">
     <ng-container *ngIf="competition$ | async as competition; else noComp">
-        <h1>{{ competition.name }}</h1>
+        <h1><a [routerLink]="['/']">{{ competition.name }}</a></h1>
         <router-outlet></router-outlet>
     </ng-container>
 </div>
 
 <ng-template #noComp>
+  <ng-container *ngIf="!loading; else tplLoading">
     <h1>Last Person Standing</h1>
     <p>There are no current competitions.</p>
+  </ng-container>
+</ng-template>
+
+<ng-template #tplLoading>
+  <div class="progress" style="height:30px;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%">Loading&hellip;</div>
+  </div>
 </ng-template>

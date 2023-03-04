@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Observable, tap } from 'rxjs';
+import { finalize, Observable, tap } from 'rxjs';
 import { ICompetition } from './laststand.types';
 import { LastStandStateService } from './services/laststand-state.service';
 
@@ -12,6 +12,7 @@ import { LastStandStateService } from './services/laststand-state.service';
 })
 export class AppComponent {
   title = 'LastStand';
+  loading: boolean = true;
 
   competition$: Observable<ICompetition>;
 
@@ -19,7 +20,8 @@ export class AppComponent {
     this.competition$ = state.competition$.pipe(
       tap(comp => {
         this.titleSvc.setTitle(comp.name);
-      })
+      }),
+      finalize(() => this.loading = false)
     );
   }
 }
