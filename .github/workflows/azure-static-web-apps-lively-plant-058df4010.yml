@@ -2,8 +2,8 @@ name: Azure Static Web Apps CI/CD
 
 on:
   push:
-    branches:
-      - releases/laststand
+    tags:
+      - laststand.**
 
 jobs:
   build_and_deploy_job:
