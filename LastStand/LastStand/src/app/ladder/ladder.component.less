@@ -1,0 +1,36 @@
+.tips {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  .tip {
+    margin-right: 3px;
+    position: relative;
+
+    .result {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      &.correct {
+        background-color: rgba(0, 255, 0, 0.25);
+      }
+
+      &.incorrect {
+        background-color: rgba(255, 0, 0, 0.25);
+      }
+    }
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.col-name {
+  width: 1%;
+  white-space: nowrap;
+}

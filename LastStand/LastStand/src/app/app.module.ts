@@ -11,6 +11,7 @@ import { SquarePayComponent } from './components/square-pay/square-pay.component
 import { RegisterDoneComponent } from './register/register-done.component';
 import { IconDirective } from './directives/icon.directive';
 import { CleanPipe } from './pipes/clean.pipe';
+import { LadderComponent } from './ladder/ladder.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CleanPipe } from './pipes/clean.pipe';
     SquarePayComponent,
     RegisterDoneComponent,
     IconDirective,
-    CleanPipe
+    CleanPipe,
+    LadderComponent
   ],
   imports: [
     BrowserModule,

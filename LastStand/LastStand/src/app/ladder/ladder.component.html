@@ -1,0 +1,55 @@
+<ng-container *ngIf="competition$ | async as model">
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-dark table-sm">
+      <thead class="active">
+        <tr>
+          <th class="col-name">Name</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of model.activeEntries">
+          <td class="col-name">{{ e.name }}</td>
+          <td>
+            <div class="tips">
+              <ng-container *ngFor="let r of model.rounds; let i = index">
+                <div class="tip" *ngIf="e.eliminatedRound == -1 || e.eliminatedRound >= i">
+                  <svg appIcon="icn-flag-{{r.teams[e.tips[i]] | clean}}"></svg>
+                  <div class="result" [ngClass]="{ 'correct': e.tips[i] === r.result, 'incorrect': e.tips[i] !== r.result }"></div>
+                </div>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+
+      <thead class="eliminated">
+        <tr>
+          <th colspan="2">
+            <h3>Eliminated Entries</h3>
+          </th>
+        </tr>
+        <tr>
+          <th class="col-name">Name</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of model.eliminatedEntries">
+          <td class="col-name">{{ e.name }}</td>
+          <td>
+            <div class="tips">
+              <ng-container *ngFor="let r of model.rounds; let i = index">
+                <div class="tip" *ngIf="e.eliminatedRound == -1 || e.eliminatedRound >= i">
+                  <svg appIcon="icn-flag-{{r.teams[e.tips[i]] | clean}}"></svg>
+                  <div class="result" [ngClass]="{ 'correct': e.tips[i] === r.result, 'incorrect': e.tips[i] !== r.result }"></div>
+                </div>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>

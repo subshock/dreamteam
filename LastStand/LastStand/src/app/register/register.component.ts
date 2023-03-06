@@ -52,6 +52,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.subscriptions = new Subscription();
 
     this.subscriptions.add(this.state.competition$.subscribe(comp => {
+      if (!comp.registrationOpen) {
+        this.router.navigate(['/']);
+      }
+
       this.form = new FormGroup<IRegisterForm>({
         'name': new FormControl<string>('', Validators.required),
         'email': new FormControl<string>('', Validators.required),

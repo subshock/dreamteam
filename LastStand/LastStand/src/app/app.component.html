@@ -1,6 +1,21 @@
 <div class="container">
     <ng-container *ngIf="competition$ | async as competition; else noComp">
-        <h1><a [routerLink]="['/']">{{ competition.name }}</a></h1>
+        <h1><a [routerLink]="['/']">{{ competition.name }}</a>
+          <ng-container *ngIf="expiry$ | async as expiry">
+            <span class="float-end badge expiry"
+              [ngClass]="{ 'bg-secondary': expiry.state === 0, 'bg-warning': expiry.state === 1, 'bg-danger': expiry.state === 2 }">
+              <ng-container *ngIf="expiry.state < 2; else tplExpired">
+                <ng-container *ngIf="expiry.days > 0">{{ expiry.days | number }}D</ng-container>
+                <ng-container *ngIf="expiry.hours > 0">{{ expiry.hours | number}}H </ng-container>
+                <ng-container *ngIf="expiry.minutes > 0">{{ expiry.minutes | number }}M</ng-container>
+                {{ expiry.seconds | number }}S
+              </ng-container>
+              <ng-template #tplExpired>
+                CLOSED
+              </ng-template>
+            </span>
+          </ng-container>
+        </h1>
         <router-outlet></router-outlet>
     </ng-container>
 </div>
