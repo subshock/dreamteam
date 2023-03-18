@@ -17,8 +17,7 @@ interface IRound {
 
 interface IModel {
   rounds: IRound[];
-  activeEntries: IEntry[];
-  eliminatedEntries: IEntry[];
+  entries: IEntry[];
 }
 
 @Component({
@@ -46,8 +45,7 @@ export class LadderComponent implements OnInit {
 
         const model = {
           rounds: rounds,
-          activeEntries: entries.filter(x => x.eliminatedRound === -1).sort((a,b) => a.name.localeCompare(b.name)),
-          eliminatedEntries: entries.filter(x => x.eliminatedRound >= 0).sort((a,b) => a.eliminatedRound - b.eliminatedRound)
+          entries: entries.sort((a,b) => a.name.localeCompare(b.name))
         }
 
         return model;
@@ -57,7 +55,7 @@ export class LadderComponent implements OnInit {
 
   private getEliminatedRound(tips: number[], rounds: IRound[]): number {
     for (let i = 0; i != rounds.length; i++) {
-      if (tips[i] !== rounds[i].result) {
+      if (tips[i] !== rounds[i].result && rounds[i].result !== 4) {
         return i;
       }
     }
