@@ -36,7 +36,7 @@ export class LadderComponent implements OnInit {
     this.competition$ = this.state.competition$.pipe(
       map(c => {
 
-        const rounds = c.rounds.filter(x => x.result > 0).map(r => ({ teams: ['', r.homeTeam, r.awayTeam, 'draw'], result: r.result }));
+        const rounds = c.rounds.map(r => ({ teams: ['', r.homeTeam, r.awayTeam, 'draw'], result: r.result }));
 
         const entries = c.entries.map(e => ({
           name: e.name, tips: e.tips, expand: false,
