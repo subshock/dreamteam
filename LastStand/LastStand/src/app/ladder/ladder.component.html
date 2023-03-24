@@ -16,7 +16,8 @@
               <ng-container *ngFor="let r of model.rounds; let i = index">
                 <div class="tip">
                   <svg appIcon="icn-flag-{{r.teams[e.tips[i]] | clean}}"></svg>
-                  <div class="result" [ngClass]="{ 'correct': e.tips[i] === r.result, 'incorrect': e.tips[i] !== r.result && r.result !== 4,
+                  <div class="result" [ngClass]="{ 'correct': e.tips[i] === r.result,
+                    'incorrect': e.tips[i] !== r.result && r.result !== 4 && r.result !== 0,
                     'draw': r.result === 4 }"></div>
                 </div>
               </ng-container>
