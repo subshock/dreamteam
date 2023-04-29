@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of model.entries" [class.eliminated]="e.eliminatedRound < Number.MAX_SAFE_INTEGER">
+        <tr *ngFor="let e of model.entries" [class.eliminated]="e.eliminatedRound < 24">
           <td class="col-name">{{ e.name }}</td>
           <td>
             <div class="tips">

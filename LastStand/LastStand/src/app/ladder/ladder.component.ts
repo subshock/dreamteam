@@ -56,7 +56,7 @@ export class LadderComponent implements OnInit {
 
   private getEliminatedRound(tips: number[], rounds: IRound[]): number {
     for (let i = 0; i != rounds.length; i++) {
-      if (tips[i] !== rounds[i].result && rounds[i].result !== 3) {
+      if (rounds[i].result !== 0 && tips[i] !== rounds[i].result && rounds[i].result !== 3) {
         return i;
       }
     }
