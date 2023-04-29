@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of model.entries" [class.eliminated]="e.eliminatedRound > 0">
+        <tr *ngFor="let e of model.entries" [class.eliminated]="e.eliminatedRound < Number.MAX_SAFE_INTEGER">
           <td class="col-name">{{ e.name }}</td>
           <td>
             <div class="tips">
@@ -18,7 +18,7 @@
                   <svg appIcon="icn-flag-{{r.teams[e.tips[i]] | clean}}"></svg>
                   <div class="result" [ngClass]="{ 'correct': e.tips[i] === r.result,
                     'incorrect': e.tips[i] !== r.result && r.result !== 4 && r.result !== 0,
-                    'draw': r.result === 4 }"></div>
+                    'draw': r.result === 3 }"></div>
                 </div>
               </ng-container>
             </div>

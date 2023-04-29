@@ -29,6 +29,7 @@ interface IModel {
 export class LadderComponent implements OnInit {
 
   competition$!: Observable<IModel>;
+  Number = Number;
 
   constructor(private state: LastStandStateService) { }
 
@@ -45,7 +46,7 @@ export class LadderComponent implements OnInit {
 
         const model = {
           rounds: rounds,
-          entries: entries.sort((a,b) => a.name.localeCompare(b.name))
+          entries: entries.sort((a,b) => a.name.localeCompare(b.name)).sort((a, b) => b.eliminatedRound - a.eliminatedRound)
         }
 
         return model;
@@ -55,11 +56,11 @@ export class LadderComponent implements OnInit {
 
   private getEliminatedRound(tips: number[], rounds: IRound[]): number {
     for (let i = 0; i != rounds.length; i++) {
-      if (tips[i] !== rounds[i].result && rounds[i].result !== 4) {
+      if (tips[i] !== rounds[i].result && rounds[i].result !== 3) {
         return i;
       }
     }
 
-    return -1;
+    return Number.MAX_SAFE_INTEGER;
   }
 }
