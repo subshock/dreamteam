@@ -75,6 +75,10 @@ export class TenantAdminService {
     return this.httpClient.post(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/teams/${encodeURIComponent(teamId)}/payment/reset`, null);
   }
 
+  deleteTeam(slug: string, seasonId: string, teamId: string): Observable<unknown> {
+    return this.httpClient.delete(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/teams/${encodeURIComponent(teamId)}`);
+  }
+
   getRounds(slug: string, seasonId: string): Observable<IRoundSummary[]> {
     return this.httpClient.get<IRoundSummary[]>(`${this.apiBase}/${encodeURIComponent(slug)}/season/` +
       `${encodeURIComponent(seasonId)}/rounds`);

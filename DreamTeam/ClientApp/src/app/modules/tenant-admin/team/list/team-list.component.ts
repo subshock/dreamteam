@@ -44,4 +44,13 @@ export class TeamListComponent implements OnInit {
       switchMap(([t, s]) => this.adminApi.markTeamAsUnpaid(t.slug, s.id, team.id))
     ).subscribe(() => this.refresh()));
   }
+
+  deleteTeam(team: ITeamSummary): void {
+    if (confirm('Are you sure you want to delete this team?  This cannot be undone.')) {
+      this.subscriptions.add(combineLatest([this.state.tenant$, this.state.season$]).pipe(
+        take(1),
+        switchMap(([t, s]) => this.adminApi.deleteTeam(t.slug, s.id, team.id))
+      ).subscribe(() => this.refresh()));
+    }
+  }
 }

@@ -53,5 +53,13 @@ namespace DreamTeam.Areas.Api.Tenant
 
             return Ok();
         }
+
+        [HttpDelete("{seasonId:guid}/teams/{teamId:guid}")]
+        public async Task<IActionResult> DeleteTeam(Guid seasonId, Guid teamId)
+        {
+            await _db.DeleteTeam(seasonId, teamId);
+
+            return Ok();
+        }
     }
 }

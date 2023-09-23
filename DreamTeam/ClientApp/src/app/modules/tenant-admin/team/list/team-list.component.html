@@ -26,8 +26,11 @@
         <td>{{ t.balance | number:'1.0-0' }}</td>
         <td><span class="badge" [class.badge-success]="t.paid" [class.badge-danger]="!t.paid">{{ t.paid ? 'Yes' : 'No' }}</span></td>
         <td class="text-right">
-          <button type="button" class="btn btn-sm btn-primary" *ngIf="!t.paid" (click)="markPaid(t)">Mark as Paid</button>
-          <button type="button" class="btn btn-sm btn-danger" *ngIf="t.paid" (click)="markUnpaid(t)">Mark as Unpaid</button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-primary" *ngIf="!t.paid" (click)="markPaid(t)">Mark as Paid</button>
+            <button type="button" class="btn btn-sm btn-danger" *ngIf="t.paid" (click)="markUnpaid(t)">Mark as Unpaid</button>
+            <button type="button" class="btn btn-sm btn-danger" *ngIf="!t.paid" (click)="deleteTeam(t)">Delete</button>
+          </div>
         </td>
       </tr>
     </ng-container>

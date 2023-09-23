@@ -189,5 +189,15 @@ namespace DreamTeam.Data
 
             return false;
         }
+
+        public Task DeleteTeam(Guid seasonId, Guid teamId)
+        {
+            // Only allow teams to be deleted where they are marked as unpaid
+            return Connection.ExecuteAsync("DECLARE @paid bit; " +
+                "SELECT @paid=Paid FROM Teams WHERE SeasonId=@seasonId AND Id=@teamId;" +
+                "IF @paid = 0 BEGIN DELETE FROM TeamRoundRanks WHERE TeamId=@teamId;DELETE FROM TeamRoundResults WHERE TeamId=@teamId; " +
+                "DELETE FROM TeamCaptains WHERE TeamId=@teamId;DELETE FROM TeamPlayers WHERE TeamId=@teamId; " +
+                "DELETE FROM Teams WHERE Id=@teamId;END", new { seasonId, teamId });
+        }
     }
 }
