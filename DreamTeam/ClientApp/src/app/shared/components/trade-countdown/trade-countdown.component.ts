@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DateTime } from 'luxon';
 import { Observable, Subscription, timer } from 'rxjs';
-import { filter, map, share, startWith, take } from 'rxjs/operators';
+import { filter, map, share, startWith, take, tap } from 'rxjs/operators';
 import { IPublicTradePeriod, TradePeriodType } from 'src/app/types/public.types';
 
 interface ICountdownModel {

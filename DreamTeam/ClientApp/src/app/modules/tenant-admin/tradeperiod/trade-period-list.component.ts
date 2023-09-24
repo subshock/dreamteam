@@ -65,8 +65,8 @@ export class TradePeriodListComponent implements OnInit {
   addTradePeriod(tenantSlug: string, seasonId: string) {
     if (this.isValidTradePeriod(this.newTradePeriod)) {
       const sub = this.adminApi.addTradePeriod(tenantSlug, seasonId, {
-        startDate: formatDateOnly(this.newTradePeriod.period[0]),
-        endDate: formatDateOnly(this.newTradePeriod.period[1]),
+        startDate: this.newTradePeriod.period[0],
+        endDate: this.newTradePeriod.period[1],
         tradeLimit: this.newTradePeriod.tradeLimit
       })
         .subscribe(() => {
@@ -84,7 +84,7 @@ export class TradePeriodListComponent implements OnInit {
       && tradePeriod.period[0] != null
       && tradePeriod.period[1] != null
       && tradePeriod.tradeLimit > 0
-      && tradePeriod.period[0] < tradePeriod.period[1];
+      && new Date(tradePeriod.period[0]) < new Date(tradePeriod.period[1]);
   }
 
   cancelAddTradePeriod() {
@@ -122,8 +122,8 @@ export class TradePeriodListComponent implements OnInit {
   updateTradePeriod(tenantSlug: string, seasonId: string, tradePeriod: ITradePeriodForm) {
     if (this.isValidTradePeriod(tradePeriod)) {
       const sub = this.adminApi.updateTradePeriod(tenantSlug, seasonId, tradePeriod.id, {
-        startDate: formatDateOnly(tradePeriod.period[0]),
-        endDate: formatDateOnly(tradePeriod.period[1]),
+        startDate: tradePeriod.period[0],
+        endDate: tradePeriod.period[1],
         tradeLimit: tradePeriod.tradeLimit
       }).subscribe(() => {
         this.refreshSub.next(false);

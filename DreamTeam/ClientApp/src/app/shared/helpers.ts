@@ -14,3 +14,19 @@ export function formatDateOnly(value: string | Date): string | Date {
 export function isNumber(val: number) {
   return Number.isSafeInteger(val);
 }
+
+export function formatDateTime(value: string | Date): string {
+  if (typeof value === 'string') {
+    if (value && value.length > 0 && RegExp(/^\d{4}-\d{2}-\d{2}T.+$/).test(<string>value)) {
+      value = new Date(value);
+    } else {
+      return '';
+    }
+  }
+
+  if (value instanceof Date) {
+    return (<Date>value).toISOString().substring(0, 16);
+  }
+
+  return '';
+}

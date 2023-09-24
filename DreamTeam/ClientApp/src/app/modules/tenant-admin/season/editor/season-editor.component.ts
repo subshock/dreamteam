@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Inject, LOCALE_ID } from '@angular/core';
+import { formatDate } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { formatDateOnly } from 'src/app/shared/helpers';
+import { formatDateOnly, formatDateTime } from 'src/app/shared/helpers';
 import { DefaultDatepickerConfig } from 'src/app/modules/admin/admin.types';
 import { TenantAdminService } from '../../tenant-admin.service';
 import { ISeasonUpdate } from '../../tenant-admin.types';
@@ -44,7 +45,7 @@ export class SeasonEditorComponent implements OnInit {
 
   seasonForm: FormGroup;
 
-  constructor(private adminApi: TenantAdminService, private modalRef: BsModalRef) { }
+  constructor(private adminApi: TenantAdminService, private modalRef: BsModalRef, @Inject(LOCALE_ID) private localeId: string) { }
 
   ngOnInit(): void {
     this.model$ = (this.mode === 'update'
@@ -63,7 +64,7 @@ export class SeasonEditorComponent implements OnInit {
               runouts: new FormControl(season.pointDefinition?.runouts, Validators.required),
               stumpings: new FormControl(season.pointDefinition?.stumpings, Validators.required)
             }),
-            registrationEndDate: new FormControl(season.registrationEndDate ? new Date(season.registrationEndDate) : null),
+            registrationEndDate: new FormControl(formatDate(season.registrationEndDate, 'yyyy-MM-ddTHH:mm', this.localeId)),
             maxPlayers: new FormControl(season.maxPlayers, Validators.required),
             scoringPlayers: new FormControl(season.scoringPlayers, Validators.required)
           });
@@ -80,7 +81,9 @@ export class SeasonEditorComponent implements OnInit {
     if (this.seasonForm.valid) {
       const season: ISeasonUpdate = <ISeasonUpdate>this.seasonForm.value;
 
-      season.registrationEndDate = formatDateOnly(season.registrationEndDate);
+      if (season.registrationEndDate) {
+        season.registrationEndDate = formatDateTime(season.registrationEndDate) + 'Z';
+      }
 
       const obs = this.mode === 'add'
         ? this.adminApi.addSeason(this.tenantSlug, season)

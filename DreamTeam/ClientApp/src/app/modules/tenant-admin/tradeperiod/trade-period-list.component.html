@@ -20,8 +20,8 @@
       <ng-container *ngFor="let tp of tradePeriods; let i = index">
         <tr *ngIf="editIndex != i; else updateTradePeriodTpl" [class.table-secondary]="editIndex != null"
           [class.text-muted]="editIndex != null">
-          <td>{{ tp.startDate | date:'E, d MMM yyyy' }}</td>
-          <td>{{ tp.endDate | date:'E, d MMM yyyy' }}</td>
+          <td>{{ tp.startDate | date:'E, d MMM yyyy h:mm a' }}</td>
+          <td>{{ tp.endDate | date:'E, d MMM yyyy h:mm a' }}</td>
           <td class="text-center">{{ tp.tradeLimit }}</td>
           <td class="text-right text-nowrap">
             <div class="btn-group">
@@ -41,10 +41,16 @@
         </td>
       </tr>
       <tr>
-        <td colspan="2">
+        <td>
+          <input type="datetime-local" class="form-control" [(ngModel)]="newTradePeriod.period[0]" required>
+        </td>
+        <td>
+          <input type="datetime-local" class="form-control" [(ngModel)]="newTradePeriod.period[1]" required>
+        </td>
+        <!-- <td colspan="2">
           <input type="text" class="form-control" readonly autocomplete="off" readonly bsDaterangepicker
             [bsConfig]="bsDatepickerOpts" [(ngModel)]="newTradePeriod.period" required>
-        </td>
+        </td> -->
         <td>
           <input type="number" class="form-control" min="0" [(ngModel)]="newTradePeriod.tradeLimit" required>
         </td>
@@ -61,10 +67,18 @@
 
   <ng-template #updateTradePeriodTpl>
     <tr *ngIf="editTradePeriod$ | async as editTradePeriod" class="form">
-      <td colspan="2">
+      <td>
+        <input type="datetime-local" class="form-control" [ngModel]="editTradePeriod.period[0] | date:'yyyy-MM-ddTHH:mm'"
+          (ngModelChange)="editTradePeriod.period[0]=$event">
+      </td>
+      <td>
+        <input type="datetime-local" class="form-control" [ngModel]="editTradePeriod.period[1] | date:'yyyy-MM-ddTHH:mm'"
+          (ngModelChange)="editTradePeriod.period[1]=$event">
+      </td>
+      <!-- <td colspan="2">
         <input type="text" class="form-control" required autocomplete="off" readonly bsDaterangepicker
           [bsConfig]="bsDatepickerOpts" [(ngModel)]="editTradePeriod.period">
-      </td>
+      </td> -->
       <td>
         <input type="number" class="form-control" min="0" [(ngModel)]="editTradePeriod.tradeLimit" required>
       </td>

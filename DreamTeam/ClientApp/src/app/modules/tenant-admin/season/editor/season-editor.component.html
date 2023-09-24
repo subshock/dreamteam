@@ -76,9 +76,8 @@
       </div>
       <div class="form-group">
         <label for="registrationEndDate">Registration End Date</label>
-        <input id="registrationEndDate" type="text" readonly autocomplete="off"
-          class="form-control" formControlName="registrationEndDate"
-          bsDatepicker [bsConfig]="DefaultDatepickerConfig">
+        <input id="registrationEndDate" type="datetime-local" autocomplete="off"
+          class="form-control" formControlName="registrationEndDate">
       </div>
     </div>
     <div class="modal-footer">
