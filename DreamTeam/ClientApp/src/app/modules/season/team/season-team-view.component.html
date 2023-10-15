@@ -31,9 +31,9 @@
           <tbody>
             <tr *ngFor="let p of model.players; let i = index">
               <td class="col-captain">
-                <button type="button" class="btn btn-sm" popover="Captain" *ngIf="p.type == TeamPlayerType.Captain"
+                <button type="button" class="btn btn-sm" title="Captain" *ngIf="p.type == TeamPlayerType.Captain"
                   [class.btn-primary]="p.type == TeamPlayerType.Captain">C</button>
-                <button type="button" class="btn btn-sm" popover="Vice Captain"
+                <button type="button" class="btn btn-sm" title="Vice Captain"
                   *ngIf="p.type == TeamPlayerType.ViceCaptain"
                   [class.btn-primary]="p.type === TeamPlayerType.ViceCaptain">VC</button>
               </td>
@@ -42,7 +42,7 @@
                   {{ p.name }}
                 </a>
                 <span *ngIf="p.multiplier > 1" class="badge badge-primary float-right"
-                  popover="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number
+                  title="This player receives a {{ p.multiplier | number }}x point bonus">{{ p.multiplier | number
                   }}x</span>
               </td>
               <td class="text-center">{{ p.cost }}</td>
@@ -91,15 +91,15 @@
         <thead class="thead-dark">
           <tr>
             <th>Round</th>
-            <th class="text-center" popover="Runs">R</th>
-            <th class="text-center" popover="Unassisted Wickets">UW</th>
-            <th class="text-center" popover="Assisted Wickets">AW</th>
-            <th class="text-center" popover="Catches">C</th>
-            <th class="text-center" popover="Runouts">RO</th>
-            <th class="text-center" popover="Stumpings">ST</th>
+            <th class="text-center" title="Runs">R</th>
+            <th class="text-center" title="Unassisted Wickets">UW</th>
+            <th class="text-center" title="Assisted Wickets">AW</th>
+            <th class="text-center" title="Catches">C</th>
+            <th class="text-center" title="Runouts">RO</th>
+            <th class="text-center" title="Stumpings">ST</th>
             <th class="text-right">Points</th>
-            <th class="text-center" popover="Ranking for Round">RR</th>
-            <th class="text-center" popover="Ranking for Season">SR</th>
+            <th class="text-center" title="Ranking for Round">RR</th>
+            <th class="text-center" title="Ranking for Season">SR</th>
           </tr>
         </thead>
         <tbody>
