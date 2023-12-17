@@ -191,13 +191,14 @@ namespace DreamTeam.Data
         public Task CreateRankingsForRound(Guid roundId)
         {
             return Connection.ExecuteAsync("DECLARE @roundStart datetimeoffset; " +
-                "SELECT @roundStart = StartDate FROM Rounds WHERE Id = @roundId; " +
+                "DECLARE @seasonId uniqueidentifier; " +
+                "SELECT @roundStart=StartDate, @seasonId=SeasonId FROM Rounds WHERE Id = @roundId; " +
                 "DELETE FROM TeamRoundRanks WHERE RoundId = @roundId; " +
                 "INSERT INTO TeamRoundRanks(Id, TeamId, RoundId, RoundRank, SeasonRank, Created) " +
                 "SELECT NEWID(), TR.TeamId, TR.RoundId, RR.Rank, SR.Rank, @now " +
                 "FROM TeamRoundResults AS TR " +
                 "    LEFT OUTER JOIN(SELECT TeamId, RANK() OVER (ORDER BY Points DESC) AS Rank FROM TeamRoundResults WHERE RoundId = @roundId) AS RR ON TR.TeamId = RR.TeamId " +
-                "    LEFT OUTER JOIN(SELECT IT.TeamId, RANK() OVER(ORDER BY SUM(IT.Points) DESC) AS Rank FROM TeamRoundResults AS IT INNER JOIN Rounds AS IR ON IR.Id = IT.RoundId WHERE IR.StartDate <= @roundStart GROUP BY IT.TeamId) AS SR ON TR.TeamId = SR.TeamId " +
+                "    LEFT OUTER JOIN(SELECT IT.TeamId, RANK() OVER(ORDER BY SUM(IT.Points) DESC) AS Rank FROM TeamRoundResults AS IT INNER JOIN Rounds AS IR ON IR.Id = IT.RoundId WHERE IR.StartDate <= @roundStart AND IR.SeasonId=@seasonId GROUP BY IT.TeamId) AS SR ON TR.TeamId = SR.TeamId " +
                 "WHERE TR.RoundId = @roundId", new { roundId, now = DateTime.UtcNow });
         }
 

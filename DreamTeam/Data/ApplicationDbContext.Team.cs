@@ -112,7 +112,7 @@ namespace DreamTeam.Data
         {
             using (var tran = await Connection.BeginTransactionAsync())
             {
-                var now = DateTime.UtcNow;
+                var now = DateTimeOffset.UtcNow;
 
                 // Remove any (vice)captains assigned during this trade period or all if within registration
                 await Connection.ExecuteAsync("DELETE FROM TeamCaptains WHERE TeamId=@teamId AND (@tradePeriodId Is Null OR (TradePeriodId=@tradePeriodId AND Removed=0))",
