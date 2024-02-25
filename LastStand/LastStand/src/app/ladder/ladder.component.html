@@ -9,16 +9,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of model.entries" [class.eliminated]="e.eliminatedRound < 24">
+        <tr *ngFor="let e of model.entries" [class.eliminated]="e.eliminatedRound <= model.rounds.length ">
           <td class="col-name">{{ e.name }}</td>
           <td>
             <div class="tips">
               <ng-container *ngFor="let r of model.rounds; let i = index">
-                <div class="tip">
+                <div class="tip" [title]="r.teams[e.tips[i]]">
                   <svg appIcon="icn-flag-{{r.teams[e.tips[i]] | clean}}"></svg>
                   <div class="result" [ngClass]="{ 'correct': e.tips[i] === r.result,
-                    'incorrect': e.tips[i] !== r.result && r.result !== 4 && r.result !== 0,
-                    'draw': r.result === 3 }"></div>
+                    'incorrect': e.tips[i] !== r.result && r.result <= 2 && r.result > 0,
+                    'draw': r.result > 2 }"></div>
+                  <div class="double-chance" *ngIf="e.doubleChanceRounds.includes(i)">Double Chance</div>
                 </div>
               </ng-container>
             </div>
