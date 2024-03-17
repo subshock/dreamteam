@@ -24,7 +24,7 @@ namespace DreamTeam.Areas.Api.Public
         [HttpGet("competition")]
         public async Task<IActionResult> GetActiveCompetition()
         {
-            var comp = await _db.LastStandGetActiveCompetition();
+            var comp = await _db.LastStand.GetActiveCompetition();
 
             if (comp == null)
                 return NotFound();
@@ -51,7 +51,7 @@ namespace DreamTeam.Areas.Api.Public
 
             var registrationToken = paymentResult.Response?.Payment?.Id ?? null;
 
-            await _db.LastStandRegisterEntry(model, registrationToken);
+            await _db.LastStand.RegisterEntry(model, registrationToken);
 
             return Ok(new
             {

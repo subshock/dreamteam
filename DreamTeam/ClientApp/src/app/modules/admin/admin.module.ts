@@ -15,6 +15,8 @@ import { TenantListComponent } from './tenant/list/tenant-list.component';
 import { TenantContainerComponent } from './tenant/tenant-container.component';
 import { TenantViewComponent } from './tenant/view/tenant-view.component';
 import { SystemComponent } from './system/system.component';
+import { LastStandListComponent } from './laststand/list/last-stand-list.component';
+import { LastStandContainerComponent } from './laststand/last-stand-container.component';
 
 @NgModule({
   imports: [
@@ -40,6 +42,11 @@ import { SystemComponent } from './system/system.component';
             ]
           },
           {
+            path: 'laststand', component: LastStandContainerComponent, children: [
+              { path: '', pathMatch: 'full', component: LastStandListComponent }
+            ]
+          },
+          {
             path: 'system', component: SystemComponent
           }
         ]
@@ -59,7 +66,9 @@ import { SystemComponent } from './system/system.component';
     TenantListComponent,
     TenantContainerComponent,
     TenantViewComponent,
-    SystemComponent
+    SystemComponent,
+    LastStandListComponent,
+    LastStandContainerComponent
   ],
   providers: [],
 })

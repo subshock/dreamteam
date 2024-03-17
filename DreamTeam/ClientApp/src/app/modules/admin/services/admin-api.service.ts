@@ -9,6 +9,7 @@ import {
   IPaymentSummary,
   ITenant, ITenantAdmin
 } from '../admin.types';
+import * as LastStand from '../laststand.admin.types';
 import { APP_BASE_HREF } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
@@ -69,5 +70,26 @@ export class AdminApiService {
 
   getCors(): Observable<any> {
     return this.httpClient.get<any>(`${this.apiBase}/system/cors`);
+  }
+
+  getLastStandCompetitions(): Observable<LastStand.ICompetition[]> {
+    return this.httpClient.get<LastStand.ICompetition[]>(`${this.apiBase}/laststand`);
+  }
+
+  getLastStandCompetition(id: string): Observable<LastStand.ICompetition> {
+    return this.httpClient.get<LastStand.ICompetition>(`${this.apiBase}/laststand/competition/${encodeURIComponent(id)}`);
+  }
+
+  getLastStandRounds(id: string): Observable<LastStand.IRound[]> {
+    return this.httpClient.get<LastStand.IRound[]>(`${this.apiBase}/laststand/${encodeURIComponent(id)}/round`);
+  }
+
+  updateLastStandRoundResult(competitionId: string, id: string, result: number): Observable<unknown> {
+    return this.httpClient.post(`${this.apiBase}/laststand/competition/${encodeURIComponent(competitionId)}/round/${encodeURIComponent(id)}`,
+      { result: result });
+  }
+
+  getLastStandEntries(id: string): Observable<LastStand.IEntry[]> {
+    return this.httpClient.get<LastStand.IEntry[]>(`${this.apiBase}/laststand/competition/${encodeURIComponent(id)}/entry`);
   }
 }

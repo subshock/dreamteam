@@ -1,0 +1,19 @@
+<h2>Last Person Standing</h2>
+<h4>Competitions</h4>
+<ng-container *ngIf="competitions$ | async as competitions">
+    <table class="table table=striped table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Created</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let c of competitions">
+                <td>{{ c.name }}</td>
+                <td>{{ c.created | date:'d MMM yyyy h:mm a' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</ng-container>

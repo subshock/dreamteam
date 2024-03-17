@@ -18,6 +18,7 @@ namespace DreamTeam.Data
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
+            _laststand = new Lazy<LastStandDbContext>(() => new LastStandDbContext(this), false);
         }
 
         public DbConnection Connection {

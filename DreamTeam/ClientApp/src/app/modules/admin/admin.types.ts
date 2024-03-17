@@ -7,7 +7,8 @@ export enum AdminNavItemId {
   SeasonView = 3,
   Payments = 4,
   Tenants = 5,
-  TenantView = 6
+  TenantView = 6,
+  LastStand = 7
 }
 
 export interface IAdminNavItem {

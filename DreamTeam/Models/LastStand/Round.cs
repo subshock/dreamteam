@@ -24,4 +24,14 @@ namespace DreamTeam.Models.LastStand
         public string AwayTeam { get; set; }
         public RoundResultType Result { get; set; }
     }
+
+    public class RoundUpdateDto
+    {
+        public int? Number { get; set; }
+        public string HomeTeam { get; set; }
+        public string AwayTeam { get; set; }
+        public RoundResultType? Result { get; set; }
+
+        public bool HasUpdate => Number != null || HomeTeam != null || AwayTeam != null || Result != null;
+    }
 }
