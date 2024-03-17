@@ -5,14 +5,28 @@
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Registration Ends</th>
+                <th>Active</th>
+                <th>Cost</th>
                 <th>Created</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let c of competitions">
-                <td>{{ c.name }}</td>
+                <td><a [routerLink]="['./', c.id]">{{ c.name }}</a></td>
+                <td>{{ c.registrationEnds | date:'d MMM yyyy h:mm a' }}</td>
+                <td>
+                  <i [class.text-success]="c.active"
+                    [class.fa-check]="c.active"
+                    [class.fa-times]="!c.active"
+                   class="fa fa-fw"></i>
+                </td>
+                <td>{{ c.cost | currency }}</td>
                 <td>{{ c.created | date:'d MMM yyyy h:mm a' }}</td>
+                <td class="text-right">
+                  <a class="btn btn-primary btn-sm" [routerLink]="['./', c.id]">View</a>
+                </td>
             </tr>
         </tbody>
     </table>

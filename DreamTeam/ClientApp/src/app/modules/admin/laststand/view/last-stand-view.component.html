@@ -1,0 +1,17 @@
+<ng-container *ngIf="competition$ | async as comp">
+  <h2>{{ comp.name }}</h2>
+</ng-container>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link"
+      routerLinkActive="active" [routerLink]="['./rounds']" [routerLinkActiveOptions]="{ exact: true }">Rounds</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link"
+      routerLinkActive="active" [routerLink]="['./entries']" [routerLinkActiveOptions]="{ exact: true }">Entries</a>
+  </li>
+</ul>
+<div class="tab-container">
+  <router-outlet></router-outlet>
+</div>

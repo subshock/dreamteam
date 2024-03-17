@@ -106,7 +106,7 @@ END
 
             public Task<List<Round>> GetRounds(Guid id)
             {
-                return _db.LastStandRounds.Where(x => x.CompetitionId == id).ToListAsync();
+                return _db.LastStandRounds.Where(x => x.CompetitionId == id).OrderBy(x => x.Number).ToListAsync();
             }
 
             public Task<List<Entry>> GetEntries(Guid id)

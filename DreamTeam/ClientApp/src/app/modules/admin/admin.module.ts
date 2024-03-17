@@ -17,6 +17,10 @@ import { TenantViewComponent } from './tenant/view/tenant-view.component';
 import { SystemComponent } from './system/system.component';
 import { LastStandListComponent } from './laststand/list/last-stand-list.component';
 import { LastStandContainerComponent } from './laststand/last-stand-container.component';
+import { LastStandViewComponent } from './laststand/view/last-stand-view.component';
+import { LastStandRoundsComponent } from './laststand/view/rounds/last-stand-rounds.component';
+import { LastStandEntriesComponent } from './laststand/view/entries/last-stand-entries.component';
+import { LastStandResultPipe } from './pipes/last-stand-result.pipe';
 
 @NgModule({
   imports: [
@@ -43,7 +47,12 @@ import { LastStandContainerComponent } from './laststand/last-stand-container.co
           },
           {
             path: 'laststand', component: LastStandContainerComponent, children: [
-              { path: '', pathMatch: 'full', component: LastStandListComponent }
+              { path: '', pathMatch: 'full', component: LastStandListComponent },
+              { path: ':id', component: LastStandViewComponent, children: [
+                { path: 'rounds', component: LastStandRoundsComponent },
+                { path: 'entries', component: LastStandEntriesComponent },
+                { path: '', pathMatch: 'full', redirectTo: 'rounds' }
+              ]}
             ]
           },
           {
@@ -68,7 +77,11 @@ import { LastStandContainerComponent } from './laststand/last-stand-container.co
     TenantViewComponent,
     SystemComponent,
     LastStandListComponent,
-    LastStandContainerComponent
+    LastStandContainerComponent,
+    LastStandViewComponent,
+    LastStandRoundsComponent,
+    LastStandEntriesComponent,
+    LastStandResultPipe
   ],
   providers: [],
 })

@@ -81,7 +81,7 @@ export class AdminApiService {
   }
 
   getLastStandRounds(id: string): Observable<LastStand.IRound[]> {
-    return this.httpClient.get<LastStand.IRound[]>(`${this.apiBase}/laststand/${encodeURIComponent(id)}/round`);
+    return this.httpClient.get<LastStand.IRound[]>(`${this.apiBase}/laststand/competition/${encodeURIComponent(id)}/round`);
   }
 
   updateLastStandRoundResult(competitionId: string, id: string, result: number): Observable<unknown> {

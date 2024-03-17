@@ -3,12 +3,15 @@ export interface ICompetition {
     id: string;
     name: string;
     active: boolean;
+    cost: number;
+    registrationEnds: string;
     created: string;
     updated: string;
 }
 
 export interface IRound {
     id: string;
+    competitionId: string;
     created: string;
     updated: string;
     number: number;

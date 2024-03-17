@@ -1,0 +1,50 @@
+<ng-container *ngIf="rounds$ | async as rounds">
+  <table class="table table-sm table-striped table-hover mt-2">
+    <thead class="thead-dark">
+      <tr>
+        <th class="text-right">#</th>
+        <th>Home Team</th>
+        <th>Away Team</th>
+        <th>Result</th>
+        <th class="text-right">
+          <button type="button" class="btn btn-sm btn-dark" (click)="reload()">
+            <i class="fas fa-fw fa-sync"></i>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of rounds; let i = index">
+        <td class="text-right">{{ r.number }}</td>
+        <td>{{ r.homeTeam }}</td>
+        <td>{{ r.awayTeam }}</td>
+        <td *ngIf="resultIndex !== i; else tplEditResult">
+          <button type="button" class="btn btn-outline-secondary btn-sm mr-2" [disabled]="resultIndex >= 0" (click)="startResultUpdate(r, i)">
+            <i class="fas fa-fw fa-edit"></i>
+          </button>
+          {{ r | lastStandResult }}
+        </td>
+        <ng-template #tplEditResult>
+          <td>
+            <div class="input-group">
+              <select class="form-control form-control-sm" [(ngModel)]="resultUpdateVal">
+                <option [ngValue]="0">No Result</option>
+                <option [ngValue]="1">{{ r.homeTeam }} won</option>
+                <option [ngValue]="2">{{ r.awayTeam }} won</option>
+                <option [ngValue]="3">Draw</option>
+              </select>
+              <div class="input-group-apend">
+                <button type="button" class="btn btn-sm btn-primary" (click)="saveResultUpdate(r)"><i class="fas fa-fw fa-check"></i></button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="cancelResultUpdate()"><i class="fas fa-fw fa-times"></i></button>
+              </div>
+            </div>
+          </td>
+        </ng-template>
+        <td class="text-right">
+          <button type="button" class="btn btn-sm btn-primary">Update</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</ng-container>
