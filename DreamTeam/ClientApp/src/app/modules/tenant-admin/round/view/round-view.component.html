@@ -18,6 +18,10 @@
     <button type="button" class="btn btn-info" (click)="completeRound(model)">Mark Round as Complete</button>
   </div>
 
+  <div class="alert alert-warning" *ngIf="!model.canEdit">
+    <button type="button" class="btn btn-warning" (click)="reopenRound(model)">Reopen Round</button>
+  </div>
+
   <h5>Players</h5>
 
   <table class="table table-striped table-hover table-sm">

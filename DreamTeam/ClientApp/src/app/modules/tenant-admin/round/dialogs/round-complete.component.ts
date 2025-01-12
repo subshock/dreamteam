@@ -28,8 +28,8 @@ import { TenantAdminService } from '../../tenant-admin.service';
       </div>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary" [disabled]="!completeForm.valid">Save</button>
-      <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!completeForm.valid || result">Save</button>
+      <button type="button" class="btn btn-secondary" [disabled]="result" (click)="cancel()">Cancel</button>
     </div>
   </form>
   `,

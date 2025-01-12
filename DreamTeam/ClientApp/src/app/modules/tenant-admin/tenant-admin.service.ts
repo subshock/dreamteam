@@ -126,6 +126,11 @@ export class TenantAdminService {
       null);
   }
 
+  reopenRound(slug: string, seasonId: string, roundId: string): Observable<any> {
+    return this.httpClient.post(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/rounds/${encodeURIComponent(roundId)}/reopen`,
+      null);
+  }
+
   getTradePeriods(slug: string, seasonId: string): Observable<ITradePeriod[]> {
     return this.httpClient.get<ITradePeriod[]>(`${this.apiBase}/${encodeURIComponent(slug)}/season/${encodeURIComponent(seasonId)}/tradeperiods`);
   }

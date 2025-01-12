@@ -103,5 +103,13 @@ namespace DreamTeam.Areas.Api.Tenant
 
             return Ok(new { Token = taskId });
         }
+
+        [HttpPost("{seasonId:guid}/rounds/{roundId:guid}/reopen")]
+        public async Task<IActionResult> ReopenRound(Guid seasonId, Guid roundId)
+        {
+            await _db.ReopenRound(roundId);
+
+            return Ok();
+        }
     }
 }

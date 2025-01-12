@@ -2,13 +2,14 @@ import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRe
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { isNumber } from 'src/app/shared/helpers';
 import { IPointDefinition, IPublicTenant } from 'src/app/types/public.types';
 import { TenantStateService } from '../../../tenant/tenant-state.service';
 import { TenantAdminService } from '../../tenant-admin.service';
 import { ISeasonView, IRoundView, IPlayerView, IRoundPlayer, RoundStateType, IRoundPlayerUpdate } from '../../tenant-admin.types';
-import { RoundCompleteComponent } from '../complete/round-complete.component';
+import { RoundCompleteComponent } from '../dialogs/round-complete.component';
+import { RoundReopenComponent } from '../dialogs/round-reopen.component';
 
 interface IModel {
   tenant: IPublicTenant;
@@ -26,6 +27,7 @@ interface IModel {
 export class RoundViewComponent implements OnInit, OnDestroy {
 
   refreshSub = new BehaviorSubject<boolean>(true);
+  refreshRoundSub = new BehaviorSubject<boolean>(true);
 
   model$: Observable<IModel>;
   season$: Observable<ISeasonView>;
@@ -62,11 +64,16 @@ export class RoundViewComponent implements OnInit, OnDestroy {
 
     this.season$ = this.state.season$;
 
-    this.model$ = combineLatest([this.state.tenant$, this.state.season$, this.route.paramMap]).pipe(
+    this.model$ = combineLatest([this.state.tenant$, this.state.season$, this.route.paramMap, this.refreshRoundSub]).pipe(
       switchMap(([t, s, p]) => combineLatest([this.adminApi.getRound(t.slug, s.id, p.get('id')), this.adminApi.getPlayers(t.slug, s.id)])
         .pipe(
           map(([r, ap]) => ({ tenant: t, season: s, round: r, allPlayers: ap, canEdit: r.status === RoundStateType.Creating }))
         )),
+      tap(model => {
+        if (model.round.status > 1) {
+          setTimeout(() => this.refreshRound(), 2000);
+        }
+      }),
       shareReplay(1)
     );
 
@@ -86,6 +93,10 @@ export class RoundViewComponent implements OnInit, OnDestroy {
 
   refresh() {
     this.refreshSub.next(false);
+  }
+
+  refreshRound() {
+    this.refreshRoundSub.next(false);
   }
 
   addPlayer(tenantSlug: string, seasonId: string, roundId: string) {
@@ -182,7 +193,22 @@ export class RoundViewComponent implements OnInit, OnDestroy {
     const sub = modalRef.onHide.subscribe(() => {
       sub.unsubscribe();
       if (modalRef.content.result) {
-        this.refreshSub.next(false);
+        this.refreshRound();
+      }
+    });
+  }
+
+  reopenRound(model: IModel) {
+    this.cancelAddPlayer();
+    this.cancelUpdatePlayer();
+
+    const modalRef = this.modalService.show(RoundReopenComponent,
+      { initialState: { tenantSlug: model.tenant.slug, seasonId: model.season.id, roundId: model.round.id } });
+
+    const sub = modalRef.onHide.subscribe(() => {
+      sub.unsubscribe();
+      if (modalRef.content.result) {
+        this.refreshRound();
       }
     });
   }

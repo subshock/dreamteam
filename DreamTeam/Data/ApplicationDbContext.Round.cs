@@ -188,6 +188,23 @@ namespace DreamTeam.Data
             }
         }
 
+        public async Task ReopenRound(Guid roundId)
+        {
+            var round = await Rounds.FindAsync(roundId);
+
+            if (round == null || round.Status != RoundStateType.Completed)
+                return;
+
+            // Delete any of the ranking or results for this round
+            await Connection.ExecuteAsync("DELETE FROM TeamRoundRanks WHERE RoundId=@roundId;" +
+                "DELETE FROM TeamRoundResults WHERE RoundId=@roundId", new { roundId });
+
+            round.Status = RoundStateType.Creating;
+            Rounds.Update(round);
+
+            await SaveChangesAsync();
+        }
+
         public Task CreateRankingsForRound(Guid roundId)
         {
             return Connection.ExecuteAsync("DECLARE @roundStart datetimeoffset; " +

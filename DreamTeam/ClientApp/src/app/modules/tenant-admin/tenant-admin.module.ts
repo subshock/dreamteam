@@ -7,7 +7,8 @@ import { TenantAdminGuard } from './tenant-admin.guard';
 import { PlayerListComponent } from './player/list/player-list.component';
 import { PrizeEditorComponent } from './prize/editor/prize-editor.component';
 import { PrizeListComponent } from './prize/list/prize-list.component';
-import { RoundCompleteComponent } from './round/complete/round-complete.component';
+import { RoundCompleteComponent } from './round/dialogs/round-complete.component';
+import { RoundReopenComponent } from './round/dialogs/round-reopen.component';
 import { RoundEditorComponent } from './round/editor/round-editor.component';
 import { RoundListComponent } from './round/list/round-list.component';
 import { RoundViewComponent } from './round/view/round-view.component';
@@ -38,6 +39,7 @@ import { PlayerImportDialogComponent } from './player/import/player-import-dialo
     SeasonChangeStatusComponent,
     TradePeriodListComponent,
     RoundCompleteComponent,
+    RoundReopenComponent,
     PrizeListComponent,
     PrizeEditorComponent,
     TenantAdminContainerComponent,
