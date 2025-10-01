@@ -8,6 +8,7 @@ import {
   ITeamRegisterResult, IUserTeamSummary
 } from '../types/public.types';
 import { PublicApiService } from './public-api.service';
+import { PaymentType } from '../types/payment-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,9 @@ export class UserApiService {
     this.apiBase = baseHref + 'api/user';
   }
 
-  registerTeams(seasonId: string, teams: ITeamRegister[], paymentToken: string, verificationToken?: string):
+  registerTeams(seasonId: string, teams: ITeamRegister[], paymentToken: string, paymentType: PaymentType, verificationToken?: string):
     Observable<ITeamRegisterResult> {
-    const params = { seasonId: seasonId, teams: teams, paymentToken: paymentToken, verificationToken: verificationToken };
+    const params = { seasonId: seasonId, teams: teams, paymentToken: paymentToken, paymentType: paymentType, verificationToken: verificationToken };
     return this.httpClient.post<ITeamRegisterResult>(`${this.apiBase}/teams/register`, params);
   }
 

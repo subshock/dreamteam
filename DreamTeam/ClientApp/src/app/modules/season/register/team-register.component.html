@@ -62,14 +62,28 @@
                 </tr>
               </tfoot>
             </table>
-            <ng-container *ngIf="model.tenant.usePaymentGateway; else tplManualPayment">
-              <h4>Secure Payment</h4>
-              <p>Credit card payments are powered by <a href="https://www.squareup.com" target="_blank">Square</a></p>
-              <app-square-pay (error)="handlePaymentErrors($event)" #payment></app-square-pay>
-            </ng-container>
+
+            <div *ngIf="model.tenant.usePaymentGateway; else tplManualPayment">
+              <h4>Payment Method</h4>
+              <div class="form-group">
+                <label for="paymentMethod">Select Payment Method:</label>
+                <select id="paymentMethod" class="form-control" [(ngModel)]="selectedPaymentMethod" [ngModelOptions]="{standalone: true}">
+                  <option [ngValue]="PaymentType.Card">Card Payment</option>
+                  <option [ngValue]="PaymentType.Manual">Manual Payment</option>
+                </select>
+              </div>
+
+              <ng-container *ngIf="selectedPaymentMethod === PaymentType.Card; else tplManualPayment">
+                <h4>Secure Payment</h4>
+                <p>Credit card payments are powered by <a href="https://www.squareup.com" target="_blank">Square</a></p>
+                <app-square-pay (error)="handlePaymentErrors($event)" #payment></app-square-pay>
+              </ng-container>
+            </div>
+
             <ng-template #tplManualPayment>
               <div class="alert alert-info">Payment must be made manually through cash to the competition organiser.</div>
             </ng-template>
+
             <p class="text-right">
               <button type="submit" class="btn btn-primary btn-lg" [disabled]="!registerForm.valid || (save$ | async)?.saving">Register Teams</button>
             </p>

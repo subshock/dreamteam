@@ -9,6 +9,7 @@ import { PublicApiService } from 'src/app/services/public-api.service';
 import { UserApiService } from 'src/app/services/user-api.service';
 import { SquarePayComponent } from 'src/app/shared/components/square-pay/square-pay.component';
 import { IPublicSeasonInfo, IPublicTenant, ITeamRegisterResult, SeasonStateType } from 'src/app/types/public.types';
+import { PaymentType } from 'src/app/types/payment-type.enum';
 import { PublicSeasonStateService } from '../public-season-state.service';
 
 interface IModel {
@@ -28,6 +29,8 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
   model$: Observable<IModel>;
   registerForm: FormGroup;
   user: IUser;
+  PaymentType = PaymentType;
+  selectedPaymentMethod: PaymentType = PaymentType.Manual;
 
   private saveSub = new BehaviorSubject<boolean>(false);
   save$ = this.saveSub.asObservable().pipe(map(x => ({ saving: x })));
@@ -57,6 +60,8 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
         if (m.season.status !== SeasonStateType.Registration || !m.season.tradePeriod) {
           this.router.navigate(['..'], { relativeTo: this.route });
         }
+        // Set default payment method based on tenant
+        this.selectedPaymentMethod = m.tenant.usePaymentGateway ? PaymentType.Card : PaymentType.Manual;
       }),
       shareReplay(1)
     );
@@ -97,10 +102,21 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
   async save(model: IModel) {
     if (this.registerForm.valid) {
       this.saveSub.next(true);
-      const paymentResult = model.tenant.usePaymentGateway ? await this.payment.createPayment() : { status: 'OK', token: 'MANUALPAYMENT' };
+      let paymentResult;
+      let paymentType = this.selectedPaymentMethod;
+      if (paymentType === PaymentType.Card && model.tenant.usePaymentGateway) {
+        paymentResult = await this.payment.createPayment();
+      } else {
+        paymentResult = { status: 'OK', token: 'MANUALPAYMENT' };
+      }
 
       if (paymentResult.status === 'OK') {
-        this.subscriptions.add(this.userApi.registerTeams(model.season.id, this.teams.value, paymentResult.token)
+        this.subscriptions.add(this.userApi.registerTeams(
+          model.season.id,
+          this.teams.value,
+          paymentResult.token,
+          paymentType
+        )
           .pipe(
             catchError((response: HttpErrorResponse) => {
               return of({ success: false, error: response.error });
@@ -108,7 +124,7 @@ export class TeamRegisterComponent implements OnInit, OnDestroy {
             finalize(() => this.saveSub.next(false)))
           .subscribe((result: ITeamRegisterResult) => {
             if (result.success) {
-              this.router.navigate(['./done'], { relativeTo: this.route, state: { 'payment': result.messages } });
+              this.router.navigate(['./done'], { relativeTo: this.route, state: { 'payment': result.messages, 'paymentMethod': paymentType } });
             } else {
               this.errorSub.next(result.error);
             }

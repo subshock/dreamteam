@@ -77,7 +77,7 @@ namespace DreamTeam.Areas.Api.User
             if (user == null)
                 return BadRequest("User does not exist");
 
-            IPaymentService paymentSvc = tenant.UsePaymentGateway ? _paymentSvc : _manualPaymentSvc;
+            IPaymentService paymentSvc = tenant.UsePaymentGateway && model.PaymentType == PaymentType.Card.ToString() ? _paymentSvc : _manualPaymentSvc;
 
             var paymentResult = await paymentSvc.Payment(season.Cost, model.Teams.Count, model.PaymentToken, model.VerificationToken, user.Email);
 
@@ -99,7 +99,7 @@ namespace DreamTeam.Areas.Api.User
                 Messages = new
                 {
                     Total = paymentResult.Response?.Payment?.TotalMoney ?? new Square.Models.Money(Convert.ToInt32(season.Cost * model.Teams.Count * 100), "AUD"),
-                    Card = tenant.UsePaymentGateway ? new
+                    Card = model.PaymentType == PaymentType.Card.ToString() ? new
                     {
                         Brand = paymentResult.Response.Payment.CardDetails.Card.CardBrand,
                         Last4 = paymentResult.Response.Payment.CardDetails.Card.Last4
@@ -136,10 +136,19 @@ namespace DreamTeam.Areas.Api.User
             return Ok(result);
         }
 
+        public enum PaymentType
+        {
+            Card,
+            Manual
+        }
+
         public class RegisterTeamsModel : IValidatableObject
         {
             [Required]
             public Guid SeasonId { get; set; }
+
+            [Required]
+            public string PaymentType { get; set; }
 
             [Required]
             public string PaymentToken { get; set; }
